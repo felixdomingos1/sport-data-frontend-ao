@@ -22,8 +22,13 @@ export const API_ENDPOINTS = {
   ATLETAS: {
     BASE: '/atletas',
     BY_ID: (id: string) => `/atletas/${id}`,
+    ME: '/atletas/me',
+    ME_DASHBOARD: '/atletas/me/dashboard',
+    ME_DOCUMENTOS: '/atletas/me/documentos',
     DOCUMENTOS: '/atletas/documentos',
+    DOCUMENTOS_PENDENTES: '/atletas/documentos/pendentes',
     INSCRICAO: '/atletas/inscricao',
+    TRANSFERIR: (id: string) => `/atletas/${id}/transferir`,
   },
   ROLES: {
     BASE: '/roles',
@@ -46,6 +51,23 @@ export const API_ENDPOINTS = {
     JOGOS: (id: string) => `/campeonatos/${id}/jogos`,
   },
   NOTIFICACOES: {
+    BASE: '/notificacoes',
     ENVIAR: '/notificacoes/enviar',
+    COUNT: '/notificacoes/count',
+    LER_TODAS: '/notificacoes/ler',
+    LER: (id: string) => `/notificacoes/${id}/ler`,
+  },
+  PAGAMENTOS: {
+    BASE: '/pagamentos',
+    BY_ID: (id: string) => `/pagamentos/${id}`,
+  },
+  COMPETICAO: {
+    RANKING_GERAL: '/competicao/rankings/geral',
+    RANKING_ATLETA: (id: string) => `/competicao/rankings/atleta/${id}`,
+    RANKING_CAMPEONATO: (id: string) => `/competicao/campeonatos/${id}/ranking`,
+  },
+  UPLOAD: {
+    SIGNATURE: '/upload/signature',
+    SAVE: '/upload/save',
   },
 };

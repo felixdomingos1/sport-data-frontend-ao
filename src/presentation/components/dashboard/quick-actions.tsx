@@ -18,13 +18,13 @@ const QuickActions: React.FC<QuickActionsProps> = ({ federacoes, clubes }) => {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Recent Federations */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-red-500" />
+              <Shield className="w-5 h-5 text-brand" />
               <h3 className="font-semibold text-gray-900 dark:text-white">Federações</h3>
             </div>
-            <Link to="/federacoes" className="text-sm text-red-500 hover:text-red-600 transition flex items-center gap-1">
+            <Link to="/federacoes" className="text-sm text-brand hover:text-brand-hover transition flex items-center gap-1">
               Ver todas
               <ChevronRight className="w-4 h-4" />
             </Link>
@@ -36,8 +36,8 @@ const QuickActions: React.FC<QuickActionsProps> = ({ federacoes, clubes }) => {
                 to={`/federacoes/${fed.id}`}
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition group"
               >
-                <div className="w-10 h-10 bg-linear-to-br from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-lg flex items-center justify-center shrink-0">
-                  <Shield className="w-5 h-5 text-red-500" />
+                <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center shrink-0">
+                  <Shield className="w-5 h-5 text-brand" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-900 dark:text-white truncate">{fed.nome}</p>
@@ -50,13 +50,13 @@ const QuickActions: React.FC<QuickActionsProps> = ({ federacoes, clubes }) => {
         </div>
 
         {/* Recent Clubs */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" />
               <h3 className="font-semibold text-gray-900 dark:text-white">Clubes</h3>
             </div>
-            <Link to="/clubes" className="text-sm text-red-500 hover:text-red-600 transition flex items-center gap-1">
+            <Link to="/clubes" className="text-sm text-brand hover:text-brand-hover transition flex items-center gap-1">
               Ver todos
               <ChevronRight className="w-4 h-4" />
             </Link>

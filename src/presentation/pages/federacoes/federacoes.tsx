@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFederacaoStore } from '../../../store/federacao.store';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const Federacoes: React.FC = () => {
   const { federacoes, fetchAll, create, isLoading } = useFederacaoStore();
@@ -53,7 +54,7 @@ const Federacoes: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">Carregando...</div>
+        <SportLoadingScreen message="A carregar federações..." fullscreen={false} size="md" />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {federacoes.map((federacao) => (

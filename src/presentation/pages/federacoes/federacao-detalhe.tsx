@@ -8,6 +8,7 @@ import {
   FileText, Activity, ChevronRight, AlertCircle
 } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const FederacaoDetalhe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,26 +23,19 @@ const FederacaoDetalhe: React.FC = () => {
   }, [id, fetchFederacaoById]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/60">Carregando federação...</p>
-        </div>
-      </div>
-    );
+    return <SportLoadingScreen message="A carregar federação..." />;
   }
 
   if (error || !federacaoAtual) {
     return (
       <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <AlertCircle className="w-16 h-16 text-brand mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Federação não encontrada</h2>
           <p className="text-white/60 mb-6">
             {error || 'A federação que você está procurando não existe ou foi removida.'}
           </p>
-          <Link to="/federacoes" className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 rounded-xl hover:bg-red-700 transition">
+          <Link to="/federacoes" className="inline-flex items-center gap-2 px-6 py-3 bg-brand rounded-xl hover:bg-brand-hover transition">
             <ArrowRight className="w-5 h-5" />
             Ver todas federações
           </Link>
@@ -86,18 +80,18 @@ const FederacaoDetalhe: React.FC = () => {
 
         {/* Background Image Pattern */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-red-600/20 to-transparent" />
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand/20 to-transparent" />
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-brand rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         </div>
 
         <div className="relative z-20 h-full flex flex-col justify-center px-6 lg:px-12 max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-yellow-500 rounded-2xl flex items-center justify-center shadow-xl">
+            <div className="w-16 h-16 bg-gradient-to-br from-brand to-yellow-500 rounded-2xl flex items-center justify-center shadow-xl">
               <Shield className="w-8 h-8 text-white" />
             </div>
             <div>
-              <p className="text-red-400 text-sm font-semibold tracking-wider">Federação Oficial</p>
+              <p className="text-brand-light text-sm font-semibold tracking-wider">Federação Oficial</p>
               <h1 className="text-4xl lg:text-5xl font-bold mt-1">{federacaoAtual.nome}</h1>
             </div>
           </div>
@@ -105,13 +99,13 @@ const FederacaoDetalhe: React.FC = () => {
           <div className="flex flex-wrap gap-4 mt-4">
             {federacaoAtual.email && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm">
-                <Mail className="w-4 h-4 text-red-400" />
+                <Mail className="w-4 h-4 text-brand-light" />
                 <span>{federacaoAtual.email}</span>
               </div>
             )}
             {federacaoAtual.telefone && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm">
-                <Phone className="w-4 h-4 text-red-400" />
+                <Phone className="w-4 h-4 text-brand-light" />
                 <span>{federacaoAtual.telefone}</span>
               </div>
             )}
@@ -122,13 +116,13 @@ const FederacaoDetalhe: React.FC = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm hover:bg-white/20 transition"
               >
-                <Globe className="w-4 h-4 text-red-400" />
+                <Globe className="w-4 h-4 text-brand-light" />
                 <span>Website Oficial</span>
               </a>
             )}
             {federacaoAtual.endereco && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-sm">
-                <MapPin className="w-4 h-4 text-red-400" />
+                <MapPin className="w-4 h-4 text-brand-light" />
                 <span>{federacaoAtual.endereco}</span>
               </div>
             )}
@@ -181,7 +175,7 @@ const FederacaoDetalhe: React.FC = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-2 py-4 border-b-2 transition-all duration-200 ${activeTab === tab.id
-                    ? 'border-red-500 text-white'
+                    ? 'border-brand text-white'
                     : 'border-transparent text-white/50 hover:text-white/80'
                   }`}
               >
@@ -213,7 +207,7 @@ const FederacaoDetalhe: React.FC = () => {
               {/* Descrição */}
               <div className="bg-white/5 rounded-2xl p-6">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-red-400" />
+                  <FileText className="w-5 h-5 text-brand-light" />
                   Sobre a Federação
                 </h2>
                 <p className="text-white/70 leading-relaxed">
@@ -230,9 +224,9 @@ const FederacaoDetalhe: React.FC = () => {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {federacaoAtual.planos.map((plano) => (
-                      <div key={plano.id} className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-red-500/50 transition-all">
+                      <div key={plano.id} className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 transition-all">
                         <h3 className="font-bold text-lg">{plano.nome}</h3>
-                        <p className="text-2xl font-bold text-red-400 mt-2">
+                        <p className="text-2xl font-bold text-brand-light mt-2">
                           {Number(plano.preco).toLocaleString()} KZ
                         </p>
                         <p className="text-sm text-white/50">
@@ -259,13 +253,13 @@ const FederacaoDetalhe: React.FC = () => {
               {/* Informações de Contato */}
               <div className="bg-white/5 rounded-2xl p-6">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-red-400" />
+                  <Mail className="w-5 h-5 text-brand-light" />
                   Contactos
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {federacaoAtual.email && (
                     <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                      <Mail className="w-5 h-5 text-red-400" />
+                      <Mail className="w-5 h-5 text-brand-light" />
                       <div>
                         <p className="text-sm text-white/50">Email</p>
                         <p className="text-white">{federacaoAtual.email}</p>
@@ -274,7 +268,7 @@ const FederacaoDetalhe: React.FC = () => {
                   )}
                   {federacaoAtual.telefone && (
                     <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                      <Phone className="w-5 h-5 text-red-400" />
+                      <Phone className="w-5 h-5 text-brand-light" />
                       <div>
                         <p className="text-sm text-white/50">Telefone</p>
                         <p className="text-white">{federacaoAtual.telefone}</p>
@@ -283,7 +277,7 @@ const FederacaoDetalhe: React.FC = () => {
                   )}
                   {federacaoAtual.endereco && (
                     <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                      <MapPin className="w-5 h-5 text-red-400" />
+                      <MapPin className="w-5 h-5 text-brand-light" />
                       <div>
                         <p className="text-sm text-white/50">Endereço</p>
                         <p className="text-white">{federacaoAtual.endereco}</p>
@@ -292,10 +286,10 @@ const FederacaoDetalhe: React.FC = () => {
                   )}
                   {federacaoAtual.website && (
                     <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                      <Globe className="w-5 h-5 text-red-400" />
+                      <Globe className="w-5 h-5 text-brand-light" />
                       <div>
                         <p className="text-sm text-white/50">Website</p>
-                        <a href={federacaoAtual.website} target="_blank" rel="noopener noreferrer" className="text-white hover:text-red-400 transition">
+                        <a href={federacaoAtual.website} target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-light transition">
                           {federacaoAtual.website.replace('https://', '')}
                         </a>
                       </div>
@@ -318,7 +312,7 @@ const FederacaoDetalhe: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {federacaoAtual.clubes.map((clube) => (
                     <Link key={clube.id} to={`/clubes/${clube.id}`}>
-                      <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-red-500/50 hover:bg-white/10 transition-all group">
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 hover:bg-white/10 transition-all group">
                         <div className="flex items-start gap-3">
                           {clube.logo ? (
                             <img src={clube.logo} alt={clube.nome} className="w-12 h-12 rounded-lg object-cover" />
@@ -328,10 +322,10 @@ const FederacaoDetalhe: React.FC = () => {
                             </div>
                           )}
                           <div className="flex-1">
-                            <h3 className="font-bold group-hover:text-red-400 transition">{clube.nome}</h3>
+                            <h3 className="font-bold group-hover:text-brand-light transition">{clube.nome}</h3>
                             <p className="text-sm text-white/50">{clube.cidade || 'Localização não definida'}</p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-red-400 transition" />
+                          <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-brand-light transition" />
                         </div>
                       </div>
                     </Link>
@@ -362,7 +356,7 @@ const FederacaoDetalhe: React.FC = () => {
                       key={year}
                       onClick={() => setSelectedYear(year)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition whitespace-nowrap ${selectedYear === year
-                          ? 'bg-red-500 text-white'
+                          ? 'bg-brand text-white'
                           : 'bg-white/10 text-white/60 hover:bg-white/20'
                         }`}
                     >
@@ -377,7 +371,7 @@ const FederacaoDetalhe: React.FC = () => {
                   ?.filter(c => c.temporada === selectedYear)
                   .map((camp) => (
                     <Link key={camp.id} to={`/campeonatos/${camp.id}`}>
-                      <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-red-500/50 hover:bg-white/10 transition-all">
+                      <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-brand/50 hover:bg-white/10 transition-all">
                         <div className="flex flex-wrap justify-between items-start gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
@@ -400,7 +394,7 @@ const FederacaoDetalhe: React.FC = () => {
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-1 text-red-400 group-hover:gap-2 transition-all">
+                          <div className="flex items-center gap-1 text-brand-light group-hover:gap-2 transition-all">
                             <span className="text-sm">Ver detalhes</span>
                             <ArrowRight className="w-4 h-4" />
                           </div>
@@ -435,18 +429,18 @@ const FederacaoDetalhe: React.FC = () => {
 
                     return (
                       <Link key={inscricao.id} to={`/atletas/${inscricao.atletaId}`}>
-                        <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-red-500/50 hover:bg-white/10 transition-all group">
+                        <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 hover:bg-white/10 transition-all group">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-brand to-brand-hover rounded-full flex items-center justify-center">
                               <span className="text-white font-bold text-lg">
                                 {atletaNome.charAt(0).toUpperCase()}
                               </span>
                             </div>
                             <div className="flex-1">
-                              <h3 className="font-bold group-hover:text-red-400 transition">{atletaNome}</h3>
+                              <h3 className="font-bold group-hover:text-brand-light transition">{atletaNome}</h3>
                               <p className="text-sm text-white/50">Nº Registro: {inscricao.numeroRegistro || 'N/A'}</p>
                             </div>
-                            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-red-400 transition" />
+                            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-brand-light transition" />
                           </div>
                         </div>
                       </Link>
@@ -473,7 +467,7 @@ const FederacaoDetalhe: React.FC = () => {
             >
               <TrendingUp className="w-16 h-16 text-white/20 mx-auto mb-4" />
               <p className="text-white/50">Rankings serão exibidos em breve</p>
-              <Link to="/rankings" className="inline-block mt-4 text-red-400 hover:text-red-300 transition">
+              <Link to="/rankings" className="inline-block mt-4 text-brand-light hover:text-brand-light transition">
                 Ver rankings gerais →
               </Link>
             </motion.div>
@@ -489,7 +483,7 @@ const FederacaoDetalhe: React.FC = () => {
             <p className="text-white/40 text-xs mt-0.5">Registre-se como atleta ou clube e comece a competir.</p>
           </div>
           <Link to="/register">
-            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-600 hover:bg-red-500 active:scale-95 transition-all duration-150 text-white text-sm font-bold tracking-wide">
+            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand hover:bg-brand active:scale-95 transition-all duration-150 text-white text-sm font-bold tracking-wide">
               <Zap className="w-4 h-4" />
               Registrar-se
             </button>

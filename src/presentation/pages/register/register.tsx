@@ -1,35 +1,54 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
-  ArrowRight,
+  Calendar,
   CheckCircle,
+  CreditCard,
   Eye,
   EyeOff,
+  FileText,
+  Image,
+  Layers,
   Lock,
   Mail,
-  User,
+  MapPin,
   Phone,
   Shield,
-  Trophy,
+  Upload,
+  User,
 } from 'lucide-react';
-import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../../infrastructure/services/auth.service';
 
-interface Step {
-  id: number;
-  title: string;
-  description: string;
-  icon: React.FC<{ className?: string }>;
-}
-
-const steps: Step[] = [
-  { id: 1, title: 'Dados Pessoais', description: 'Informações básicas', icon: User },
-  { id: 2, title: 'Contato', description: 'Email e telefone', icon: Mail },
-  { id: 3, title: 'Segurança', description: 'Crie sua senha', icon: Shield },
+const steps = [
+  {
+    id: 1,
+    title: 'Dados pessoais',
+    description: 'Nome, data de nascimento, contacto',
+  },
+  {
+    id: 2,
+    title: 'Credenciais de acesso',
+    description: 'Email e palavra-passe',
+  },
+  {
+    id: 3,
+    title: 'Filiação',
+    description: 'Federação, academia ou associação',
+  },
+  {
+    id: 4,
+    title: 'Documentos',
+    description: 'Bilhete de identidade e foto',
+  },
 ];
+
+const inputClass = (hasError: boolean) =>
+  `w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition ${
+    hasError ? 'border-brand' : 'border-[#2a2a2a]'
+  }`;
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -38,519 +57,589 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  // Form Data
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    telefone: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  // Errors
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Validações
-  const validateNome = (value: string) => {
-    if (!value) return 'Nome é obrigatório';
-    if (value.length < 3) return 'Nome deve ter pelo menos 3 caracteres';
-    return '';
+  const [formData, setFormData] = useState({
+    nome: '',
+    dataNascimento: '',
+    genero: '',
+    numeroBI: '',
+    telefone: '',
+    provincia: '',
+    modalidade: '',
+    acceptTerms: false,
+    email: '',
+    password: '',
+    confirmPassword: '',
+    federacao: '',
+    clube: '',
+  });
+
+  const updateField = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!value) return 'Email é obrigatório';
-    if (!emailRegex.test(value)) return 'Email inválido';
-    return '';
-  };
-
-  const validateTelefone = (value: string) => {
-    if (!value) return 'Telefone é obrigatório';
-    const phoneRegex = /^\+?[0-9]{9,12}$/;
-    if (!phoneRegex.test(value.replace(/\s/g, ''))) return 'Telefone inválido';
-    return '';
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value) return 'Senha é obrigatória';
-    if (value.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
-    if (!/[A-Z]/.test(value)) return 'Senha deve conter pelo menos uma letra maiúscula';
-    if (!/[0-9]/.test(value)) return 'Senha deve conter pelo menos um número';
-    return '';
-  };
-
-  const validateConfirmPassword = (value: string) => {
-    if (!value) return 'Confirme sua senha';
-    if (value !== formData.password) return 'As senhas não coincidem';
-    return '';
+  const handleBlur = (field: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const validateStep1 = () => {
-    const nomeError = validateNome(formData.nome);
-    setErrors(prev => ({ ...prev, nome: nomeError }));
-    return !nomeError;
+    const newErrors: Record<string, string> = {};
+    if (!formData.nome.trim()) newErrors.nome = 'Nome completo é obrigatório';
+    if (!formData.dataNascimento) newErrors.dataNascimento = 'Data de nascimento é obrigatória';
+    if (!formData.genero) newErrors.genero = 'Seleccione o género';
+    if (!formData.numeroBI.trim()) newErrors.numeroBI = 'Número de BI é obrigatório';
+    if (!formData.telefone.trim()) newErrors.telefone = 'Telefone é obrigatório';
+    if (!formData.provincia) newErrors.provincia = 'Seleccione a província';
+    if (!formData.modalidade) newErrors.modalidade = 'Seleccione a modalidade';
+    if (!formData.acceptTerms) newErrors.acceptTerms = 'Deve aceitar os termos para continuar';
+    setErrors(newErrors);
+    setTouched({
+      nome: true,
+      dataNascimento: true,
+      genero: true,
+      numeroBI: true,
+      telefone: true,
+      provincia: true,
+      modalidade: true,
+      acceptTerms: true,
+    });
+    return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
-    const emailError = validateEmail(formData.email);
-    const telefoneError = validateTelefone(formData.telefone);
-    setErrors(prev => ({ ...prev, email: emailError, telefone: telefoneError }));
-    return !emailError && !telefoneError;
+    const newErrors: Record<string, string> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email) newErrors.email = 'E-mail é obrigatório';
+    else if (!emailRegex.test(formData.email)) newErrors.email = 'E-mail inválido';
+    if (!formData.password) newErrors.password = 'Palavra-passe é obrigatória';
+    else if (formData.password.length < 6) newErrors.password = 'Mínimo de 6 caracteres';
+    if (!formData.confirmPassword) newErrors.confirmPassword = 'Confirme a palavra-passe';
+    else if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = 'As palavras-passe não coincidem';
+    }
+    setErrors(newErrors);
+    setTouched({ email: true, password: true, confirmPassword: true });
+    return Object.keys(newErrors).length === 0;
   };
 
   const validateStep3 = () => {
-    const passwordError = validatePassword(formData.password);
-    const confirmError = validateConfirmPassword(formData.confirmPassword);
-    setErrors(prev => ({ ...prev, password: passwordError, confirmPassword: confirmError }));
-    return !passwordError && !confirmError;
+    const newErrors: Record<string, string> = {};
+    if (!formData.federacao) newErrors.federacao = 'Seleccione a federação';
+    if (!formData.clube) newErrors.clube = 'Seleccione o clube ou academia';
+    setErrors(newErrors);
+    setTouched({ federacao: true, clube: true });
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    let isValid = false;
-    if (currentStep === 1) isValid = validateStep1();
-    if (currentStep === 2) isValid = validateStep2();
-    if (currentStep === 3) isValid = validateStep3();
-
-    if (isValid && currentStep < 3) {
-      setCurrentStep(prev => prev + 1);
-    }
+    let valid = false;
+    if (currentStep === 1) valid = validateStep1();
+    if (currentStep === 2) valid = validateStep2();
+    if (currentStep === 3) valid = validateStep3();
+    if (currentStep === 4) valid = true;
+    if (valid && currentStep < 4) setCurrentStep((s) => s + 1);
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-    }
+    if (currentStep > 1) setCurrentStep((s) => s - 1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (currentStep < 4) {
+      handleNext();
+      return;
+    }
 
-    if (currentStep === 3 && validateStep3()) {
-      setIsLoading(true);
-      try {
-        await authService.register({
-          nome: formData.nome,
-          email: formData.email,
-          telefone: formData.telefone,
-          password: formData.password,
-        });
-
-        toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white dark:bg-gray-800 shadow-lg rounded-xl pointer-events-auto flex items-center gap-3 p-4`}>
-            <div className="shrink-0">
-              <CheckCircle className="w-6 h-6 text-green-500" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                Registro realizado com sucesso!
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Redirecionando para o login...
-              </p>
-            </div>
-          </div>
-        ), { duration: 3000 });
-
-        setTimeout(() => navigate('/login'), 3000);
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || 'Erro ao registrar');
-      } finally {
-        setIsLoading(false);
-      }
+    setIsLoading(true);
+    try {
+      await authService.register({
+        nome: formData.nome.trim(),
+        email: formData.email.trim(),
+        telefone: formData.telefone.trim(),
+        password: formData.password,
+      });
+      toast.success('Conta criada com sucesso!');
+      navigate('/login');
+    } catch (error: unknown) {
+      const message =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          : undefined;
+      toast.error(message || 'Erro ao criar conta');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleBlur = (field: string) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-  };
+  const progress = (currentStep / steps.length) * 100;
 
-  const getStepStatus = (stepId: number) => {
-    if (currentStep > stepId) return 'completed';
-    if (currentStep === stepId) return 'current';
-    return 'pending';
-  };
+  const FieldError = ({ field }: { field: string }) =>
+    errors[field] && touched[field] ? (
+      <p className="mt-1.5 text-sm text-brand-light flex items-center gap-1">
+        <AlertCircle className="w-3.5 h-3.5" />
+        {errors[field]}
+      </p>
+    ) : null;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-gray-900 via-red-900 to-gray-900">
-      {/* Background Animado */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    <div className="min-h-screen flex bg-[#0f0f0f]">
+      {/* Left- Stepper */}
+      <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-between border-r border-[#1a1a1a] p-10 xl:p-14 shrink-0">
+        <div>
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-11 h-11 bg-[#E60000] rounded-lg flex items-center justify-center shrink-0">
+              <Shield className="w-5 h-5 text-white" fill="white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white tracking-wide">SPORT DATA</p>
+              <p className="text-[11px] text-gray-500 tracking-widest">ANGOLA</p>
+            </div>
+          </div>
+
+          <h1 className="text-2xl xl:text-3xl font-bold text-white mb-3">Crie a sua conta</h1>
+          <p className="text-sm text-gray-500 leading-relaxed mb-10">
+            Registe-se gratuitamente e aceda à plataforma nacional de gestão desportiva de Angola.
+          </p>
+
+          <div className="space-y-6">
+            {steps.map((step) => {
+              const isActive = currentStep === step.id;
+              const isCompleted = currentStep > step.id;
+
+              return (
+                <div key={step.id} className="flex items-start gap-4">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition ${
+                      isActive
+                        ? 'bg-[#E60000] text-white'
+                        : isCompleted
+                          ? 'bg-[#E60000]/20 text-[#E60000]'
+                          : 'bg-[#1a1a1a] text-gray-600 border border-[#2a2a2a]'
+                    }`}
+                  >
+                    {isCompleted ? <CheckCircle className="w-4 h-4" /> : step.id}
+                  </div>
+                  <div className={isActive || isCompleted ? 'opacity-100' : 'opacity-40'}>
+                    <p
+                      className={`text-sm font-semibold ${
+                        isActive ? 'text-white' : 'text-gray-300'
+                      }`}
+                    >
+                      {step.title}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">{step.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <p className="text-sm text-gray-500">
+          Já tem conta?{' '}
+          <Link to="/login" className="text-[#E60000] hover:text-[#ff3333] font-semibold transition">
+            Inicie sessão
+          </Link>
+        </p>
       </div>
 
-      <div className="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full"
-        >
-          <div className="backdrop-blur-xl rounded-3xl p-8">
-            {/* Logo */}
-            <div className="text-center mb-6">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-                className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-red-600 to-yellow-500 rounded-2xl shadow-lg mb-4"
-              >
-                <Trophy className="w-10 h-10 text-white" />
-              </motion.div>
-              <h2 className="text-2xl font-bold text-white">Criar Conta</h2>
-              <p className="text-gray-300 text-sm mt-1">Registre-se no Sport Data Angola</p>
-            </div>
-
-            {/* Steps Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between">
-                {steps.map((step) => {
-                  const status = getStepStatus(step.id);
-                  const Icon = step.icon;
-                  return (
-                    <div key={step.id} className="flex-1 text-center">
-                      <div className="relative">
-                        <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center transition-all duration-300 ${status === 'completed'
-                            ? 'bg-green-500'
-                            : status === 'current'
-                              ? 'bg-red-500 ring-4 ring-red-500/30'
-                              : 'bg-gray-600'
-                          }`}>
-                          {status === 'completed' ? (
-                            <CheckCircle className="w-5 h-5 text-white" />
-                          ) : (
-                            <Icon className="w-5 h-5 text-white" />
-                          )}
-                        </div>
-                        <p className={`text-xs mt-2 font-medium ${status === 'current'
-                            ? 'text-red-400'
-                            : status === 'completed'
-                              ? 'text-green-400'
-                              : 'text-gray-400'
-                          }`}>
-                          {step.title}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+      {/* Right- Form */}
+      <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
+        <div className="flex-1 flex items-start lg:items-center justify-center px-6 py-10 sm:px-10 lg:px-16">
+          <div className="w-full max-w-2xl">
+            {/* Mobile logo */}
+            <div className="flex items-center gap-3 mb-8 lg:hidden">
+              <div className="w-10 h-10 bg-[#E60000] rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-white" fill="white" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">SPORT DATA ANGOLA</p>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <AnimatePresence mode="wait">
-                {/* Step 1: Dados Pessoais */}
-                {currentStep === 1 && (
-                  <motion.div
-                    key="step1"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-5"
-                  >
+            {/* Progress */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gray-500">
+                  Passo {currentStep} de {steps.length}
+                </span>
+                <span className="text-xs text-gray-600">{Math.round(progress)}%</span>
+              </div>
+              <div className="h-1.5 bg-[#1a1a1a] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#E60000] rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white">{steps[currentStep - 1].title}</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                {currentStep === 1 && 'Preencha os seus dados para criar a conta'}
+                {currentStep === 2 && 'Defina o e-mail e a palavra-passe de acesso'}
+                {currentStep === 3 && 'Indique a sua filiação desportiva'}
+                {currentStep === 4 && 'Envie os documentos obrigatórios'}
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Step 1- Dados pessoais */}
+              {currentStep === 1 && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Nome Completo
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="text"
+                        value={formData.nome}
+                        onChange={(e) => updateField('nome', e.target.value)}
+                        onBlur={() => handleBlur('nome')}
+                        className={inputClass(!!errors.nome && !!touched.nome)}
+                        placeholder="João Carlos Mateus"
+                      />
+                    </div>
+                    <FieldError field="nome" />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        Nome completo
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Data de Nascimento
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <input
+                          type="date"
+                          value={formData.dataNascimento}
+                          onChange={(e) => updateField('dataNascimento', e.target.value)}
+                          onBlur={() => handleBlur('dataNascimento')}
+                          className={inputClass(!!errors.dataNascimento && !!touched.dataNascimento)}
+                        />
+                      </div>
+                      <FieldError field="dataNascimento" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">Género</label>
+                      <div className="relative">
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <select
+                          value={formData.genero}
+                          onChange={(e) => updateField('genero', e.target.value)}
+                          onBlur={() => handleBlur('genero')}
+                          className={`${inputClass(!!errors.genero && !!touched.genero)} appearance-none cursor-pointer`}
+                        >
+                          <option value="">Seleccionar</option>
+                          <option value="Masculino">Masculino</option>
+                          <option value="Feminino">Feminino</option>
+                        </select>
+                      </div>
+                      <FieldError field="genero" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Nº de Bilhete de Identidade
+                      </label>
+                      <div className="relative">
+                        <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                         <input
                           type="text"
-                          value={formData.nome}
-                          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                          onBlur={() => handleBlur('nome')}
-                          className={`w-full pl-10 pr-4 py-3 bg-white/10 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${errors.nome && touched.nome
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-600 focus:ring-red-500'
-                            }`}
-                          placeholder="Digite seu nome completo"
+                          value={formData.numeroBI}
+                          onChange={(e) => updateField('numeroBI', e.target.value)}
+                          onBlur={() => handleBlur('numeroBI')}
+                          className={inputClass(!!errors.numeroBI && !!touched.numeroBI)}
+                          placeholder="004823771LA041"
                         />
                       </div>
-                      <AnimatePresence>
-                        {errors.nome && touched.nome && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="mt-1 text-sm text-red-400 flex items-center gap-1"
-                          >
-                            <AlertCircle className="w-4 h-4" />
-                            {errors.nome}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
+                      <FieldError field="numeroBI" />
                     </div>
-                  </motion.div>
-                )}
-
-                {/* Step 2: Contato */}
-                {currentStep === 2 && (
-                  <motion.div
-                    key="step2"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-5"
-                  >
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        Email
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          onBlur={() => handleBlur('email')}
-                          className={`w-full pl-10 pr-4 py-3 bg-white/10 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${errors.email && touched.email
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-600 focus:ring-red-500'
-                            }`}
-                          placeholder="seu@email.com"
-                        />
-                      </div>
-                      <AnimatePresence>
-                        {errors.email && touched.email && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="mt-1 text-sm text-red-400 flex items-center gap-1"
-                          >
-                            <AlertCircle className="w-4 h-4" />
-                            {errors.email}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
                         Telefone
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                         <input
                           type="tel"
                           value={formData.telefone}
-                          onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                          onChange={(e) => updateField('telefone', e.target.value)}
                           onBlur={() => handleBlur('telefone')}
-                          className={`w-full pl-10 pr-4 py-3 bg-white/10 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${errors.telefone && touched.telefone
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-600 focus:ring-red-500'
-                            }`}
+                          className={inputClass(!!errors.telefone && !!touched.telefone)}
                           placeholder="+244 923 456 789"
                         />
                       </div>
-                      <AnimatePresence>
-                        {errors.telefone && touched.telefone && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="mt-1 text-sm text-red-400 flex items-center gap-1"
-                          >
-                            <AlertCircle className="w-4 h-4" />
-                            {errors.telefone}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
+                      <FieldError field="telefone" />
                     </div>
-                  </motion.div>
-                )}
+                  </div>
 
-                {/* Step 3: Segurança */}
-                {currentStep === 3 && (
-                  <motion.div
-                    key="step3"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-5"
-                  >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        Senha
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Província
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          value={formData.password}
-                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                          onBlur={() => handleBlur('password')}
-                          className={`w-full pl-10 pr-12 py-3 bg-white/10 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${errors.password && touched.password
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-600 focus:ring-red-500'
-                            }`}
-                          placeholder="Crie uma senha forte"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition"
+                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <select
+                          value={formData.provincia}
+                          onChange={(e) => updateField('provincia', e.target.value)}
+                          onBlur={() => handleBlur('provincia')}
+                          className={`${inputClass(!!errors.provincia && !!touched.provincia)} appearance-none cursor-pointer`}
                         >
-                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
+                          <option value="">Seleccionar</option>
+                          <option value="Luanda">Luanda</option>
+                          <option value="Benguela">Benguela</option>
+                          <option value="Huíla">Huíla</option>
+                          <option value="Huambo">Huambo</option>
+                        </select>
                       </div>
-                      <AnimatePresence>
-                        {errors.password && touched.password && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="mt-1 text-sm text-red-400 flex items-center gap-1"
-                          >
-                            <AlertCircle className="w-4 h-4" />
-                            {errors.password}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
+                      <FieldError field="provincia" />
                     </div>
-
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        Confirmar senha
+                      <label className="block text-sm font-medium text-gray-400 mb-2">
+                        Modalidade Principal
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          value={formData.confirmPassword}
-                          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                          onBlur={() => handleBlur('confirmPassword')}
-                          className={`w-full pl-10 pr-12 py-3 bg-white/10 border rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 ${errors.confirmPassword && touched.confirmPassword
-                              ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-600 focus:ring-red-500'
-                            }`}
-                          placeholder="Confirme sua senha"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition"
+                        <Layers className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <select
+                          value={formData.modalidade}
+                          onChange={(e) => updateField('modalidade', e.target.value)}
+                          onBlur={() => handleBlur('modalidade')}
+                          className={`${inputClass(!!errors.modalidade && !!touched.modalidade)} appearance-none cursor-pointer`}
                         >
-                          {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
+                          <option value="">Seleccionar</option>
+                          <option value="Basquetebol">Basquetebol</option>
+                          <option value="Futebol">Futebol</option>
+                          <option value="Voleibol">Voleibol</option>
+                          <option value="Atletismo">Atletismo</option>
+                        </select>
                       </div>
-                      <AnimatePresence>
-                        {errors.confirmPassword && touched.confirmPassword && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="mt-1 text-sm text-red-400 flex items-center gap-1"
-                          >
-                            <AlertCircle className="w-4 h-4" />
-                            {errors.confirmPassword}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
+                      <FieldError field="modalidade" />
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
 
-              {/* Navigation Buttons */}
-              <div className="flex gap-3 mt-8">
+                  <label className="flex items-start gap-3 cursor-pointer group pt-1">
+                    <input
+                      type="checkbox"
+                      checked={formData.acceptTerms}
+                      onChange={(e) => updateField('acceptTerms', e.target.checked)}
+                      onBlur={() => handleBlur('acceptTerms')}
+                      className="mt-0.5 w-4 h-4 rounded border-[#2a2a2a] bg-[#1a1a1a] accent-[#E60000] cursor-pointer"
+                    />
+                    <span className="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition">
+                      Concordo com os{' '}
+                      <span className="text-[#E60000]">Termos de Serviço</span> e a{' '}
+                      <span className="text-[#E60000]">Política de Privacidade</span> da Sport Data
+                      Angola.
+                    </span>
+                  </label>
+                  <FieldError field="acceptTerms" />
+                </>
+              )}
+
+              {/* Step 2- Credenciais */}
+              {currentStep === 2 && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">E-mail</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => updateField('email', e.target.value)}
+                        onBlur={() => handleBlur('email')}
+                        className={inputClass(!!errors.email && !!touched.email)}
+                        placeholder="joao.mateus@email.com"
+                      />
+                    </div>
+                    <FieldError field="email" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Palavra-passe
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={(e) => updateField('password', e.target.value)}
+                        onBlur={() => handleBlur('password')}
+                        className={`${inputClass(!!errors.password && !!touched.password)} pr-12`}
+                        placeholder="Mínimo 6 caracteres"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <FieldError field="password" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Confirmar Palavra-passe
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={formData.confirmPassword}
+                        onChange={(e) => updateField('confirmPassword', e.target.value)}
+                        onBlur={() => handleBlur('confirmPassword')}
+                        className={`${inputClass(!!errors.confirmPassword && !!touched.confirmPassword)} pr-12`}
+                        placeholder="Repita a palavra-passe"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                    <FieldError field="confirmPassword" />
+                  </div>
+                </>
+              )}
+
+              {/* Step 3- Filiação */}
+              {currentStep === 3 && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Federação
+                    </label>
+                    <select
+                      value={formData.federacao}
+                      onChange={(e) => updateField('federacao', e.target.value)}
+                      onBlur={() => handleBlur('federacao')}
+                      className={`${inputClass(!!errors.federacao && !!touched.federacao)} appearance-none cursor-pointer`}
+                    >
+                      <option value="">Seleccionar federação</option>
+                      <option value="fab">Federação Angolana de Basquetebol</option>
+                      <option value="faf">Federação Angolana de Futebol</option>
+                      <option value="fav">Federação Angolana de Voleibol</option>
+                    </select>
+                    <FieldError field="federacao" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Clube / Academia
+                    </label>
+                    <select
+                      value={formData.clube}
+                      onChange={(e) => updateField('clube', e.target.value)}
+                      onBlur={() => handleBlur('clube')}
+                      className={`${inputClass(!!errors.clube && !!touched.clube)} appearance-none cursor-pointer`}
+                    >
+                      <option value="">Seleccionar clube ou academia</option>
+                      <option value="petro">Petro de Luanda</option>
+                      <option value="1agosto">1º de Agosto</option>
+                      <option value="interclube">Interclube</option>
+                      <option value="libolo">Recreativo do Libolo</option>
+                    </select>
+                    <FieldError field="clube" />
+                  </div>
+                </>
+              )}
+
+              {/* Step 4- Documentos */}
+              {currentStep === 4 && (
+                <div className="space-y-4">
+                  <div className="border border-dashed border-[#2a2a2a] rounded-2xl p-6 hover:border-[#E60000]/40 transition">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-[#2a2a2a] rounded-xl flex items-center justify-center shrink-0">
+                        <FileText className="w-4 h-4 text-gray-400" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-white">Bilhete de Identidade</p>
+                        <p className="text-xs text-gray-500 mt-0.5">PDF ou imagem- máx. 5 MB</p>
+                        <label className="mt-3 inline-flex items-center gap-2 px-4 py-2 border border-[#E60000] text-[#E60000] rounded-xl text-xs font-medium hover:bg-[#E60000]/10 transition cursor-pointer">
+                          <Upload className="w-3.5 h-3.5" />
+                          Seleccionar ficheiro
+                          <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="border border-dashed border-[#2a2a2a] rounded-2xl p-6 hover:border-[#E60000]/40 transition">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-[#2a2a2a] rounded-xl flex items-center justify-center shrink-0">
+                        <Image className="w-4 h-4 text-gray-400" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-white">Foto 3x4 com fundo branco</p>
+                        <p className="text-xs text-gray-500 mt-0.5">JPG ou PNG- máx. 2 MB</p>
+                        <label className="mt-3 inline-flex items-center gap-2 px-4 py-2 border border-[#E60000] text-[#E60000] rounded-xl text-xs font-medium hover:bg-[#E60000]/10 transition cursor-pointer">
+                          <Upload className="w-3.5 h-3.5" />
+                          Seleccionar ficheiro
+                          <input type="file" accept=".jpg,.jpeg,.png" className="hidden" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    Os documentos serão analisados pela federação após o registo. Pode enviá-los
+                    também mais tarde na secção Documentos.
+                  </p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className={`flex gap-3 pt-4 ${currentStep === 1 ? '' : ''}`}>
                 {currentStep > 1 && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <button
                     type="button"
                     onClick={handleBack}
-                    className="flex-1 py-3 bg-white/10 border border-gray-600 text-white rounded-xl font-medium hover:bg-white/20 transition-all duration-200 flex items-center justify-center gap-2"
+                    className="flex items-center justify-center gap-2 px-6 py-3.5 border border-[#2a2a2a] text-gray-400 hover:text-white hover:border-[#3a3a3a] rounded-xl font-medium transition"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     Voltar
-                  </motion.button>
+                  </button>
                 )}
-
-                {currentStep < 3 ? (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={handleNext}
-                    className="flex-1 py-3 bg-linear-to-r from-red-600 to-red-500 text-white rounded-xl font-medium hover:from-red-700 hover:to-red-600 transition-all duration-200 flex items-center justify-center gap-2"
-                  >
-                    Continuar
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={isLoading}
-                    className="flex-1 py-3 bg-linear-to-r from-red-600 to-red-500 text-white rounded-xl font-medium hover:from-red-700 hover:to-red-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Registrando...
-                      </>
-                    ) : (
-                      <>
-                        Finalizar
-                        <CheckCircle className="w-4 h-4" />
-                      </>
-                    )}
-                  </motion.button>
-                )}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 py-3.5 bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      A criar conta...
+                    </span>
+                  ) : currentStep === 4 ? (
+                    'Criar conta'
+                  ) : (
+                    'Continuar'
+                  )}
+                </button>
               </div>
 
-              {/* Link para login */}
-              <p className="text-center text-gray-300 text-sm mt-6">
-                Já tem uma conta?{' '}
-                <Link
-                  to="/login"
-                  className="text-red-400 hover:text-red-300 font-semibold transition inline-flex items-center gap-1 group"
-                >
-                  Faça login
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <p className="text-center text-sm text-gray-500 lg:hidden pt-2">
+                Já tem conta?{' '}
+                <Link to="/login" className="text-[#E60000] font-semibold">
+                  Inicie sessão
                 </Link>
               </p>
             </form>
           </div>
-        </motion.div>
+        </div>
       </div>
-
-      <style>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-        @keyframes enter {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-enter {
-          animation: enter 0.2s ease-out;
-        }
-        @keyframes leave {
-          from { opacity: 1; transform: scale(1); }
-          to { opacity: 0; transform: scale(0.9); }
-        }
-        .animate-leave {
-          animation: leave 0.2s ease-in;
-        }
-      `}</style>
     </div>
   );
 };

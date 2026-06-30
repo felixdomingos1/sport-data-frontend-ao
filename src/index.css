@@ -3,8 +3,21 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-red-600: #dc2626;
-  --color-red-700: #b91c1c;
+  /* Brand — Sport Data Angola */
+  --color-brand: #E60000;
+  --color-brand-hover: #cc0000;
+  --color-brand-light: #ff3333;
+  --color-brand-dark: #990000;
+
+  /* Red scale alinhada à marca */
+  --color-red-100: #E600001a;
+  --color-red-400: #ff6666;
+  --color-red-500: #E60000;
+  --color-red-600: #E60000;
+  --color-red-700: #cc0000;
+  --color-red-800: #990000;
+  --color-red-900: #660000;
+
   --color-yellow-500: #eab308;
   --color-yellow-600: #ca8a04;
   --color-gray-50: #f9fafb;
@@ -47,7 +60,7 @@
 }
 
 .swiper-pagination-bullet-active {
-  @apply bg-red-600 opacity-100;
+  @apply bg-brand opacity-100;
 }
 
 /* Line clamp utility */
@@ -89,7 +102,7 @@
   background: linear-gradient(to bottom,
       #000000 0%,
       #fbbf24 50%,
-      #dc2626 100%);
+      #E60000 100%);
   border-radius: 9999px;
 }
 
@@ -154,16 +167,174 @@ body::-webkit-scrollbar {
   margin-bottom: 1.5rem;
 }
 
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ── Sport Loading 3D ── */
+.sport-loader-scene {
+  position: relative;
+  perspective: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sport-loader-scene--sm { width: 140px; height: 140px; }
+.sport-loader-scene--md { width: 200px; height: 200px; }
+.sport-loader-scene--lg { width: 260px; height: 260px; }
+
+.sport-loader-core {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: sport-loader-tilt 6s ease-in-out infinite;
+}
+
+.sport-loader-core--sm { width: 100px; height: 100px; }
+.sport-loader-core--md { width: 150px; height: 150px; }
+.sport-loader-core--lg { width: 200px; height: 200px; }
+
+.sport-loader-sphere {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2a2a2a, #0f0f0f 60%, #080808);
+  border: 1px solid #1a1a1a;
+  box-shadow: inset 0 0 30px #E6000015, 0 0 40px #E6000010;
+  animation: sport-loader-pulse 2.4s ease-in-out infinite;
+}
+
+.sport-loader-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(40px);
+}
+
+.sport-loader-shield {
+  width: 36%;
+  height: 36%;
+  color: #E60000;
+  filter: drop-shadow(0 0 12px #E6000060);
+  animation: sport-loader-shield-pulse 2s ease-in-out infinite;
+}
+
+.sport-loader-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.sport-loader-ring--horizontal {
+  animation: sport-loader-spin-y 8s linear infinite;
+}
+
+.sport-loader-ring--vertical {
+  animation: sport-loader-spin-y-tilted 10s linear infinite reverse;
+}
+
+.sport-loader-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  transform: rotateY(calc(360deg / var(--total) * var(--slot))) translateZ(110px);
+  transform-style: preserve-3d;
+}
+
+.sport-loader-scene--sm .sport-loader-icon {
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  transform: rotateY(calc(360deg / var(--total) * var(--slot))) translateZ(70px);
+}
+
+.sport-loader-scene--md .sport-loader-icon {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  transform: rotateY(calc(360deg / var(--total) * var(--slot))) translateZ(90px);
+}
+
+.sport-loader-icon-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  animation: sport-loader-icon-float 3s ease-in-out infinite;
+  animation-delay: calc(var(--slot) * 0.3s);
+}
+
+.sport-loader-scene--sm .sport-loader-icon-inner { font-size: 0.9rem; border-radius: 8px; }
+
+.sport-loader-floor {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 70%;
+  height: 20px;
+  margin-left: -35%;
+  background: radial-gradient(ellipse, #E6000020 0%, transparent 70%);
+  transform: rotateX(80deg);
+  filter: blur(8px);
+}
+
+.sport-loader-glow {
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(circle, #E6000008 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.sport-loader-label-fade {
+  animation: sport-loader-fade-in 0.5s ease-out;
+}
+
+@keyframes sport-loader-spin-y {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+@keyframes sport-loader-spin-y-tilted {
+  from { transform: rotateX(72deg) rotateY(0deg); }
+  to { transform: rotateX(72deg) rotateY(360deg); }
+}
+
+@keyframes sport-loader-tilt {
+  0%, 100% { transform: rotateX(8deg) rotateY(0deg); }
+  50% { transform: rotateX(-8deg) rotateY(15deg); }
+}
+
+@keyframes sport-loader-pulse {
+  0%, 100% { box-shadow: inset 0 0 30px #E6000015, 0 0 40px #E6000010; }
+  50% { box-shadow: inset 0 0 40px #E6000025, 0 0 60px #E6000020; }
+}
+
+@keyframes sport-loader-shield-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+@keyframes sport-loader-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes sport-loader-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

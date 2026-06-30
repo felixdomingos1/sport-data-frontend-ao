@@ -25,7 +25,7 @@ const AngolaFlagBar: React.FC<AngolaFlagBarProps> = ({
     >
       <div className="flex-1 bg-black" />
       <div className="flex-1 bg-yellow-400" />
-      <div className="flex-1 bg-red-600" />
+      <div className="flex-1 bg-brand" />
     </div>
   );
 };

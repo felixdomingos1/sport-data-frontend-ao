@@ -15,7 +15,7 @@ const NotFound: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-red-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-brand-dark flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Animated 404 */}
         <motion.div
@@ -45,7 +45,7 @@ const NotFound: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar por federações, clubes, atletas..."
-              className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand"
             />
           </div>
         </motion.div>
@@ -86,7 +86,7 @@ const NotFound: React.FC = () => {
           </button>
           <Link
             to="/"
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500 rounded-xl text-white hover:bg-red-600 transition group"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-brand rounded-xl text-white hover:bg-brand-hover transition group"
           >
             <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
             Ir para Home

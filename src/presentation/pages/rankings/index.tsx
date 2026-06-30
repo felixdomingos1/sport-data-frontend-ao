@@ -51,11 +51,11 @@ const Rankings: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-6 text-white">
+          <div className="bg-linear-to-r from-brand to-brand-hover rounded-2xl p-6 text-white">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold">Rankings</h1>
-                <p className="text-red-100 mt-1">Classificações nacionais por modalidade</p>
+                <p className="text-white/80 mt-1">Classificações nacionais por modalidade</p>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
                 <Trophy className="w-5 h-5" />
@@ -190,7 +190,7 @@ const Rankings: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-linear-to-br from-brand to-brand-hover rounded-full flex items-center justify-center">
                           <span className="text-white font-bold text-sm">{item.atleta.charAt(0)}</span>
                         </div>
                         <div>
@@ -209,7 +209,7 @@ const Rankings: React.FC = () => {
                       <div className="flex items-center justify-center gap-1 text-sm">
                         <span className="text-green-600 font-medium">{item.estatisticas.vitorias}</span>
                         <span className="text-gray-400">/</span>
-                        <span className="text-red-600 font-medium">{item.estatisticas.derrotas}</span>
+                        <span className="text-brand font-medium">{item.estatisticas.derrotas}</span>
                         <span className="text-gray-400">/</span>
                         <span className="text-yellow-600 font-medium">{item.estatisticas.empates}</span>
                       </div>
@@ -224,7 +224,7 @@ const Rankings: React.FC = () => {
                           <span>+{item.variacao}</span>
                         </div>
                       ) : item.variacao < 0 ? (
-                        <div className="flex items-center justify-center gap-1 text-red-600">
+                        <div className="flex items-center justify-center gap-1 text-brand">
                           <ChevronDown className="w-4 h-4" />
                           <span>{item.variacao}</span>
                         </div>

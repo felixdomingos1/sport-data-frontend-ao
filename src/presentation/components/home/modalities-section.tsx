@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Users, Calendar, Star } from 'lucide-react';
 import { useFederacaoStore } from '@store/federacao.store';
+import SportLoadingScreen from '../ui/sport-loading-screen';
 
 
 const ModalitiesSection: React.FC = () => {
@@ -85,22 +86,14 @@ const ModalitiesSection: React.FC = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-900 dark:via-gray-950 dark:to-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center min-h-100">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-linear-to-r from-red-600 to-yellow-500 blur-2xl opacity-20 animate-pulse"></div>
-              <div className="relative inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-gray-700 border-t-red-600"></div>
-            </div>
-            <p className="mt-6 text-gray-600 dark:text-gray-400 font-medium">Carregando federações...</p>
-          </div>
-        </div>
+      <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+        <SportLoadingScreen message="A carregar modalidades..." fullscreen={false} size="md" />
       </section>
     );
   }
 
   return (
-    <section className="py-20 bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-900 dark:via-gray-950 dark:to-black">
+    <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER */}
         <motion.div
@@ -109,24 +102,24 @@ const ModalitiesSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E60000]/10 border border-[#E60000]/20 text-[#E60000] text-sm font-semibold mb-4">
             <Trophy className="w-4 h-4" />
             <span>Federações Oficiais</span>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-black bg-linear-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             Modalidades Esportivas
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-500 max-w-2xl mx-auto text-base lg:text-lg">
             Conheça as federações que movimentam o esporte angolano
           </p>
         </motion.div>
 
         {displayFederacoes.length === 0 ? (
-          <div className="text-center py-20 bg-white/50 dark:bg-gray-800/50 rounded-3xl backdrop-blur-sm">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
-              <Trophy className="w-10 h-10 text-gray-400" />
+          <div className="text-center py-20 bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#1a1a1a] mb-4">
+              <Trophy className="w-10 h-10 text-gray-500" />
             </div>
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
+            <p className="text-gray-500 text-lg">
               Nenhuma federação encontrada. As federações aparecerão aqui em breve.
             </p>
           </div>
@@ -147,13 +140,13 @@ const ModalitiesSection: React.FC = () => {
                   className="group"
                 >
                   <Link to={`/federacoes/${federacao.id}`}>
-                    <div className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                    <div className="relative bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl overflow-hidden hover:border-[#2a2a2a] transition-all duration-300">
 
                       {/* IMAGEM COM OVERLAY */}
                       <div className="relative h-56 overflow-hidden">
                         {isImgLoading ? (
-                          <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 animate-pulse flex items-center justify-center">
-                            <div className="w-12 h-12 rounded-full border-4 border-gray-400 border-t-transparent animate-spin"></div>
+                          <div className="w-full h-full bg-[#1a1a1a] animate-pulse flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full border-4 border-[#2a2a2a] border-t-[#E60000] animate-spin" />
                           </div>
                         ) : (
                           <>
@@ -184,51 +177,51 @@ const ModalitiesSection: React.FC = () => {
 
                       {/* CONTEÚDO */}
                       <div className="p-5">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">
+                        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
                           {federacao.nome}
                         </h3>
 
-                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                        <p className="text-gray-500 text-sm line-clamp-2 mb-4">
                           {federacao.descricao || `Federação oficial de ${federacao.nome} em Angola`}
                         </p>
 
                         {/* ESTATÍSTICAS RÁPIDAS */}
-                        <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+                        <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-[#1a1a1a]">
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-red-600 dark:text-red-400 mb-1">
+                            <div className="flex items-center justify-center gap-1 text-[#E60000] mb-1">
                               <Calendar className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.events}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Eventos</p>
+                            <p className="text-xs font-semibold text-gray-300">{stats.events}</p>
+                            <p className="text-xs text-gray-500">Eventos</p>
                           </div>
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400 mb-1">
+                            <div className="flex items-center justify-center gap-1 text-blue-400 mb-1">
                               <Users className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.athletes}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Atletas</p>
+                            <p className="text-xs font-semibold text-gray-300">{stats.athletes}</p>
+                            <p className="text-xs text-gray-500">Atletas</p>
                           </div>
                           <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-yellow-600 dark:text-yellow-400 mb-1">
+                            <div className="flex items-center justify-center gap-1 text-yellow-400 mb-1">
                               <Trophy className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.titles}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Títulos</p>
+                            <p className="text-xs font-semibold text-gray-300">{stats.titles}</p>
+                            <p className="text-xs text-gray-500">Títulos</p>
                           </div>
                         </div>
 
                         {/* BOTÃO */}
-                        <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
-                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Ver federação</span>
-                          <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
-                            <ChevronRight className="w-4 h-4 text-red-600 dark:text-red-400 group-hover:text-white transition-colors" />
+                        <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
+                          <span className="text-sm font-medium text-gray-500">Ver federação</span>
+                          <div className="w-8 h-8 rounded-full bg-[#E60000]/10 flex items-center justify-center group-hover:bg-[#E60000] transition-colors duration-300">
+                            <ChevronRight className="w-4 h-4 text-[#E60000] group-hover:text-white transition-colors" />
                           </div>
                         </div>
                       </div>
 
-                      {/* BORDA linearE NO HOVER */}
+                      {/* Borda no hover */}
                       <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-red-600/20 to-yellow-500/20" />
+                        <div className="absolute inset-0 rounded-2xl ring-1 ring-[#E60000]/30" />
                       </div>
                     </div>
                   </Link>
@@ -247,7 +240,7 @@ const ModalitiesSection: React.FC = () => {
         >
           <Link
             to="/federacoes"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-red-600 to-red-500 text-white rounded-2xl font-bold hover:from-red-700 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl font-bold transition"
           >
             <span>Ver todas as federações</span>
             <ChevronRight className="w-5 h-5" />

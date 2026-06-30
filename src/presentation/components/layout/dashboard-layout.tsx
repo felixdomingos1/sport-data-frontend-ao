@@ -1,28 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import DashboardSidebar from '../dashboard/dashboard-sidebar';
 import DashboardHeader from '../dashboard/dashboard-header';
+import { useRouteLoading } from '@/presentation/hooks/use-route-loading';
+import { useLoadingStore } from '@/store/loading.store';
+import { useAtletaMeStore } from '@/store/atleta-me.store';
+import { useAuthStore } from '@/store/auth.store';
 
 const DashboardLayout: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const { hide } = useLoadingStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { fetchDashboard, fetchNotificacoesCount, fetchMe } = useAtletaMeStore();
+  useRouteLoading('A preparar a sua área...');
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    fetchMe();
+    fetchDashboard();
+    fetchNotificacoesCount();
+    const timer = setTimeout(hide, 700);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, fetchMe, fetchDashboard, fetchNotificacoesCount, hide]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="dark min-h-screen bg-black">
       <DashboardSidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
         isMobileMenuOpen={isMobileSidebarOpen}
         setIsMobileMenuOpen={setIsMobileSidebarOpen}
       />
 
-      <div className={`transition-all duration-300 ${isSidebarOpen ? 'md:ml-72' : 'md:ml-20'}`}>
-        <DashboardHeader
-          setIsMobileSidebarOpen={setIsMobileSidebarOpen}
-          isMobileSidebarOpen={isMobileSidebarOpen}
-        />
+      <div className="md:ml-64 transition-all duration-300">
+        <DashboardHeader setIsMobileSidebarOpen={setIsMobileSidebarOpen} />
 
-        <main className="p-4 md:p-6 lg:p-8">
+        <main className="p-5 lg:p-8">
           <Outlet />
         </main>
       </div>

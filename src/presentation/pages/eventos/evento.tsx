@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, Users, ArrowRight, Zap, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 interface Event {
   id: string;
@@ -198,7 +199,7 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
             {event.title}
           </h3>
 
-          {/* Meta — revealed on hover */}
+          {/* Meta - revealed on hover */}
           <motion.div
             initial={false}
             animate={{ height: hovered ? 'auto' : 0, opacity: hovered ? 1 : 0 }}
@@ -392,9 +393,7 @@ const Eventos: React.FC = () => {
       {/* ── Masonry Grid ─────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {loading ? (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5">
-            {Array.from({ length: 12 }).map((_, i) => <Skeleton key={i} />)}
-          </div>
+          <SportLoadingScreen message="A carregar eventos..." fullscreen={false} size="md" />
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 text-white/30">
             <p className="text-5xl mb-4">🏟</p>

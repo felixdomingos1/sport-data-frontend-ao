@@ -1,158 +1,145 @@
 import React from 'react';
 import {
   LayoutDashboard,
-  Trophy,
   User,
+  FileText,
+  CreditCard,
+  Trophy,
+  Calendar,
   Bell,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
+  Shield,
+  Menu,
+  X,
 } from 'lucide-react';
-
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
 import clsx from 'clsx';
 
 interface DashboardSidebarProps {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+  return parts[0]?.slice(0, 2).toUpperCase() || 'AT';
+}
+
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
-  isSidebarOpen,
-  setIsSidebarOpen,
   isMobileMenuOpen,
   setIsMobileMenuOpen,
 }) => {
   const location = useLocation();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
+
   const menuItems = [
-    {
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-      path: '/dashboard',
-    },
-    {
-      label: 'Perfil',
-      icon: User,
-      path: '/perfil',
-    },
-    {
-      label: 'Campeonatos',
-      icon: Trophy,
-      path: '/meus-campeonatos',
-    },
-    {
-      label: 'Notificações',
-      icon: Bell,
-      path: '/notificacoes',
-    },
+    { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { label: 'Meu Perfil', icon: User, path: '/perfil' },
+    { label: 'Documentos', icon: FileText, path: '/documentos' },
+    { label: 'Pagamentos', icon: CreditCard, path: '/pagamentos' },
+    { label: 'Ranking', icon: Trophy, path: '/ranking-atleta' },
+    { label: 'Competições', icon: Calendar, path: '/meus-campeonatos' },
+    { label: 'Notificações', icon: Bell, path: '/notificacoes' },
   ];
+
+  const athleteId = 'ANG-2024-00482';
+  const displayName = user?.nome || 'João Mateus';
+  const initials = getInitials(displayName);
 
   return (
     <>
-      {/* MOBILE OVERLAY */}
-
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* SIDEBAR */}
-
       <aside
         className={clsx(
-          'fixed top-0 left-0 z-50 h-screen bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 flex flex-col',
-
-          isSidebarOpen ? 'w-72' : 'w-20',
-
-          isMobileMenuOpen
-            ? 'translate-x-0'
-            : '-translate-x-full md:translate-x-0'
+          'fixed top-0 left-0 z-50 h-screen w-64 bg-[#0f0f0f] border-r border-[#1a1a1a] flex flex-col transition-transform duration-300',
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
-        {/* HEADER */}
-
-        <div className="h-20 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800">
-          {isSidebarOpen && (
-            <div>
-              <h1 className="text-lg font-bold text-red-500">
-                Sport Data
-              </h1>
-
-              <p className="text-xs text-gray-500">
-                Angola
-              </p>
+        {/* Logo */}
+        <div className="px-5 pt-6 pb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#E60000] rounded-lg flex items-center justify-center shrink-0">
+              <Shield className="w-5 h-5 text-white" fill="white" />
             </div>
-          )}
-
+            <div>
+              <p className="text-sm font-bold text-white tracking-wide leading-tight">
+                SPORT DATA
+              </p>
+              <p className="text-[11px] text-gray-500 tracking-widest">ANGOLA</p>
+            </div>
+          </div>
           <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#141414] transition"
           >
-            {isSidebarOpen ? (
-              <ChevronLeft size={18} />
-            ) : (
-              <ChevronRight size={18} />
-            )}
+            <X size={18} />
           </button>
         </div>
 
+        {/* Nav */}
+        <nav className="flex-1 px-3 overflow-y-auto">
+          <p className="px-3 mb-2 text-[10px] font-semibold text-gray-600 tracking-widest uppercase">
+            Atleta
+          </p>
+          <ul className="space-y-0.5">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const active = location.pathname === item.path;
 
-        <nav className="flex-1 p-3 space-y-2 overflow-y-auto">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-
-            const active =
-              location.pathname === item.path;
-
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={clsx(
-                  'flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200',
-
-                  active
-                    ? 'bg-red-500 text-white shadow-lg'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                )}
-              >
-                <Icon size={20} />
-
-                {isSidebarOpen && (
-                  <span className="font-medium">
-                    {item.label}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
+              return (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={clsx(
+                      'flex items-center gap-3 px-3 py-2.5 text-sm transition-all duration-200',
+                      active
+                        ? 'bg-[#E60000] text-white rounded-r-xl rounded-l-none font-medium'
+                        : 'text-gray-400 hover:text-white hover:bg-[#141414] rounded-xl'
+                    )}
+                  >
+                    <Icon size={18} strokeWidth={active ? 2 : 1.5} />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
-        {/* FOOTER */}
-
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <button
-            onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
-          >
-            <LogOut size={20} />
-
-            {isSidebarOpen && (
-              <span className="font-medium">
-                Terminar Sessão
-              </span>
-            )}
-          </button>
+        {/* Profile footer */}
+        <div className="p-4 border-t border-[#1a1a1a]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-[#E60000] rounded-full flex items-center justify-center shrink-0">
+              <span className="text-white text-xs font-bold">{initials}</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{displayName}</p>
+              <p className="text-[11px] text-gray-500 truncate">ID: {athleteId}</p>
+            </div>
+            <button
+              onClick={logout}
+              className="p-1.5 text-gray-500 hover:text-white hover:bg-[#141414] rounded-lg transition shrink-0"
+              title="Terminar sessão"
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
         </div>
       </aside>
     </>
   );
 };
 
+export { Menu as DashboardMenuIcon };
 export default DashboardSidebar;

@@ -4,6 +4,7 @@ import { useAtletaStore } from '../../../store/atleta.store';
 import { useClubeStore } from '../../../store/clube.store';
 import { useFederacaoStore } from '../../../store/federacao.store';
 import { usePlanoStore } from '../../../store/plano.store';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const Atletas: React.FC = () => {
   const { atletas, fetchAll, create, isLoading } = useAtletaStore();
@@ -92,7 +93,7 @@ const Atletas: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">Carregando...</div>
+        <SportLoadingScreen message="A carregar atletas..." fullscreen={false} size="md" />
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">

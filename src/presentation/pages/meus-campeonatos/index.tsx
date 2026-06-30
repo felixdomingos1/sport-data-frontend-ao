@@ -1,320 +1,356 @@
-import React, { Activity, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 import {
-  Trophy, Calendar, MapPin, Users,
-  ChevronRight, Search, Filter, TrendingUp,
-  CheckCircle, XCircle, AlertCircle, Medal,
-  Star, Flame
+  Calendar,
+  Trophy,
+  Star,
+  Medal,
+  MapPin,
+  Eye,
+  ChevronDown,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
-interface Campeonato {
-  id: string;
+type TipoCompeticao = 'Nacional' | 'Regional' | 'Internacional';
+
+interface ProximaCompeticao {
+  id: number;
   nome: string;
-  federacao: string;
-  modalidade: string;
-  categoria: string;
-  dataInicio: string;
-  dataFim: string;
+  data: string;
   local: string;
-  status: 'inscrito' | 'em_andamento' | 'finalizado' | 'classificado' | 'eliminado';
-  minhaPosicao?: number;
-  pontos?: number;
-  proximaPartida?: {
-    adversario: string;
-    data: string;
-    local: string;
-  };
+  tipo: TipoCompeticao;
 }
 
-const mockCampeonatos: Campeonato[] = [
+interface HistoricoParticipacao {
+  id: number;
+  nome: string;
+  modalidade: string;
+  tipo: TipoCompeticao;
+  periodo: string;
+  fase: string;
+  resultado: string;
+  pontos: string;
+}
+
+const proximasCompeticoes: ProximaCompeticao[] = [
   {
-    id: '1',
-    nome: 'Campeonato Nacional de Futebol 2026',
-    federacao: 'Federação Angolana de Futebol',
-    modalidade: 'Futebol',
-    categoria: 'Sênior',
-    dataInicio: '01/06/2026',
-    dataFim: '15/12/2026',
-    local: 'Estádio da Cidadela, Luanda',
-    status: 'inscrito',
-    minhaPosicao: 5,
-    pontos: 12,
-    proximaPartida: {
-      adversario: 'Petro de Luanda',
-      data: '20/06/2026',
-      local: 'Estádio 11 de Novembro'
-    }
+    id: 1,
+    nome: 'Copa Angola — Fase 1',
+    data: '22 Mai 2026',
+    local: 'Pavilhão FMA, Luanda',
+    tipo: 'Nacional',
   },
   {
-    id: '2',
-    nome: 'Torneio Regional de Futebol',
-    federacao: 'Federação Angolana de Futebol',
-    modalidade: 'Futebol',
-    categoria: 'Sênior',
-    dataInicio: '10/03/2026',
-    dataFim: '15/05/2026',
-    local: 'Estádio do Sanatório, Luanda',
-    status: 'finalizado',
-    minhaPosicao: 2,
-    pontos: 28
+    id: 2,
+    nome: 'Liga Provincial de Luanda',
+    data: '05 Jun 2026',
+    local: 'Pavilhão da Cidadela',
+    tipo: 'Regional',
   },
   {
-    id: '3',
-    nome: 'Super Taça de Angola',
-    federacao: 'Federação Angolana de Futebol',
-    modalidade: 'Futebol',
-    categoria: 'Sênior',
-    dataInicio: '05/02/2026',
-    dataFim: '05/03/2026',
-    local: 'Estádio da Cidadela, Luanda',
-    status: 'classificado',
-    minhaPosicao: 1,
-    pontos: 18,
-    proximaPartida: {
-      adversario: '1º de Agosto',
-      data: '05/03/2026',
-      local: 'Estádio da Cidadela'
-    }
-  }
+    id: 3,
+    nome: 'Torneio CABL — Pré-eliminar',
+    data: '18 Jul 2026',
+    local: 'Kinshasa, RDC',
+    tipo: 'Internacional',
+  },
 ];
 
-const getStatusConfig = (status: Campeonato['status']) => {
-  switch (status) {
-    case 'inscrito':
-      return { label: 'Inscrito', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400', icon: CheckCircle };
-    case 'em_andamento':
-      return { label: 'Em Andamento', color: 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400', icon: Activity };
-    case 'finalizado':
-      return { label: 'Finalizado', color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400', icon: CheckCircle };
-    case 'classificado':
-      return { label: 'Classificado', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400', icon: Star };
-    case 'eliminado':
-      return { label: 'Eliminado', color: 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400', icon: XCircle };
-    default:
-      return { label: status, color: 'bg-gray-100', icon: AlertCircle };
+const historicoParticipacoes: HistoricoParticipacao[] = [
+  {
+    id: 1,
+    nome: 'Campeonato Nacional de Basquetebol',
+    modalidade: 'Basquetebol',
+    tipo: 'Nacional',
+    periodo: 'Jan — Jun 2026',
+    fase: 'Fase de Grupos',
+    resultado: '3º Lugar',
+    pontos: '+50',
+  },
+  {
+    id: 2,
+    nome: 'Liga Regional de Luanda',
+    modalidade: 'Basquetebol',
+    tipo: 'Regional',
+    periodo: 'Out — Dez 2025',
+    fase: 'Encerrado',
+    resultado: '1º Lugar',
+    pontos: '+120',
+  },
+  {
+    id: 3,
+    nome: 'Taça de Angola',
+    modalidade: 'Basquetebol',
+    tipo: 'Nacional',
+    periodo: 'Mar — Mai 2025',
+    fase: 'Encerrado',
+    resultado: '2º Lugar',
+    pontos: '+85',
+  },
+  {
+    id: 4,
+    nome: 'Campeonato Provincial de Luanda',
+    modalidade: 'Basquetebol',
+    tipo: 'Regional',
+    periodo: 'Set — Nov 2025',
+    fase: 'Encerrado',
+    resultado: '1º Lugar',
+    pontos: '+95',
+  },
+  {
+    id: 5,
+    nome: 'Super Taça de Basquetebol',
+    modalidade: 'Basquetebol',
+    tipo: 'Nacional',
+    periodo: 'Fev 2025',
+    fase: 'Encerrado',
+    resultado: '4º Lugar',
+    pontos: '+40',
+  },
+];
+
+function TipoBadge({ tipo }: { tipo: TipoCompeticao }) {
+  if (tipo === 'Nacional') {
+    return (
+      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#E60000]/10 text-[#E60000] border border-[#E60000]/20 uppercase">
+        Nacional
+      </span>
+    );
   }
-};
+  if (tipo === 'Internacional') {
+    return (
+      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-yellow-500/10 text-[#F59E0B] border border-yellow-500/20 uppercase">
+        Internacional
+      </span>
+    );
+  }
+  return (
+    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-gray-500/10 text-gray-400 border border-gray-500/20 uppercase">
+      Regional
+    </span>
+  );
+}
 
 const MeusCampeonatos: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('todos');
-  const [selectedTab, setSelectedTab] = useState('inscritos');
+  const [modalidade, setModalidade] = useState('Todas as modalidades');
+  const [epoca, setEpoca] = useState('2025-2026');
 
-  const filteredCampeonatos = mockCampeonatos.filter(camp => {
-    if (searchTerm && !camp.nome.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-    if (statusFilter !== 'todos' && camp.status !== statusFilter) return false;
+  const historicoFiltrado = historicoParticipacoes.filter((item) => {
+    if (modalidade !== 'Todas as modalidades' && item.modalidade !== modalidade) {
+      return false;
+    }
     return true;
   });
 
-  const tabs = [
-    { id: 'inscritos', label: 'Inscrições', count: mockCampeonatos.filter(c => c.status === 'inscrito').length },
-    { id: 'andamento', label: 'Em Andamento', count: mockCampeonatos.filter(c => c.status === 'em_andamento').length },
-    { id: 'finalizados', label: 'Finalizados', count: mockCampeonatos.filter(c => c.status === 'finalizado').length },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-6 text-white">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Meus Campeonatos</h1>
-                <p className="text-red-100 mt-1">Acompanhe suas competições e resultados</p>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-                <Trophy className="w-5 h-5" />
-                <span className="text-sm">Total: {mockCampeonatos.length} competições</span>
-              </div>
+    <div className="space-y-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
+              Total de Participações
+            </p>
+            <Calendar className="w-4 h-4 text-gray-500" />
+          </div>
+          <p className="text-3xl font-bold text-white">14</p>
+          <p className="text-xs text-gray-500 mt-1">em 2025-2026</p>
+        </div>
+
+        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
+              Vitórias / 1º Lugar
+            </p>
+            <Trophy className="w-4 h-4 text-gray-500" />
+          </div>
+          <p className="text-3xl font-bold text-white">5</p>
+          <p className="text-xs text-gray-500 mt-1">35% das participações</p>
+        </div>
+
+        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase">
+              Pontos Acumulados
+            </p>
+            <Star className="w-4 h-4 text-gray-500" />
+          </div>
+          <p className="text-3xl font-bold text-white">1.480</p>
+          <p className="text-xs text-gray-500 mt-1">em competições</p>
+        </div>
+
+        <div className="bg-[#E60000] rounded-2xl p-5 border border-[#E60000]">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] font-semibold text-white/80 tracking-wider uppercase">
+              Melhor Resultado
+            </p>
+            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+              <Medal className="w-4 h-4 text-white" />
             </div>
           </div>
-        </motion.div>
+          <p className="text-3xl font-bold text-white">1º</p>
+          <p className="text-xs text-white/70 mt-1">Liga Regional de Luanda</p>
+        </div>
+      </div>
 
-        {/* Search and Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6"
-        >
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar campeonato..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
+      {/* Próximas Competições */}
+      <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
+        <div className="flex items-center gap-2 px-5 py-4 border-b border-[#1a1a1a]">
+          <h3 className="text-base font-semibold text-white">Próximas Competições</h3>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E60000] text-white">
+            {proximasCompeticoes.length}
+          </span>
+        </div>
+
+        <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+          {proximasCompeticoes.map((comp) => (
+            <div
+              key={comp.id}
+              className="bg-[#080808] border border-[#1a1a1a] rounded-2xl p-4 hover:border-[#E60000]/30 transition"
+            >
+              <TipoBadge tipo={comp.tipo} />
+              <h4 className="text-sm font-semibold text-white mt-3 mb-2">{comp.nome}</h4>
+              <div className="space-y-1.5">
+                <p className="text-xs text-gray-400 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 shrink-0" />
+                  {comp.data}
+                </p>
+                <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 shrink-0" />
+                  {comp.local}
+                </p>
+              </div>
             </div>
-            <div className="flex gap-2">
+          ))}
+        </div>
+      </div>
+
+      {/* Histórico de Participações */}
+      <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-[#1a1a1a]">
+          <h3 className="text-base font-semibold text-white">Histórico de Participações</h3>
+          <div className="flex items-center gap-2">
+            <div className="relative">
               <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                value={modalidade}
+                onChange={(e) => setModalidade(e.target.value)}
+                className="appearance-none pl-3 pr-8 py-2 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white focus:outline-none focus:border-[#E60000]/50 cursor-pointer"
               >
-                <option value="todos">Todos os status</option>
-                <option value="inscrito">Inscrito</option>
-                <option value="em_andamento">Em Andamento</option>
-                <option value="finalizado">Finalizado</option>
-                <option value="classificado">Classificado</option>
-                <option value="eliminado">Eliminado</option>
+                <option value="Todas as modalidades">Todas as modalidades</option>
+                <option value="Basquetebol">Basquetebol</option>
+                <option value="Futebol">Futebol</option>
+                <option value="Voleibol">Voleibol</option>
               </select>
-              <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 transition">
-                <Filter className="w-5 h-5" />
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            </div>
+            <div className="relative">
+              <select
+                value={epoca}
+                onChange={(e) => setEpoca(e.target.value)}
+                className="appearance-none pl-3 pr-8 py-2 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white focus:outline-none focus:border-[#E60000]/50 cursor-pointer"
+              >
+                <option value="2025-2026">2025-2026</option>
+                <option value="2024-2025">2024-2025</option>
+                <option value="2023-2024">2023-2024</option>
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[#1a1a1a]">
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Competição
+                </th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Tipo
+                </th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Período
+                </th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Fase
+                </th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Resultado
+                </th>
+                <th className="text-left px-5 py-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Pontos
+                </th>
+                <th className="px-5 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#1a1a1a]">
+              {historicoFiltrado.map((item) => (
+                <tr key={item.id} className="hover:bg-[#141414] transition">
+                  <td className="px-5 py-4">
+                    <p className="text-sm font-medium text-white">{item.nome}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{item.modalidade}</p>
+                  </td>
+                  <td className="px-5 py-4">
+                    <TipoBadge tipo={item.tipo} />
+                  </td>
+                  <td className="px-5 py-4 text-sm text-gray-400">{item.periodo}</td>
+                  <td className="px-5 py-4 text-sm text-gray-400">{item.fase}</td>
+                  <td className="px-5 py-4 text-sm font-medium text-white">{item.resultado}</td>
+                  <td className="px-5 py-4 text-sm font-semibold text-[#22C55E]">{item.pontos}</td>
+                  <td className="px-5 py-4">
+                    <button
+                      className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1a1a1a] transition"
+                      title="Ver detalhes"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile List */}
+        <div className="lg:hidden divide-y divide-[#1a1a1a]">
+          {historicoFiltrado.map((item) => (
+            <div key={item.id} className="p-5 space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white">{item.nome}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{item.modalidade}</p>
+                </div>
+                <TipoBadge tipo={item.tipo} />
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <p className="text-gray-600 uppercase tracking-wide">Período</p>
+                  <p className="text-gray-400 mt-0.5">{item.periodo}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 uppercase tracking-wide">Fase</p>
+                  <p className="text-gray-400 mt-0.5">{item.fase}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 uppercase tracking-wide">Resultado</p>
+                  <p className="text-white font-medium mt-0.5">{item.resultado}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 uppercase tracking-wide">Pontos</p>
+                  <p className="text-[#22C55E] font-semibold mt-0.5">{item.pontos}</p>
+                </div>
+              </div>
+              <button className="flex items-center gap-2 text-xs text-gray-400 hover:text-white transition">
+                <Eye className="w-3.5 h-3.5" />
+                Ver detalhes
               </button>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSelectedTab(tab.id)}
-              className={`px-4 py-2 font-medium transition-all relative ${selectedTab === tab.id
-                  ? 'text-red-600 dark:text-red-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
-                }`}
-            >
-              {tab.label}
-              <span className="ml-2 px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded-full">
-                {tab.count}
-              </span>
-              {selectedTab === tab.id && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500"
-                />
-              )}
-            </button>
           ))}
         </div>
 
-        {/* Campeonatos List */}
-        <div className="space-y-4">
-          {filteredCampeonatos.map((campeonato, index) => {
-            const statusConfig = getStatusConfig(campeonato.status);
-          // const StatusIcon = statusConfig.icon;
-
-            return (
-              <motion.div
-                key={campeonato.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
-              >
-                <Link to={`/campeonatos/${campeonato.id}`}>
-                  <div className="p-6">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                          <Trophy className="w-6 h-6 text-red-500" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                            {campeonato.nome}
-                          </h3>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {campeonato.federacao}
-                          </p>
-                        </div>
-                      </div>
-                      <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${statusConfig.color}`}>
-                        {/* <StatusIcon className="w-4 h-4" /> */}
-                        <span>{statusConfig.label}</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <Calendar className="w-4 h-4" />
-                        <span className="text-sm">{campeonato.dataInicio} - {campeonato.dataFim}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <MapPin className="w-4 h-4" />
-                        <span className="text-sm">{campeonato.local}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <Users className="w-4 h-4" />
-                        <span className="text-sm">{campeonato.modalidade} • {campeonato.categoria}</span>
-                      </div>
-                    </div>
-
-                    {campeonato.status !== 'finalizado' && (
-                      <div className="flex flex-wrap gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        {campeonato.minhaPosicao && (
-                          <div className="flex items-center gap-2">
-                            <Medal className="w-5 h-5 text-yellow-500" />
-                            <div>
-                              <p className="text-xs text-gray-500">Posição Atual</p>
-                              <p className="font-bold text-lg">{campeonato.minhaPosicao}º lugar</p>
-                            </div>
-                          </div>
-                        )}
-                        {campeonato.pontos && (
-                          <div className="flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-green-500" />
-                            <div>
-                              <p className="text-xs text-gray-500">Pontos</p>
-                              <p className="font-bold text-lg">{campeonato.pontos}</p>
-                            </div>
-                          </div>
-                        )}
-                        {campeonato.proximaPartida && (
-                          <div className="flex-1 flex items-center justify-end gap-2">
-                            <Flame className="w-5 h-5 text-orange-500" />
-                            <div className="text-right">
-                              <p className="text-xs text-gray-500">Próxima Partida</p>
-                              <p className="font-medium text-sm">
-                                {campeonato.proximaPartida.adversario} • {campeonato.proximaPartida.data}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {campeonato.status === 'finalizado' && campeonato.minhaPosicao && (
-                      <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500">Classificação Final</p>
-                            <p className="font-bold text-xl">
-                              {campeonato.minhaPosicao === 1 ? '🏆 CAMPEÃO' : `${campeonato.minhaPosicao}º LUGAR`}
-                            </p>
-                          </div>
-                          <ChevronRight className="w-5 h-5 text-gray-400" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {filteredCampeonatos.length === 0 && (
-          <div className="text-center py-12">
-            <Trophy className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Nenhum campeonato encontrado</h3>
-            <p className="text-gray-500 dark:text-gray-400">Você ainda não está inscrito em nenhum campeonato</p>
-            <Link
-              to="/campeonatos"
-              className="inline-block mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            >
-              Explorar Campeonatos
-            </Link>
+        {historicoFiltrado.length === 0 && (
+          <div className="px-5 py-12 text-center">
+            <Trophy className="w-12 h-12 mx-auto text-gray-600 mb-3" />
+            <p className="text-sm text-gray-500">Nenhuma participação encontrada para os filtros seleccionados.</p>
           </div>
         )}
       </div>

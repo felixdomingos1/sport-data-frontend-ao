@@ -17,10 +17,15 @@ import Eventos from './presentation/pages/eventos/evento';
 import DashboardLayout from './presentation/components/layout/dashboard-layout';
 import Dashboard from './presentation/pages/dashboard/dashboard';
 import Perfil from './presentation/pages/perfil';
+import Documentos from './presentation/pages/documentos';
 import MeusCampeonatos from './presentation/pages/meus-campeonatos';
 import Notificacoes from './presentation/pages/notificacoes';
+import Pagamentos from './presentation/pages/pagamentos';
+import RankingAtleta from './presentation/pages/ranking-atleta';
 import Rankings from './presentation/pages/rankings';
 import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe';
+import SportLoadingScreen from './presentation/components/ui/sport-loading-screen';
+import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
 
 function App() {
   const { loadUser, isLoading } = useAuthStore();
@@ -30,18 +35,12 @@ function App() {
   }, [loadUser]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 to-red-900">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white text-lg">Carregando Sport Data Angola...</p>
-        </div>
-      </div>
-    );
+    return <SportLoadingScreen message="A iniciar Sport Data Angola..." />;
   }
 
   return (
     <Router>
+      <GlobalLoadingOverlay />
       <Toaster
         position="top-right"
         toastOptions={{
@@ -88,6 +87,9 @@ function App() {
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/meus-campeonatos" element={<MeusCampeonatos />} />
               <Route path="/notificacoes" element={<Notificacoes />} />
+              <Route path="/documentos" element={<Documentos />} />
+              <Route path="/pagamentos" element={<Pagamentos />} />
+              <Route path="/ranking-atleta" element={<RankingAtleta />} />
             </Route>
           </Route>
 

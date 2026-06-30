@@ -8,6 +8,7 @@ import {
   FileText, Activity, ChevronRight, AlertCircle
 } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const FederacaoDetalhe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,14 +23,7 @@ const FederacaoDetalhe: React.FC = () => {
   }, [id, fetchFederacaoById]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/60">Carregando federação...</p>
-        </div>
-      </div>
-    );
+    return <SportLoadingScreen message="A carregar federação..." />;
   }
 
   if (error || !federacaoAtual) {

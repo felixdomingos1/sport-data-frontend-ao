@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useClubeStore } from '../../../store/clube.store';
 import { useFederacaoStore } from '../../../store/federacao.store';
+import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const Clubes: React.FC = () => {
   const { clubes, fetchAll, create, isLoading } = useClubeStore();
@@ -61,7 +62,7 @@ const Clubes: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">Carregando...</div>
+        <SportLoadingScreen message="A carregar clubes..." fullscreen={false} size="md" />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {clubes.map((clube) => (

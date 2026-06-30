@@ -327,8 +327,8 @@ const LiveEvents: React.FC = () => {
                       <div className="absolute top-4 left-4 flex items-center gap-2">
                         <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/50 backdrop-blur-md">
                           <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                            <span className="relative h-2 w-2 rounded-full bg-red-500"></span>
+                            <span className="animate-ping absolute h-full w-full rounded-full bg-brand opacity-75"></span>
+                            <span className="relative h-2 w-2 rounded-full bg-brand"></span>
                           </span>
                           <span className="text-xs font-bold text-white">LIVE</span>
                         </div>
@@ -451,7 +451,7 @@ const LiveEvents: React.FC = () => {
 
                   {/* BORDA INDICADORA DE STATUS AO VIVO */}
                   {isLive && (
-                    <div className="absolute inset-0 pointer-events-none rounded-2xl ring-2 ring-red-500/50 animate-pulse" />
+                    <div className="absolute inset-0 pointer-events-none rounded-2xl ring-2 ring-brand/50 animate-pulse" />
                   )}
                 </div>
               </motion.div>

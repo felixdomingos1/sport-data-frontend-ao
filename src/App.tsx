@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
@@ -28,13 +28,14 @@ import SportLoadingScreen from './presentation/components/ui/sport-loading-scree
 import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
 
 function App() {
-  const { loadUser, isLoading } = useAuthStore();
+  const { loadUser } = useAuthStore();
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
 
   useEffect(() => {
-    loadUser();
+    loadUser().finally(() => setIsBootstrapping(false));
   }, [loadUser]);
 
-  if (isLoading) {
+  if (isBootstrapping) {
     return <SportLoadingScreen message="A iniciar Sport Data Angola..." />;
   }
 

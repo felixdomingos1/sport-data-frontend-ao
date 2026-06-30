@@ -31,7 +31,7 @@ const DashboardActivities: React.FC<DashboardActivitiesProps> = ({ activities })
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700"
     >
       <div className="p-5 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between">

@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell, Search, Menu } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../store/auth.store';
+import { useAtletaMeStore } from '@/store/atleta-me.store';
 
 interface DashboardHeaderProps {
   setIsMobileSidebarOpen: (value: boolean) => void;
@@ -40,9 +41,9 @@ const PAGE_HEADERS: Record<string, { title: string; subtitle: string }> = {
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setIsMobileSidebarOpen }) => {
   const { user } = useAuthStore();
+  const { notificacoesNaoLidas } = useAtletaMeStore();
   const location = useLocation();
   const userName = user?.nome?.split(' ')[0] || 'Atleta';
-  const notificacoesNaoLidas = 3;
 
   const pageHeader = PAGE_HEADERS[location.pathname];
   const isDashboard = location.pathname === '/dashboard';
@@ -52,11 +53,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setIsMobileSidebarOpe
   const displayName = user?.nome || 'João Mateus';
   const title = isDashboard ? `Bem-vindo, ${userName}` : pageHeader?.title || 'Sport Data Angola';
   const subtitle = isCompeticoes
-    ? `Histórico e próximas competições — ${displayName}`
+    ? `Histórico e próximas competições- ${displayName}`
     : isNotificacoes
-      ? `Centro de notificações — ${displayName}`
+      ? `Centro de notificações- ${displayName}`
       : isDocumentos
-        ? `Gerencie e envie os seus documentos — ${displayName}`
+        ? `Gerencie e envie os seus documentos- ${displayName}`
         : pageHeader?.subtitle || '';
 
   return (

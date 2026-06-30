@@ -4,16 +4,25 @@ import DashboardSidebar from '../dashboard/dashboard-sidebar';
 import DashboardHeader from '../dashboard/dashboard-header';
 import { useRouteLoading } from '@/presentation/hooks/use-route-loading';
 import { useLoadingStore } from '@/store/loading.store';
+import { useAtletaMeStore } from '@/store/atleta-me.store';
+import { useAuthStore } from '@/store/auth.store';
 
 const DashboardLayout: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { hide } = useLoadingStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { fetchDashboard, fetchNotificacoesCount, fetchMe } = useAtletaMeStore();
   useRouteLoading('A preparar a sua área...');
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
+    fetchMe();
+    fetchDashboard();
+    fetchNotificacoesCount();
     const timer = setTimeout(hide, 700);
     return () => clearTimeout(timer);
-  }, [hide]);
+  }, [isAuthenticated, fetchMe, fetchDashboard, fetchNotificacoesCount, hide]);
 
   return (
     <div className="dark min-h-screen bg-black">

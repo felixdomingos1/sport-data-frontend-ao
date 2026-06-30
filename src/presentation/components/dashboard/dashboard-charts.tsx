@@ -27,7 +27,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+        className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
       >
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
@@ -40,7 +40,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
                 key={period}
                 onClick={() => setSelectedPeriod(period)}
                 className={`px-3 py-1 text-sm rounded-lg transition-colors ${selectedPeriod === period
-                    ? 'bg-red-500 text-white'
+                    ? 'bg-brand text-white'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
               >
@@ -96,7 +96,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
+        className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
       >
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Distribuição por Modalidade</h3>
         <ResponsiveContainer width="100%" height={280}>

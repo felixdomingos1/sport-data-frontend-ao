@@ -25,7 +25,7 @@ export const DashboardWelcome: React.FC<WelcomeHeaderProps> = ({ userName, userR
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-linear-to-r from-red-600 to-red-700 dark:from-red-800 dark:to-red-900 rounded-2xl shadow-lg p-6 mb-8"
+      className="bg-linear-to-r from-brand to-brand-hover dark:from-brand-dark dark:to-brand rounded-2xl shadow-lg p-6 mb-8"
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-3">

@@ -47,7 +47,7 @@ const steps = [
 
 const inputClass = (hasError: boolean) =>
   `w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition ${
-    hasError ? 'border-red-500' : 'border-[#2a2a2a]'
+    hasError ? 'border-brand' : 'border-[#2a2a2a]'
   }`;
 
 const Register: React.FC = () => {
@@ -177,7 +177,7 @@ const Register: React.FC = () => {
 
   const FieldError = ({ field }: { field: string }) =>
     errors[field] && touched[field] ? (
-      <p className="mt-1.5 text-sm text-red-400 flex items-center gap-1">
+      <p className="mt-1.5 text-sm text-brand-light flex items-center gap-1">
         <AlertCircle className="w-3.5 h-3.5" />
         {errors[field]}
       </p>
@@ -185,7 +185,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-[#0f0f0f]">
-      {/* Left — Stepper */}
+      {/* Left- Stepper */}
       <div className="hidden lg:flex lg:w-[420px] xl:w-[480px] flex-col justify-between border-r border-[#1a1a1a] p-10 xl:p-14 shrink-0">
         <div>
           <div className="flex items-center gap-3 mb-12">
@@ -245,7 +245,7 @@ const Register: React.FC = () => {
         </p>
       </div>
 
-      {/* Right — Form */}
+      {/* Right- Form */}
       <div className="flex-1 flex flex-col min-h-screen overflow-y-auto">
         <div className="flex-1 flex items-start lg:items-center justify-center px-6 py-10 sm:px-10 lg:px-16">
           <div className="w-full max-w-2xl">
@@ -286,7 +286,7 @@ const Register: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Step 1 — Dados pessoais */}
+              {/* Step 1- Dados pessoais */}
               {currentStep === 1 && (
                 <>
                   <div>
@@ -444,7 +444,7 @@ const Register: React.FC = () => {
                 </>
               )}
 
-              {/* Step 2 — Credenciais */}
+              {/* Step 2- Credenciais */}
               {currentStep === 2 && (
                 <>
                   <div>
@@ -517,7 +517,7 @@ const Register: React.FC = () => {
                 </>
               )}
 
-              {/* Step 3 — Filiação */}
+              {/* Step 3- Filiação */}
               {currentStep === 3 && (
                 <>
                   <div>
@@ -558,7 +558,7 @@ const Register: React.FC = () => {
                 </>
               )}
 
-              {/* Step 4 — Documentos */}
+              {/* Step 4- Documentos */}
               {currentStep === 4 && (
                 <div className="space-y-4">
                   <div className="border border-dashed border-[#2a2a2a] rounded-2xl p-6 hover:border-[#E60000]/40 transition">
@@ -568,7 +568,7 @@ const Register: React.FC = () => {
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-white">Bilhete de Identidade</p>
-                        <p className="text-xs text-gray-500 mt-0.5">PDF ou imagem — máx. 5 MB</p>
+                        <p className="text-xs text-gray-500 mt-0.5">PDF ou imagem- máx. 5 MB</p>
                         <label className="mt-3 inline-flex items-center gap-2 px-4 py-2 border border-[#E60000] text-[#E60000] rounded-xl text-xs font-medium hover:bg-[#E60000]/10 transition cursor-pointer">
                           <Upload className="w-3.5 h-3.5" />
                           Seleccionar ficheiro
@@ -584,7 +584,7 @@ const Register: React.FC = () => {
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium text-white">Foto 3x4 com fundo branco</p>
-                        <p className="text-xs text-gray-500 mt-0.5">JPG ou PNG — máx. 2 MB</p>
+                        <p className="text-xs text-gray-500 mt-0.5">JPG ou PNG- máx. 2 MB</p>
                         <label className="mt-3 inline-flex items-center gap-2 px-4 py-2 border border-[#E60000] text-[#E60000] rounded-xl text-xs font-medium hover:bg-[#E60000]/10 transition cursor-pointer">
                           <Upload className="w-3.5 h-3.5" />
                           Seleccionar ficheiro

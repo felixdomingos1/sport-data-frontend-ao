@@ -14,19 +14,13 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
+import { useAtletaMeStore } from '@/store/atleta-me.store';
+import { getInscricaoAtiva, getInitials } from '@/presentation/utils/atleta.utils';
 import clsx from 'clsx';
 
 interface DashboardSidebarProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-  }
-  return parts[0]?.slice(0, 2).toUpperCase() || 'AT';
 }
 
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
@@ -35,6 +29,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 }) => {
   const location = useLocation();
   const { user, logout } = useAuthStore();
+  const { profile, dashboard } = useAtletaMeStore();
 
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -46,8 +41,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
     { label: 'Notificações', icon: Bell, path: '/notificacoes' },
   ];
 
-  const athleteId = 'ANG-2024-00482';
-  const displayName = user?.nome || 'João Mateus';
+  const inscricao = getInscricaoAtiva(profile?.inscricoes ?? dashboard?.ultimasInscricoes);
+  const athleteId = inscricao?.numeroRegistro ?? '—';
+  const displayName = profile?.nomeCompleto || user?.nome || 'Atleta';
   const initials = getInitials(displayName);
 
   return (

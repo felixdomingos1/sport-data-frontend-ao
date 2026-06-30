@@ -30,9 +30,19 @@ const Login: React.FC = () => {
     password: false,
   });
 
-  const { login, isLoading } = useAuthStore();
+  const { login, isLoading, isAuthenticated } = useAuthStore();
   const { show: showLoading, hide: hideLoading } = useLoadingStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    useAuthStore.getState().clearSession();
+  }, []);
 
   const validateEmail = (value: string) => {
     if (!value.trim()) return 'E-mail ou número de atleta é obrigatório';
@@ -94,13 +104,30 @@ const Login: React.FC = () => {
       }
       toast.success('Login realizado com sucesso!');
       showLoading('Bem-vindo! A preparar o painel...');
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (error: unknown) {
       hideLoading();
-      const message =
-        error && typeof error === 'object' && 'response' in error
-          ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
-          : undefined;
+      let message: string | undefined;
+
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as {
+          response?: {
+            status?: number;
+            data?: { message?: string; error?: { message?: string } };
+          };
+        };
+        const status = axiosError.response?.status;
+        const data = axiosError.response?.data;
+
+        if (status === 429) {
+          message = 'Demasiadas tentativas. Aguarde alguns minutos e tente novamente.';
+        } else {
+          message = data?.error?.message ?? data?.message;
+        }
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+
       toast.error(message || 'Erro ao fazer login');
     }
   };
@@ -111,7 +138,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left — Branding */}
+      {/* Left- Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -157,7 +184,7 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Right — Login Form */}
+      {/* Right- Login Form */}
       <div className="flex-1 flex items-center justify-center bg-[#0f0f0f] px-6 py-12 sm:px-10">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
@@ -191,13 +218,13 @@ const Login: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => handleBlur('email')}
                   className={`w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition ${
-                    errors.email && touched.email ? 'border-red-500' : 'border-[#2a2a2a]'
+                    errors.email && touched.email ? 'border-brand' : 'border-[#2a2a2a]'
                   }`}
                   placeholder="joao.mateus@email.com"
                 />
               </div>
               {errors.email && touched.email && (
-                <p className="mt-1.5 text-sm text-red-400 flex items-center gap-1">
+                <p className="mt-1.5 text-sm text-brand-light flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {errors.email}
                 </p>
@@ -216,7 +243,7 @@ const Login: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => handleBlur('password')}
                   className={`w-full pl-10 pr-12 py-3 bg-[#1a1a1a] border rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition ${
-                    errors.password && touched.password ? 'border-red-500' : 'border-[#2a2a2a]'
+                    errors.password && touched.password ? 'border-brand' : 'border-[#2a2a2a]'
                   }`}
                   placeholder="••••••••"
                 />
@@ -229,7 +256,7 @@ const Login: React.FC = () => {
                 </button>
               </div>
               {errors.password && touched.password && (
-                <p className="mt-1.5 text-sm text-red-400 flex items-center gap-1">
+                <p className="mt-1.5 text-sm text-brand-light flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {errors.password}
                 </p>

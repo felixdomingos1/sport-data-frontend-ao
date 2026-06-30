@@ -3,8 +3,21 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-red-600: #dc2626;
-  --color-red-700: #b91c1c;
+  /* Brand — Sport Data Angola */
+  --color-brand: #E60000;
+  --color-brand-hover: #cc0000;
+  --color-brand-light: #ff3333;
+  --color-brand-dark: #990000;
+
+  /* Red scale alinhada à marca */
+  --color-red-100: #E600001a;
+  --color-red-400: #ff6666;
+  --color-red-500: #E60000;
+  --color-red-600: #E60000;
+  --color-red-700: #cc0000;
+  --color-red-800: #990000;
+  --color-red-900: #660000;
+
   --color-yellow-500: #eab308;
   --color-yellow-600: #ca8a04;
   --color-gray-50: #f9fafb;
@@ -47,7 +60,7 @@
 }
 
 .swiper-pagination-bullet-active {
-  @apply bg-red-600 opacity-100;
+  @apply bg-brand opacity-100;
 }
 
 /* Line clamp utility */
@@ -89,7 +102,7 @@
   background: linear-gradient(to bottom,
       #000000 0%,
       #fbbf24 50%,
-      #dc2626 100%);
+      #E60000 100%);
   border-radius: 9999px;
 }
 

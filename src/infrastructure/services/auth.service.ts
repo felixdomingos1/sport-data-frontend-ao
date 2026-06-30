@@ -1,14 +1,25 @@
 import type { AuthUser, LoginCredentials, RegisterData } from '../../core/entities/auth.entity';
-import type { LoginApiResponse, LoginResponse, RefreshTokenResponse } from '../../core/types/api.types';
+import type { LoginResponse, RefreshTokenResponse } from '../../core/types/api.types';
 import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
 
+interface LoginPayload {
+  user: AuthUser;
+  token: string;
+  refreshToken: string;
+}
+
 class AuthService {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginApiResponse>(
+    const response = await apiClient.post<LoginPayload>(
       API_ENDPOINTS.AUTH.LOGIN,
       credentials
     );
+
+    if (!response?.token || !response?.user) {
+      throw new Error('Resposta de login inválida');
+    }
+
     return {
       user: response.user,
       tokens: {

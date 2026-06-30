@@ -22,7 +22,7 @@ const AngolaScrollBar: React.FC = () => {
         }}
       />
       <div
-        className="bg-red-600 w-full transition-all duration-150"
+        className="bg-brand w-full transition-all duration-150"
         style={{
           height:
             progress > 66

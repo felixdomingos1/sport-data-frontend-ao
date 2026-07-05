@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import DashboardSidebar from '../dashboard/dashboard-sidebar';
 import DashboardHeader from '../dashboard/dashboard-header';
+import { CommandPalette } from '../ui/command-palette';
 import { useRouteLoading } from '@/presentation/hooks/use-route-loading';
 import { useLoadingStore } from '@/store/loading.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import { useAuthStore } from '@/store/auth.store';
+import { useTheme } from '../ui/theme-provider';
 
 const DashboardLayout: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { hide } = useLoadingStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { fetchDashboard, fetchNotificacoesCount, fetchMe } = useAtletaMeStore();
+  const { resolved } = useTheme();
   useRouteLoading('A preparar a sua área...');
 
   useEffect(() => {
@@ -25,12 +28,13 @@ const DashboardLayout: React.FC = () => {
   }, [isAuthenticated, fetchMe, fetchDashboard, fetchNotificacoesCount, hide]);
 
   return (
-    <div className="dark min-h-screen bg-black">
+    <div className={`min-h-screen ${resolved === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>
       <DashboardSidebar
         isMobileMenuOpen={isMobileSidebarOpen}
         setIsMobileMenuOpen={setIsMobileSidebarOpen}
       />
 
+      <CommandPalette />
       <div className="md:ml-64 transition-all duration-300">
         <DashboardHeader setIsMobileSidebarOpen={setIsMobileSidebarOpen} />
 

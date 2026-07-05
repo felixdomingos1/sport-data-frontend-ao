@@ -77,6 +77,7 @@ const Perfil: React.FC = () => {
   const inscricao = getInscricaoAtiva(profile?.inscricoes);
   const displayName = profile?.nomeCompleto || user?.nome || 'Atleta';
   const athleteId = inscricao?.numeroRegistro ?? '—';
+  const avatarUrl = profile?.usuario?.perfis?.[0]?.avatar ?? profile?.imagemUrl;
 
   const handleSave = async () => {
     try {
@@ -107,31 +108,31 @@ const Perfil: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-1">
-        <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] p-6 flex flex-col items-center">
+        <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-6 flex flex-col items-center">
           <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#E60000] to-[#990000] flex items-center justify-center ring-4 ring-[#E60000]/20 mb-4 overflow-hidden">
-            {profile?.imagemUrl ? (
-              <img src={profile.imagemUrl} alt={displayName} className="w-full h-full object-cover" />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
             ) : (
               <span className="text-white text-3xl font-bold">{getInitials(displayName)}</span>
             )}
           </div>
 
-          <h2 className="text-lg font-bold text-white text-center">{displayName}</h2>
-          <p className="text-sm text-gray-500 mt-0.5">{athleteId}</p>
+          <h2 className="text-lg font-bold text-[var(--text-primary)] text-center">{displayName}</h2>
+          <p className="text-sm text-[var(--text-muted)] mt-0.5">{athleteId}</p>
 
           <span className="mt-3 text-[10px] font-bold px-3 py-1 rounded-full bg-green-500/10 text-[#22C55E] border border-green-500/20 uppercase tracking-wide">
             {getStatusInscricaoLabel(inscricao?.status)}
           </span>
 
-          <div className="w-full mt-6 pt-6 border-t border-[#1a1a1a] space-y-4">
+          <div className="w-full mt-6 pt-6 border-t border-[var(--card-border)] space-y-4">
             {perfilDetalhes.map((item) => {
               const Icon = item.icon;
               return (
                 <div key={item.label} className="flex items-start gap-3">
-                  <Icon className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+                  <Icon className="w-4 h-4 text-[var(--text-muted)] mt-0.5 shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-[11px] text-gray-500 uppercase tracking-wide">{item.label}</p>
-                    <p className="text-sm text-white mt-0.5">{item.value}</p>
+                    <p className="text-[11px] text-[var(--text-muted)] uppercase tracking-wide">{item.label}</p>
+                    <p className="text-sm text-[var(--text-primary)] mt-0.5">{item.value}</p>
                   </div>
                 </div>
               );
@@ -141,9 +142,9 @@ const Perfil: React.FC = () => {
       </div>
 
       <div className="lg:col-span-2 space-y-6">
-        <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1a1a1a]">
-            <h3 className="text-base font-semibold text-white">Dados Pessoais</h3>
+        <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--card-border)]">
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">Dados Pessoais</h3>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="flex items-center gap-2 px-4 py-2 border border-[#E60000] text-[#E60000] rounded-xl text-sm font-medium hover:bg-[#E60000]/10 transition"
@@ -164,7 +165,7 @@ const Perfil: React.FC = () => {
               { label: 'E-mail', value: profile?.usuario?.email ?? user?.email ?? '—', editable: false },
             ].map((field) => (
               <div key={field.label}>
-                <label className="block text-[11px] text-gray-500 uppercase tracking-wide mb-1.5">
+                <label className="block text-[11px] text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
                   {field.label}
                 </label>
                 {isEditing && field.editable && field.key ? (
@@ -172,7 +173,7 @@ const Perfil: React.FC = () => {
                     <select
                       value={form.genero}
                       onChange={(e) => setForm((p) => ({ ...p, genero: e.target.value as 'M' | 'F' }))}
-                      className="w-full px-3 py-2.5 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white focus:outline-none focus:border-[#E60000]/50"
+                      className="w-full px-3 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#E60000]/50"
                     >
                       <option value="M">Masculino</option>
                       <option value="F">Feminino</option>
@@ -182,11 +183,11 @@ const Perfil: React.FC = () => {
                       type={field.type ?? 'text'}
                       value={form[field.key]}
                       onChange={(e) => setForm((p) => ({ ...p, [field.key!]: e.target.value }))}
-                      className="w-full px-3 py-2.5 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white focus:outline-none focus:border-[#E60000]/50 transition"
+                      className="w-full px-3 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#E60000]/50 transition"
                     />
                   )
                 ) : (
-                  <div className="px-3 py-2.5 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white">
+                  <div className="px-3 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--text-primary)]">
                     {field.key === 'genero'
                       ? getGeneroLabel(form.genero)
                       : field.key === 'dataNascimento'
@@ -211,7 +212,7 @@ const Perfil: React.FC = () => {
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-5 py-2.5 border border-[#3a3a3a] text-gray-400 hover:text-white text-sm font-medium rounded-xl transition"
+                className="px-5 py-2.5 border border-[var(--hover-border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm font-medium rounded-xl transition"
               >
                 Cancelar
               </button>
@@ -219,9 +220,9 @@ const Perfil: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#1a1a1a]">
-            <h3 className="text-base font-semibold text-white">Documentos</h3>
+        <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--card-border)]">
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">Documentos</h3>
             <Link
               to="/documentos"
               className="flex items-center gap-2 px-4 py-2 bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl text-sm font-medium transition"
@@ -231,18 +232,18 @@ const Perfil: React.FC = () => {
             </Link>
           </div>
 
-          <div className="divide-y divide-[#1a1a1a]">
+          <div className="divide-y divide-[var(--card-border)]">
             {documentos.length === 0 ? (
-              <p className="px-5 py-8 text-sm text-gray-500 text-center">Nenhum documento enviado.</p>
+              <p className="px-5 py-8 text-sm text-[var(--text-muted)] text-center">Nenhum documento enviado.</p>
             ) : (
               documentos.map((doc) => (
-                <div key={doc.id} className="flex items-center gap-4 px-5 py-4 hover:bg-[#141414] transition">
+                <div key={doc.id} className="flex items-center gap-4 px-5 py-4 hover:bg-[var(--hover-bg)] transition">
                   <div className="w-10 h-10 bg-[#2a2a2a] rounded-xl flex items-center justify-center shrink-0">
-                    <FileText className="w-4 h-4 text-gray-400" />
+                    <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white">{getDocumentoLabel(doc)}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Enviado em {formatDatePt(doc.createdAt)}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{getDocumentoLabel(doc)}</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-0.5">Enviado em {formatDatePt(doc.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <StatusBadge status={doc.status} />
@@ -251,7 +252,7 @@ const Perfil: React.FC = () => {
                         href={doc.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition"
+                        className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[#2a2a2a] transition"
                       >
                         <Download className="w-4 h-4" />
                       </a>

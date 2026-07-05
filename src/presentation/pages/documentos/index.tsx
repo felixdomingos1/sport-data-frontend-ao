@@ -104,17 +104,17 @@ const Documentos: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
-          <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mb-3">Total</p>
-          <p className="text-3xl font-bold text-white">{total}</p>
+        <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
+          <p className="text-[10px] font-semibold text-[var(--text-muted)] tracking-wider uppercase mb-3">Total</p>
+          <p className="text-3xl font-bold text-[var(--text-primary)]">{total}</p>
         </div>
-        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
-          <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mb-3">Aprovados</p>
-          <p className="text-3xl font-bold text-white">{aprovados}</p>
+        <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
+          <p className="text-[10px] font-semibold text-[var(--text-muted)] tracking-wider uppercase mb-3">Aprovados</p>
+          <p className="text-3xl font-bold text-[var(--text-primary)]">{aprovados}</p>
         </div>
-        <div className="bg-[#0f0f0f] rounded-2xl p-5 border border-[#1a1a1a]">
-          <p className="text-[10px] font-semibold text-gray-500 tracking-wider uppercase mb-3">Pendentes</p>
-          <p className="text-3xl font-bold text-white">{pendentes}</p>
+        <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
+          <p className="text-[10px] font-semibold text-[var(--text-muted)] tracking-wider uppercase mb-3">Pendentes</p>
+          <p className="text-3xl font-bold text-[var(--text-primary)]">{pendentes}</p>
         </div>
         <div className="bg-[#E60000] rounded-2xl p-5 border border-[#E60000]">
           <p className="text-[10px] font-semibold text-white/80 tracking-wider uppercase mb-3">Perfil Completo</p>
@@ -122,16 +122,16 @@ const Documentos: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-[#0f0f0f] rounded-2xl border border-dashed border-[#2a2a2a] p-8 text-center">
+      <div className="bg-[var(--card-bg)] rounded-2xl border border-dashed border-[var(--card-border)] p-8 text-center">
         <Upload className="w-6 h-6 text-[#E60000] mx-auto mb-4" />
-        <h3 className="text-base font-semibold text-white mb-1">Enviar novo documento</h3>
-        <p className="text-sm text-gray-500 mb-5">PDF, JPG ou PNG (máx. 5 MB)</p>
+        <h3 className="text-base font-semibold text-[var(--text-primary)] mb-1">Enviar novo documento</h3>
+        <p className="text-sm text-[var(--text-muted)] mb-5">PDF, JPG ou PNG (máx. 5 MB)</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <div className="relative w-full sm:w-auto">
             <select
               value={tipoUpload}
               onChange={(e) => setTipoUpload(e.target.value as TipoDocumento | '')}
-              className="appearance-none w-full sm:w-64 pl-3 pr-8 py-2.5 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white focus:outline-none focus:border-[#E60000]/50"
+              className="appearance-none w-full sm:w-64 pl-3 pr-8 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[#E60000]/50"
             >
               <option value="">Tipo de documento</option>
               {(Object.keys(TIPO_DOCUMENTO_LABELS) as TipoDocumento[]).map((tipo) => (
@@ -140,7 +140,7 @@ const Documentos: React.FC = () => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
           </div>
           <input
             ref={fileInputRef}
@@ -171,7 +171,7 @@ const Documentos: React.FC = () => {
             className={`px-4 py-2 rounded-full text-sm font-medium transition ${
               filtro === item.id
                 ? 'bg-[#E60000] text-white'
-                : 'bg-[#0f0f0f] text-gray-400 border border-[#1a1a1a] hover:text-white'
+                : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:text-[var(--text-primary)]'
             }`}
           >
             {item.label}
@@ -179,29 +179,29 @@ const Documentos: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#1a1a1a]">
-          <h3 className="text-base font-semibold text-white">Documentos do Atleta</h3>
-          <p className="text-xs text-gray-500 mt-0.5">{inscricao?.federacao?.nome ?? 'Federação'}</p>
+      <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
+        <div className="px-5 py-4 border-b border-[var(--card-border)]">
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">Documentos do Atleta</h3>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">{inscricao?.federacao?.nome ?? 'Federação'}</p>
         </div>
 
-        <div className="divide-y divide-[#1a1a1a]">
+        <div className="divide-y divide-[var(--card-border)]">
           {documentosFiltrados.map((doc) => (
-            <div key={doc.id} className="px-5 py-4 hover:bg-[#141414] transition">
+            <div key={doc.id} className="px-5 py-4 hover:bg-[var(--hover-bg)] transition">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-[#2a2a2a] rounded-xl flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-gray-400" />
+                  <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                    <p className="text-sm font-medium text-white">{getDocumentoLabel(doc)}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{getDocumentoLabel(doc)}</p>
                     {OBRIGATORIOS.includes(doc.tipo) && (
                       <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#E60000]/10 text-[#E60000] uppercase">
                         Obrigatório
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500">Enviado em {formatDatePt(doc.createdAt)}</p>
+                  <p className="text-xs text-[var(--text-muted)]">Enviado em {formatDatePt(doc.createdAt)}</p>
                   {doc.motivoRejeicao && (
                     <p className="text-xs text-[#E60000] mt-1.5 flex items-start gap-1.5">
                       <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -212,7 +212,7 @@ const Documentos: React.FC = () => {
                 <div className="flex items-center gap-3 shrink-0">
                   <StatusBadge status={doc.status} />
                   {doc.url && (
-                    <a href={doc.url} target="_blank" rel="noreferrer" className="p-2 rounded-lg text-gray-400 hover:text-white">
+                    <a href={doc.url} target="_blank" rel="noreferrer" className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                       <Download className="w-4 h-4" />
                     </a>
                   )}
@@ -223,13 +223,13 @@ const Documentos: React.FC = () => {
         </div>
 
         {documentosFiltrados.length === 0 && (
-          <p className="px-5 py-16 text-sm text-gray-500 text-center">Nenhum documento encontrado.</p>
+          <p className="px-5 py-16 text-sm text-[var(--text-muted)] text-center">Nenhum documento encontrado.</p>
         )}
       </div>
 
-      <div className="flex items-start gap-3 px-5 py-4 bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a]">
-        <AlertCircle className="w-4 h-4 text-gray-500 shrink-0 mt-0.5" />
-        <p className="text-xs text-gray-500">
+      <div className="flex items-start gap-3 px-5 py-4 bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)]">
+        <AlertCircle className="w-4 h-4 text-[var(--text-muted)] shrink-0 mt-0.5" />
+        <p className="text-xs text-[var(--text-muted)]">
           Documentos obrigatórios aprovados são necessários para participar em competições oficiais.
         </p>
       </div>

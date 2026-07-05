@@ -62,7 +62,9 @@ export interface Atleta {
   dataNascimento: string;
   genero: 'M' | 'F';
   nacionalidade: string;
+  imagemUrl?: string;
   usuario?: User;
+  inscricoes?: InscricaoAtleta[];
 }
 
 
@@ -472,6 +474,29 @@ export interface Aposta {
   updatedAt: string;
   usuario?: User;
   partida?: Partida;
+}
+
+export interface Evento {
+  id: string;
+  titulo: string;
+  descricao?: string;
+  tipo: 'CAMPEONATO' | 'TORNEIO' | 'EXIBICAO' | 'TREINO' | 'PALESTRA' | 'WORKSHOP' | 'OUTRO';
+  modalidade?: string;
+  dataInicio: string;
+  dataFim?: string;
+  local?: string;
+  endereco?: string;
+  imagemUrl?: string;
+  bannerUrl?: string;
+  status: 'RASCUNHO' | 'PUBLICADO' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO';
+  federacaoId?: string;
+  academiaId?: string;
+  associacaoId?: string;
+  createdAt: string;
+  updatedAt: string;
+  federacao?: Federacao;
+  academia?: any;
+  associacao?: any;
 }
 
 export interface Notificacao {

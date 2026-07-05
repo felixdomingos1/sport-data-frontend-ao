@@ -11,6 +11,7 @@ import {
   Shield,
   Menu,
   X,
+  Globe,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
@@ -57,7 +58,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
       <aside
         className={clsx(
-          'fixed top-0 left-0 z-50 h-screen w-64 bg-[#0f0f0f] border-r border-[#1a1a1a] flex flex-col transition-transform duration-300',
+          'fixed top-0 left-0 z-50 h-screen w-64 bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)] flex flex-col transition-transform duration-300',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
@@ -68,15 +69,15 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               <Shield className="w-5 h-5 text-white" fill="white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white tracking-wide leading-tight">
+              <p className="text-sm font-bold text-[var(--text-primary)] tracking-wide leading-tight">
                 SPORT DATA
               </p>
-              <p className="text-[11px] text-gray-500 tracking-widest">ANGOLA</p>
+              <p className="text-[11px] text-[var(--text-muted)] tracking-widest">ANGOLA</p>
             </div>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="md:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#141414] transition"
+            className="md:hidden p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)] transition"
           >
             <X size={18} />
           </button>
@@ -84,7 +85,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
         {/* Nav */}
         <nav className="flex-1 px-3 overflow-y-auto">
-          <p className="px-3 mb-2 text-[10px] font-semibold text-gray-600 tracking-widest uppercase">
+          <p className="px-3 mb-2 text-[10px] font-semibold text-[var(--text-muted)] tracking-widest uppercase">
             Atleta
           </p>
           <ul className="space-y-0.5">
@@ -101,7 +102,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                       'flex items-center gap-3 px-3 py-2.5 text-sm transition-all duration-200',
                       active
                         ? 'bg-[#E60000] text-white rounded-r-xl rounded-l-none font-medium'
-                        : 'text-gray-400 hover:text-white hover:bg-[#141414] rounded-xl'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)] rounded-xl'
                     )}
                   >
                     <Icon size={18} strokeWidth={active ? 2 : 1.5} />
@@ -114,22 +115,35 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         </nav>
 
         {/* Profile footer */}
-        <div className="p-4 border-t border-[#1a1a1a]">
+        <div className="p-4 border-t border-[var(--sidebar-border)]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#E60000] rounded-full flex items-center justify-center shrink-0">
-              <span className="text-white text-xs font-bold">{initials}</span>
+            <div className="w-9 h-9 bg-[#E60000] rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+              {profile?.usuario?.perfis?.[0]?.avatar ?? profile?.imagemUrl ? (
+                <img src={profile!.usuario!.perfis![0]!.avatar ?? profile!.imagemUrl!} alt={displayName} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-white text-xs font-bold">{initials}</span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{displayName}</p>
-              <p className="text-[11px] text-gray-500 truncate">ID: {athleteId}</p>
+              <p className="text-sm font-medium text-[var(--text-primary)] truncate">{displayName}</p>
+              <p className="text-[11px] text-[var(--text-muted)] truncate">ID: {athleteId}</p>
             </div>
-            <button
-              onClick={logout}
-              className="p-1.5 text-gray-500 hover:text-white hover:bg-[#141414] rounded-lg transition shrink-0"
-              title="Terminar sessão"
-            >
-              <LogOut size={16} />
-            </button>
+            <div className="flex items-center gap-1">
+              <Link
+                to="/"
+                className="p-1.5 text-[var(--text-muted)] hover:text-brand hover:bg-[var(--hover-bg)] rounded-lg transition shrink-0"
+                title="Ir para o site"
+              >
+                <Globe size={16} />
+              </Link>
+              <button
+                onClick={logout}
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)] rounded-lg transition shrink-0"
+                title="Terminar sessão"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </aside>

@@ -67,9 +67,9 @@ const Notificacoes: React.FC = () => {
               key={item.id}
               onClick={() => setFiltro(item.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                filtro === item.id
-                  ? 'bg-[#E60000] text-white'
-                  : 'bg-[#0f0f0f] text-gray-400 border border-[#1a1a1a] hover:text-white'
+              filtro === item.id
+                ? 'bg-[#E60000] text-white'
+                : 'bg-[var(--card-bg)] text-[var(--text-secondary)] border border-[var(--card-border)] hover:text-[var(--text-primary)]'
               }`}
             >
               {item.label}
@@ -80,7 +80,7 @@ const Notificacoes: React.FC = () => {
         {notificacoesNaoLidas > 0 && (
           <button
             onClick={marcarTodasLidas}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white transition"
+            className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
           >
             <CheckCheck className="w-4 h-4" />
             Marcar todas como lidas
@@ -88,21 +88,21 @@ const Notificacoes: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a] overflow-hidden">
+      <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
         {notificacoesNaoLidas > 0 && (
-          <div className="flex items-center gap-2 px-5 py-3 border-b border-[#1a1a1a]">
-            <p className="text-sm text-gray-400">{notificacoesNaoLidas} notificações não lidas</p>
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-[var(--card-border)]">
+            <p className="text-sm text-[var(--text-secondary)]">{notificacoesNaoLidas} notificações não lidas</p>
             <span className="w-2 h-2 bg-[#E60000] rounded-full" />
           </div>
         )}
 
-        <div className="divide-y divide-[#1a1a1a]">
+        <div className="divide-y divide-[var(--card-border)]">
           {notificacoesFiltradas.map((notificacao) => {
             const { Icon, bg, color } = getNotificacaoIcon(notificacao.titulo);
             return (
               <div
                 key={notificacao.id}
-                className={`flex items-start gap-4 px-5 py-4 hover:bg-[#141414] ${!notificacao.lida ? '' : 'opacity-80'}`}
+                className={`flex items-start gap-4 px-5 py-4 hover:bg-[var(--hover-bg)] ${!notificacao.lida ? '' : 'opacity-80'}`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
                   <Icon className={`w-5 h-5 ${color}`} />
@@ -110,12 +110,12 @@ const Notificacoes: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h4 className={`text-sm ${!notificacao.lida ? 'font-semibold text-white' : 'text-gray-300'}`}>
+                      <h4 className={`text-sm ${!notificacao.lida ? 'font-semibold text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                         {notificacao.titulo}
                       </h4>
-                      <p className="text-sm text-gray-500 mt-1">{notificacao.mensagem}</p>
+                      <p className="text-sm text-[var(--text-muted)] mt-1">{notificacao.mensagem}</p>
                     </div>
-                    <span className="text-xs text-gray-500 shrink-0">{formatDatePt(notificacao.createdAt)}</span>
+                    <span className="text-xs text-[var(--text-muted)] shrink-0">{formatDatePt(notificacao.createdAt)}</span>
                   </div>
                   {!notificacao.lida && (
                     <button
@@ -133,8 +133,8 @@ const Notificacoes: React.FC = () => {
 
         {notificacoesFiltradas.length === 0 && (
           <div className="px-5 py-16 text-center">
-            <Info className="w-12 h-12 mx-auto text-gray-600 mb-3" />
-            <p className="text-sm text-gray-500">Nenhuma notificação encontrada.</p>
+            <Info className="w-12 h-12 mx-auto text-[var(--text-muted)] mb-3" />
+            <p className="text-sm text-[var(--text-muted)]">Nenhuma notificação encontrada.</p>
           </div>
         )}
       </div>

@@ -87,8 +87,12 @@ const FederacaoDetalhe: React.FC = () => {
 
         <div className="relative z-20 h-full flex flex-col justify-center px-6 lg:px-12 max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-brand to-yellow-500 rounded-2xl flex items-center justify-center shadow-xl">
-              <Shield className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-brand to-yellow-500 rounded-2xl flex items-center justify-center shadow-xl overflow-hidden shrink-0">
+              {federacaoAtual.logo ? (
+                <img src={federacaoAtual.logo} alt={federacaoAtual.nome} className="w-full h-full object-cover" />
+              ) : (
+                <Shield className="w-8 h-8 text-white" />
+              )}
             </div>
             <div>
               <p className="text-brand-light text-sm font-semibold tracking-wider">Federação Oficial</p>
@@ -424,17 +428,22 @@ const FederacaoDetalhe: React.FC = () => {
               {federacaoAtual.atletas && federacaoAtual.atletas.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {federacaoAtual.atletas.map((inscricao) => {
-                    // Tentar buscar o nome do atleta (se disponível)
-                    const atletaNome = 'atleta' in inscricao && inscricao.atleta?.nomeCompleto || 'Atleta';
+                    const atletaData = 'atleta' in inscricao ? (inscricao as any).atleta : null;
+                    const atletaNome = atletaData?.nomeCompleto || 'Atleta';
+                    const atletaImg = atletaData?.imagemUrl;
 
                     return (
                       <Link key={inscricao.id} to={`/atletas/${inscricao.atletaId}`}>
                         <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 hover:bg-white/10 transition-all group">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-brand to-brand-hover rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold text-lg">
-                                {atletaNome.charAt(0).toUpperCase()}
-                              </span>
+                            <div className="w-12 h-12 bg-gradient-to-br from-brand to-brand-hover rounded-full flex items-center justify-center overflow-hidden shrink-0">
+                              {atletaImg ? (
+                                <img src={atletaImg} alt={atletaNome} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-white font-bold text-lg">
+                                  {atletaNome.charAt(0).toUpperCase()}
+                                </span>
+                              )}
                             </div>
                             <div className="flex-1">
                               <h3 className="font-bold group-hover:text-brand-light transition">{atletaNome}</h3>

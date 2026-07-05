@@ -1,203 +1,108 @@
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { Shield, MapPin, Users, Search } from 'lucide-react';
 import { useClubeStore } from '../../../store/clube.store';
-import { useFederacaoStore } from '../../../store/federacao.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const Clubes: React.FC = () => {
-  const { clubes, fetchAll, create, isLoading } = useClubeStore();
-  const { federacoes, fetchAll: fetchFederacoes } = useFederacaoStore();
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    nome: '',
-    slug: '',
-    federacaoId: '',
-    cidade: '',
-    endereco: '',
-    telefone: '',
-    email: '',
-    website: '',
-    anoFundacao: new Date().getFullYear(),
-  });
+  const { clubes, fetchAll, isLoading } = useClubeStore();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetchAll();
-    fetchFederacoes(1, 100);
-  }, []);
+    fetchAll(1, 50);
+  }, [fetchAll]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await create(formData);
-      toast.success('Clube criado com sucesso!');
-      setShowModal(false);
-      setFormData({
-        nome: '',
-        slug: '',
-        federacaoId: '',
-        cidade: '',
-        endereco: '',
-        telefone: '',
-        email: '',
-        website: '',
-        anoFundacao: new Date().getFullYear(),
-      });
-    } catch (error) {
-      console.log(error);
-
-      toast.error('Erro ao criar clube');
-    }
-  };
+  const filtered = search
+    ? clubes.filter(c =>
+        c.nome.toLowerCase().includes(search.toLowerCase()) ||
+        (c.cidade && c.cidade.toLowerCase().includes(search.toLowerCase()))
+      )
+    : clubes;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Clubes</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Novo Clube
-        </button>
+    <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <div className="relative h-[280px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1920&h=400&fit=crop"
+          alt="Hero clubes"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
+        <div className="relative h-full flex flex-col justify-center px-8 max-w-5xl mx-auto">
+          <p className="text-brand text-xs font-bold tracking-[0.2em] uppercase mb-3">
+            Angola · Clubes
+          </p>
+          <h1 className="text-4xl md:text-5xl font-black leading-tight mb-3">
+            Clubes Desportivos
+          </h1>
+          <p className="text-white/60 text-base max-w-lg">
+            Explore os clubes registados nas federações desportivas de Angola.
+          </p>
+        </div>
       </div>
 
-      {isLoading ? (
-        <SportLoadingScreen message="A carregar clubes..." fullscreen={false} size="md" />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {clubes.map((clube) => (
-            <div key={clube.id} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {clube.nome}
-              </h3>
-              <p className="text-gray-600 mb-4">{clube.cidade}</p>
-              <div className="space-y-2 text-sm">
-                <p className="text-gray-600">
-                  <strong>Fundação:</strong> {clube.anoFundacao}
-                </p>
-                <p className="text-gray-600">
-                  <strong>Email:</strong> {clube.email}
-                </p>
-                <p className="text-gray-600">
-                  <strong>Telefone:</strong> {clube.telefone}
-                </p>
-                {clube.website && (
-                  <p className="text-gray-600">
-                    <strong>Website:</strong>{' '}
-                    <a href={clube.website} target="_blank" className="text-blue-500">
-                      {clube.website}
-                    </a>
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="relative max-w-md mb-8">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Pesquisar clube..."
+            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-brand/50 transition text-sm"
+          />
         </div>
-      )}
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Novo Clube</h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Nome</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Slug</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Federação</label>
-                  <select
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.federacaoId}
-                    onChange={(e) => setFormData({ ...formData, federacaoId: e.target.value })}
-                  >
-                    <option value="">Selecione</option>
-                    {federacoes.map((fed) => (
-                      <option key={fed.id} value={fed.id}>
-                        {fed.nome}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Cidade</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.cidade}
-                    onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.telefone}
-                    onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Endereço</label>
-                  <textarea
-                    rows={2}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.endereco}
-                    onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-                >
-                  Criar
-                </button>
-              </div>
-            </form>
+        {isLoading ? (
+          <SportLoadingScreen message="A carregar clubes..." fullscreen={false} size="md" />
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-white/30">
+            <Shield className="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium">Nenhum clube encontrado</p>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filtered.map((clube, index) => (
+              <motion.div
+                key={clube.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03 }}
+                className="bg-white/[0.03] border border-white/10 rounded-xl p-5 hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-brand/20 flex items-center justify-center shrink-0 overflow-hidden">
+                    {clube.logo ? (
+                      <img src={clube.logo} alt={clube.nome} className="w-full h-full object-cover" />
+                    ) : (
+                      <Shield className="w-5 h-5 text-brand" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-sm truncate group-hover:text-brand transition-colors">
+                      {clube.nome}
+                    </h3>
+                    {clube.cidade && (
+                      <p className="text-xs text-white/40 flex items-center gap-1 mt-0.5">
+                        <MapPin className="w-3 h-3" />
+                        {clube.cidade}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-white/30 border-t border-white/5 pt-3">
+                  {clube.anoFundacao && <span>Fundado em {clube.anoFundacao}</span>}
+                  <span className="flex items-center gap-1 ml-auto">
+                    <Users className="w-3 h-3" />
+                    {clube._count?.atletas || 0}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

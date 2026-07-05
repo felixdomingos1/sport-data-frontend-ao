@@ -70,4 +70,8 @@ export const API_ENDPOINTS = {
     SIGNATURE: '/upload/signature',
     SAVE: '/upload/save',
   },
+  EVENTOS: {
+    BASE: '/eventos',
+    BY_ID: (id: string) => `/eventos/${id}`,
+  },
 };

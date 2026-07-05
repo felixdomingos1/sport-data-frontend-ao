@@ -1,166 +1,122 @@
-import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Shield, Mail, Phone, Globe, MapPin, ArrowRight } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
 const Federacoes: React.FC = () => {
-  const { federacoes, fetchAll, create, isLoading } = useFederacaoStore();
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    nome: '',
-    slug: '',
-    descricao: '',
-    email: '',
-    telefone: '',
-    website: '',
-    endereco: '',
-  });
+  const { federacoes, fetchAll, isLoading } = useFederacaoStore();
 
   useEffect(() => {
     fetchAll();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await create(formData);
-      toast.success('Federação criada com sucesso!');
-      setShowModal(false);
-      setFormData({
-        nome: '',
-        slug: '',
-        descricao: '',
-        email: '',
-        telefone: '',
-        website: '',
-        endereco: '',
-      });
-    } catch (error) {
-      console.log(error);
-      toast.error('Erro ao criar federação');
-    }
-  };
+  }, [fetchAll]);
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Federações</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Nova Federação
-        </button>
+    <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <div className="relative h-[320px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1459865264687-287d453a4c7e?w=1920&h=400&fit=crop"
+          alt="Hero"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
+        <div className="relative h-full flex flex-col justify-center px-8 max-w-5xl mx-auto">
+          <p className="text-brand text-xs font-bold tracking-[0.2em] uppercase mb-3">
+            Angola · Gestão Desportiva
+          </p>
+          <h1 className="text-4xl md:text-5xl font-black leading-tight mb-3">
+            Federações
+          </h1>
+          <p className="text-white/60 text-base max-w-lg">
+            Conheça as federações desportivas de Angola e descubra atletas, clubes e competições.
+          </p>
+        </div>
       </div>
 
-      {isLoading ? (
-        <SportLoadingScreen message="A carregar federações..." fullscreen={false} size="md" />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {federacoes.map((federacao) => (
-            <div key={federacao.id} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {federacao.nome}
-              </h3>
-              <p className="text-gray-600 mb-4">{federacao.descricao}</p>
-              <div className="space-y-2 text-sm">
-                <p className="text-gray-600">
-                  <strong>Email:</strong> {federacao.email}
-                </p>
-                <p className="text-gray-600">
-                  <strong>Telefone:</strong> {federacao.telefone}
-                </p>
-                {federacao.website && (
-                  <p className="text-gray-600">
-                    <strong>Website:</strong>{' '}
-                    <a href={federacao.website} target="_blank" className="text-blue-500">
-                      {federacao.website}
-                    </a>
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Nova Federação</h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Nome</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Slug</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.telefone}
-                    onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Descrição</label>
-                  <textarea
-                    rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.descricao}
-                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-                >
-                  Criar
-                </button>
-              </div>
-            </form>
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        {isLoading ? (
+          <SportLoadingScreen message="A carregar federações..." fullscreen={false} size="md" />
+        ) : federacoes.length === 0 ? (
+          <div className="text-center py-20 text-white/30">
+            <Shield className="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium">Nenhuma federação encontrada</p>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {federacoes.map((federacao) => (
+              <Link
+                key={federacao.id}
+                to={`/federacoes/${federacao.id}`}
+                className="group block bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300"
+              >
+                <div className="relative h-48 bg-gradient-to-br from-brand/30 to-brand-dark/30 overflow-hidden">
+                  {federacao.logo ? (
+                    <>
+                      <img
+                        src={federacao.logo}
+                        alt={federacao.nome}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-black/20 to-transparent" />
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Shield className="w-16 h-16 text-white/20" />
+                    </div>
+                  )}
+                  <div className="absolute bottom-4 left-5 right-5">
+                    <h3 className="text-xl font-bold text-white drop-shadow-lg">{federacao.nome}</h3>
+                    {federacao.descricao && (
+                      <p className="text-sm text-white/70 line-clamp-1 mt-0.5 drop-shadow">{federacao.descricao}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-5 space-y-3">
+                  <div className="flex items-center gap-4 text-sm text-white/40">
+                    <span className="flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5" />
+                      {federacao._count?.clubes || 0} clubes
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5" />
+                      {federacao._count?.atletas || 0} atletas
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 text-sm">
+                    {federacao.email && (
+                      <div className="flex items-center gap-2 text-white/40 group-hover:text-white/60 transition-colors">
+                        <Mail className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{federacao.email}</span>
+                      </div>
+                    )}
+                    {federacao.telefone && (
+                      <div className="flex items-center gap-2 text-white/40 group-hover:text-white/60 transition-colors">
+                        <Phone className="w-3.5 h-3.5 shrink-0" />
+                        <span>{federacao.telefone}</span>
+                      </div>
+                    )}
+                    {federacao.website && (
+                      <div className="flex items-center gap-2 text-white/40 group-hover:text-white/60 transition-colors">
+                        <Globe className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{federacao.website}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between">
+                    <span className="text-xs text-brand group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 font-medium">
+                      Explorar <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

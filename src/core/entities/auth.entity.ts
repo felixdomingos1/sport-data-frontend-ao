@@ -8,6 +8,16 @@ export interface RegisterData {
   nome: string;
   password: string;
   telefone: string;
+  nomeCompleto?: string;
+  dataNascimento?: string;
+  genero?: string;
+  numeroBI?: string;
+  provincia?: string;
+  modalidade?: string;
+  federacaoId?: string;
+  clubeId?: string;
+  biUrl?: string;
+  fotoUrl?: string;
 }
 
 export interface AuthTokens {
@@ -19,6 +29,13 @@ export interface AuthUser {
   id: string;
   email: string;
   nome: string;
-  telefone?: string
+  telefone?: string;
   roles: string[];
+  perfis?: Array<{
+    avatar?: string | null;
+    bannerUrl?: string | null;
+    bio?: string | null;
+    cidade?: string | null;
+    pais?: string;
+  }>;
 }

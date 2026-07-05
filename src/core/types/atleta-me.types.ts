@@ -47,6 +47,13 @@ export interface AtletaMe {
     email: string;
     telefone?: string | null;
     status?: string;
+    perfis?: Array<{
+      avatar?: string | null;
+      bannerUrl?: string | null;
+      bio?: string | null;
+      cidade?: string | null;
+      pais?: string;
+    }>;
   };
 }
 

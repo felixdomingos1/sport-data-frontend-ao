@@ -18,6 +18,7 @@ import DashboardLayout from './presentation/components/layout/dashboard-layout';
 import Dashboard from './presentation/pages/dashboard/dashboard';
 import Perfil from './presentation/pages/perfil';
 import Documentos from './presentation/pages/documentos';
+import { ThemeProvider } from './presentation/components/ui/theme-provider';
 import MeusCampeonatos from './presentation/pages/meus-campeonatos';
 import Notificacoes from './presentation/pages/notificacoes';
 import Pagamentos from './presentation/pages/pagamentos';
@@ -40,6 +41,7 @@ function App() {
   }
 
   return (
+    <ThemeProvider>
     <Router>
       <GlobalLoadingOverlay />
       <Toaster
@@ -98,6 +100,7 @@ function App() {
         </Routes>
       </AnimatePresence>
     </Router>
+    </ThemeProvider>
   );
 }
 

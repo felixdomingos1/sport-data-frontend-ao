@@ -1,335 +1,103 @@
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { Users, Medal, Search } from 'lucide-react';
 import { useAtletaStore } from '../../../store/atleta.store';
-import { useClubeStore } from '../../../store/clube.store';
-import { useFederacaoStore } from '../../../store/federacao.store';
-import { usePlanoStore } from '../../../store/plano.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 const Atletas: React.FC = () => {
-  const { atletas, fetchAll, create, isLoading } = useAtletaStore();
-  const { clubes, fetchAll: fetchClubes } = useClubeStore();
-  const { federacoes, fetchAll: fetchFederacoes } = useFederacaoStore();
-  const { planos, fetchAll: fetchPlanos } = usePlanoStore();
-  const [showModal, setShowModal] = useState(false);
-  const [showInscricaoModal, setShowInscricaoModal] = useState(false);
-  const [selectedAtletaId, setSelectedAtletaId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    usuarioId: '',
-    nomeCompleto: '',
-    bi: '',
-    passaporte: '',
-    dataNascimento: '',
-    genero: 'M' as 'M' | 'F',
-    nacionalidade: 'Angola',
-  });
-  const [inscricaoData, setInscricaoData] = useState({
-    federacaoId: '',
-    clubeId: '',
-    planoId: '',
-  });
+  const { atletas, fetchAll, isLoading } = useAtletaStore();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetchAll();
-    fetchClubes(1, 100);
-    fetchFederacoes(1, 100);
-    fetchPlanos(1, 100);
-  }, []);
+    fetchAll(1, 50);
+  }, [fetchAll]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await create(formData);
-      toast.success('Atleta criado com sucesso!');
-      setShowModal(false);
-      setFormData({
-        usuarioId: '',
-        nomeCompleto: '',
-        bi: '',
-        passaporte: '',
-        dataNascimento: '',
-        genero: 'M',
-        nacionalidade: 'Angola',
-      });
-    } catch (error) {
-      console.log(error);
-      toast.error('Erro ao criar atleta');
-    }
-  };
-
-  const handleInscricao = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedAtletaId) return;
-    try {
-      const { createInscricao } = useAtletaStore.getState();
-      await createInscricao({
-        atletaId: selectedAtletaId,
-        ...inscricaoData,
-      });
-      toast.success('Inscrição realizada com sucesso!');
-      setShowInscricaoModal(false);
-      setSelectedAtletaId(null);
-      setInscricaoData({
-        federacaoId: '',
-        clubeId: '',
-        planoId: '',
-      });
-    } catch (error) {
-      console.log(error);
-      toast.error('Erro ao realizar inscrição');
-    }
-  };
+  const filtered = search
+    ? atletas.filter(a =>
+        a.nomeCompleto.toLowerCase().includes(search.toLowerCase()) ||
+        a.bi.toLowerCase().includes(search.toLowerCase())
+      )
+    : atletas;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Atletas</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Novo Atleta
-        </button>
+    <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <div className="relative h-[280px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1526676037777-05a232554f77?w=1920&h=400&fit=crop"
+          alt="Hero atletas"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
+        <div className="relative h-full flex flex-col justify-center px-8 max-w-5xl mx-auto">
+          <p className="text-brand text-xs font-bold tracking-[0.2em] uppercase mb-3">
+            Angola · Atletas
+          </p>
+          <h1 className="text-4xl md:text-5xl font-black leading-tight mb-3">
+            Atletas Registados
+          </h1>
+          <p className="text-white/60 text-base max-w-lg">
+            Conheça os atletas registados na plataforma nacional de gestão desportiva.
+          </p>
+        </div>
       </div>
 
-      {isLoading ? (
-        <SportLoadingScreen message="A carregar atletas..." fullscreen={false} size="md" />
-      ) : (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nome
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  BI
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Data Nascimento
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Gênero
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nacionalidade
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {atletas.map((atleta) => (
-                <tr key={atleta.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {atleta.nomeCompleto}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{atleta.bi}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {new Date(atleta.dataNascimento).toLocaleDateString('pt-PT')}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {atleta.genero === 'M' ? 'Masculino' : 'Feminino'}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{atleta.nacionalidade}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => {
-                        setSelectedAtletaId(atleta.id);
-                        setShowInscricaoModal(true);
-                      }}
-                      className="text-green-600 hover:text-green-900 mr-3"
-                    >
-                      Inscrever
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="relative max-w-md mb-8">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Pesquisar atleta..."
+            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-brand/50 transition text-sm"
+          />
         </div>
-      )}
 
-      {/* Modal Criar Atleta */}
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Novo Atleta</h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.nomeCompleto}
-                    onChange={(e) => setFormData({ ...formData, nomeCompleto: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">BI</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.bi}
-                    onChange={(e) => setFormData({ ...formData, bi: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Passaporte</label>
-                  <input
-                    type="text"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.passaporte}
-                    onChange={(e) => setFormData({ ...formData, passaporte: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Data Nascimento</label>
-                  <input
-                    type="date"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.dataNascimento}
-                    onChange={(e) => setFormData({ ...formData, dataNascimento: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Gênero</label>
-                  <select
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.genero}
-                    onChange={(e) => setFormData({ ...formData, genero: e.target.value as 'M' | 'F' })}
-                  >
-                    <option value="M">Masculino</option>
-                    <option value="F">Feminino</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Nacionalidade</label>
-                  <input
-                    type="text"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={formData.nacionalidade}
-                    onChange={(e) => setFormData({ ...formData, nacionalidade: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-                >
-                  Criar
-                </button>
-              </div>
-            </form>
+        {isLoading ? (
+          <SportLoadingScreen message="A carregar atletas..." fullscreen={false} size="md" />
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-white/30">
+            <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium">Nenhum atleta encontrado</p>
           </div>
-        </div>
-      )}
-
-      {/* Modal Inscrição */}
-      {showInscricaoModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Inscrever Atleta</h3>
-              <button
-                onClick={() => {
-                  setShowInscricaoModal(false);
-                  setSelectedAtletaId(null);
-                }}
-                className="text-gray-400 hover:text-gray-600"
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {filtered.map((atleta, index) => (
+              <motion.div
+                key={atleta.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03 }}
+                className="bg-white/[0.03] border border-white/10 rounded-xl p-4 text-center hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 group"
               >
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleInscricao}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Federação</label>
-                  <select
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={inscricaoData.federacaoId}
-                    onChange={(e) => setInscricaoData({ ...inscricaoData, federacaoId: e.target.value })}
-                  >
-                    <option value="">Selecione</option>
-                    {federacoes.map((fed) => (
-                      <option key={fed.id} value={fed.id}>
-                        {fed.nome}
-                      </option>
-                    ))}
-                  </select>
+                <div className="w-20 h-20 rounded-full bg-brand/20 mx-auto mb-3 flex items-center justify-center overflow-hidden ring-2 ring-white/10 group-hover:ring-brand/30 transition-all">
+                  {atleta.imagemUrl ? (
+                    <img src={atleta.imagemUrl} alt={atleta.nomeCompleto} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl font-bold text-brand">{getInitials(atleta.nomeCompleto)}</span>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Clube</label>
-                  <select
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={inscricaoData.clubeId}
-                    onChange={(e) => setInscricaoData({ ...inscricaoData, clubeId: e.target.value })}
-                  >
-                    <option value="">Selecione</option>
-                    {clubes.map((clube) => (
-                      <option key={clube.id} value={clube.id}>
-                        {clube.nome}
-                      </option>
-                    ))}
-                  </select>
+                <h3 className="font-semibold text-sm truncate">{atleta.nomeCompleto}</h3>
+                <p className="text-xs text-white/40 mt-0.5">{atleta.nacionalidade || 'Angola'}</p>
+                <div className="mt-3 flex items-center justify-center gap-1 text-xs text-white/30">
+                  <Medal className="w-3 h-3" />
+                  <span>Atleta</span>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Plano</label>
-                  <select
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    value={inscricaoData.planoId}
-                    onChange={(e) => setInscricaoData({ ...inscricaoData, planoId: e.target.value })}
-                  >
-                    <option value="">Selecione</option>
-                    {planos.map((plano) => (
-                      <option key={plano.id} value={plano.id}>
-                        {plano.nome} - {plano.preco} {plano.moeda}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-                >
-                  Inscrever
-                </button>
-              </div>
-            </form>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

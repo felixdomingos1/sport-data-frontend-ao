@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, Users, ArrowRight, Zap, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { eventoService } from '../../../infrastructure/services/evento.service';
+import type { Evento } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
-interface Event {
+interface EventCardData {
   id: string;
   title: string;
   sport: string;
@@ -16,114 +18,21 @@ interface Event {
   category: string;
 }
 
-const SPORTS = [
-  {
-    name: 'Futebol', category: 'football', icon: '⚽', images: [
-      'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&h=1300&fit=crop',
-      'https://images.unsplash.com/photo-1459865264687-287d453a4c7e?w=800&h=1000&fit=crop',
-      'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&h=1100&fit=crop',
-    ]
-  },
-  {
-    name: 'Basquetebol', category: 'basketball', icon: '🏀', images: [
-      'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=800&h=900&fit=crop',
-      'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=800&h=1100&fit=crop',
-    ]
-  },
-  {
-    name: 'Jiu-Jitsu', category: 'martial-arts', icon: '🥋', images: [
-      'https://images.unsplash.com/photo-1599058917765-a3ed875e5c47?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1529693662653-9d480530a697?w=800&h=1300&fit=crop',
-    ]
-  },
-  {
-    name: 'Atletismo', category: 'athletics', icon: '🏃', images: [
-      'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=1100&fit=crop',
-      'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=800&h=900&fit=crop',
-    ]
-  },
-  {
-    name: 'Ginástica', category: 'gymnastics', icon: '🤸', images: [
-      'https://images.unsplash.com/photo-1530821875964-909c3b6f1e8e?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1518611012118-696072a03feb?w=800&h=1300&fit=crop',
-    ]
-  },
-  {
-    name: 'Voleibol', category: 'volleyball', icon: '🏐', images: [
-      'https://images.unsplash.com/photo-1592656094267-764a45160876?w=800&h=1100&fit=crop',
-      'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&h=900&fit=crop',
-    ]
-  },
-  {
-    name: 'Natação', category: 'swimming', icon: '🏊', images: [
-      'https://images.unsplash.com/photo-1575444758702-4a6b9222336e?w=800&h=1100&fit=crop',
-      'https://images.unsplash.com/photo-1518773553398-650c184e0bb3?w=800&h=1300&fit=crop',
-    ]
-  },
-  {
-    name: 'Boxe', category: 'boxing', icon: '🥊', images: [
-      'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&h=1100&fit=crop',
-      'https://images.unsplash.com/photo-1552074284-5e88ef1aef18?w=800&h=1200&fit=crop',
-    ]
-  },
-  {
-    name: 'Ténis', category: 'tennis', icon: '🎾', images: [
-      'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&h=1200&fit=crop',
-      'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&h=900&fit=crop',
-    ]
-  },
-  {
-    name: 'Ciclismo', category: 'cycling', icon: '🚴', images: [
-      'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=1000&fit=crop',
-    ]
-  },
-];
-
-const LOCATIONS = [
-  'Luanda', 'Benguela', 'Huíla',
-  'Estádio 11 de Novembro', 'Cidadela Desportiva', 'Kilamba Arena',
-  'Pavilhão Multiusos', 'Marginal de Luanda'
-];
+const STATUS_MAP: Record<string, 'upcoming' | 'live' | 'finished'> = {
+  PUBLICADO: 'upcoming',
+  EM_ANDAMENTO: 'live',
+  FINALIZADO: 'finished',
+};
 
 const CATEGORIES = [
   { id: 'all', name: 'Todos' },
-  { id: 'football', name: 'Futebol' },
-  { id: 'basketball', name: 'Basquete' },
-  { id: 'martial-arts', name: 'Artes Marciais' },
-  { id: 'athletics', name: 'Atletismo' },
-  { id: 'gymnastics', name: 'Ginástica' },
-  { id: 'volleyball', name: 'Voleibol' },
-  { id: 'swimming', name: 'Natação' },
-  { id: 'boxing', name: 'Boxe' },
-  { id: 'tennis', name: 'Ténis' },
-  { id: 'cycling', name: 'Ciclismo' },
+  { id: 'CAMPEONATO', name: 'Campeonatos' },
+  { id: 'TORNEIO', name: 'Torneios' },
+  { id: 'EXIBICAO', name: 'Exibições' },
+  { id: 'TREINO', name: 'Treinos' },
+  { id: 'PALESTRA', name: 'Palestras' },
+  { id: 'WORKSHOP', name: 'Workshops' },
 ];
-
-function generateEvents(): Event[] {
-  const list: Event[] = [];
-  SPORTS.forEach((sport, si) => {
-    sport.images.forEach((image, ii) => {
-      const date = new Date();
-      date.setDate(date.getDate() + Math.floor(Math.random() * 60));
-      const roll = Math.random();
-      list.push({
-        id: `${si}-${ii}`,
-        title: `Campeonato de ${sport.name}`,
-        sport: sport.name,
-        location: LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)],
-        date: date.toISOString(),
-        participants: Math.floor(Math.random() * 500) + 50,
-        image,
-        status: roll > 0.75 ? 'live' : roll > 0.45 ? 'upcoming' : 'finished',
-        category: sport.category,
-      });
-    });
-  });
-  return list;
-}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('pt-PT', {
@@ -134,8 +43,7 @@ function formatDate(iso: string) {
   });
 }
 
-// ─── Status Badge ────────────────────────────────────────────────────────────
-const StatusBadge: React.FC<{ status: Event['status'] }> = ({ status }) => {
+const StatusBadge: React.FC<{ status: EventCardData['status'] }> = ({ status }) => {
   if (status === 'live') return (
     <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full bg-brand text-white">
       <span className="relative flex h-1.5 w-1.5">
@@ -158,8 +66,7 @@ const StatusBadge: React.FC<{ status: Event['status'] }> = ({ status }) => {
   );
 };
 
-// ─── Event Card ───────────────────────────────────────────────────────────────
-const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) => {
+const EventCard: React.FC<{ event: EventCardData; index: number }> = ({ event, index }) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -173,7 +80,6 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
       onMouseLeave={() => setHovered(false)}
     >
       <div className="relative rounded-xl overflow-hidden ring-1 ring-white/5 shadow-2xl">
-        {/* Photo */}
         <img
           src={event.image}
           alt={event.title}
@@ -181,25 +87,17 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
           style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
           loading="lazy"
         />
-
-        {/* Always-on vignette at bottom */}
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-
-        {/* Top row */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-2">
           <span className="text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-white/90 border border-white/10">
             {event.sport}
           </span>
           <StatusBadge status={event.status} />
         </div>
-
-        {/* Bottom content */}
         <div className="absolute inset-x-0 bottom-0 p-4">
           <h3 className="text-white font-bold text-base leading-snug mb-2 line-clamp-2">
             {event.title}
           </h3>
-
-          {/* Meta - revealed on hover */}
           <motion.div
             initial={false}
             animate={{ height: hovered ? 'auto' : 0, opacity: hovered ? 1 : 0 }}
@@ -220,7 +118,6 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
                 <span>{event.participants} participantes</span>
               </div>
             </div>
-
             <Link to={`/eventos/${event.id}`}>
               <button className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg bg-white text-gray-900 text-xs font-bold tracking-wide hover:bg-gray-100 active:scale-[0.98] transition-all duration-150">
                 <span>Ver detalhes</span>
@@ -228,8 +125,6 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
               </button>
             </Link>
           </motion.div>
-
-          {/* Compact meta when not hovered */}
           <motion.div
             animate={{ opacity: hovered ? 0 : 1 }}
             transition={{ duration: 0.15 }}
@@ -250,52 +145,58 @@ const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) 
   );
 };
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-const Skeleton = () => (
-  <div className="break-inside-avoid mb-5">
-    <div className="rounded-xl bg-white/5 animate-pulse" style={{ height: Math.floor(Math.random() * 180) + 260 }} />
-  </div>
-);
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
 const Eventos: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const pillsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setEvents(generateEvents());
-      setLoading(false);
-    }, 600);
-    return () => clearTimeout(t);
+    async function fetchEvents() {
+      try {
+        const result = await eventoService.getAll({ limit: 50 });
+        setEvents(result.data);
+      } catch {
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchEvents();
   }, []);
 
+  const mapToCardData = (evento: Evento): EventCardData => ({
+    id: evento.id,
+    title: evento.titulo,
+    sport: evento.modalidade || evento.tipo,
+    location: evento.local || 'Angola',
+    date: evento.dataInicio,
+    participants: 0,
+    image: evento.imagemUrl || evento.bannerUrl || `https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&h=1000&fit=crop`,
+    status: STATUS_MAP[evento.status] || 'upcoming',
+    category: evento.tipo,
+  });
+
+  const cardEvents = events.map(mapToCardData);
+
   const filtered = selectedCategory === 'all'
-    ? events
-    : events.filter(e => e.category === selectedCategory);
+    ? cardEvents
+    : cardEvents.filter(e => e.category === selectedCategory);
 
   const liveCount = filtered.filter(e => e.status === 'live').length;
   const upcomingCount = filtered.filter(e => e.status === 'upcoming').length;
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
-
-      {/* ── Hero ─────────────────────────────────────────────── */}
       <div className="relative h-[480px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1920&h=600&fit=crop"
           alt="Hero atletas"
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
-        {/* Layered overlays for depth */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
-
-        {/* Accent line */}
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-32 bg-brand rounded-full" />
-
         <div className="relative h-full flex flex-col justify-center pl-14 pr-8 max-w-4xl">
           <motion.p
             initial={{ opacity: 0, x: -16 }}
@@ -324,8 +225,6 @@ const Eventos: React.FC = () => {
           >
             Descubra e acompanhe as maiores competições desportivas de Angola.
           </motion.p>
-
-          {/* Live indicator */}
           {!loading && liveCount > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -345,15 +244,13 @@ const Eventos: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Stats strip ──────────────────────────────────────── */}
       <div className="border-y border-white/5 bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-10 overflow-x-auto scrollbar-none">
           {[
-            { label: 'Eventos', value: filtered.length },
+            { label: 'Eventos', value: events.length },
             { label: 'Ao Vivo', value: liveCount, accent: true },
             { label: 'Próximos', value: upcomingCount },
-            { label: 'Modalidades', value: '12+' },
-            { label: 'Atletas', value: '1.000+' },
+            { label: 'Categorias', value: CATEGORIES.length - 1 },
           ].map(stat => (
             <div key={stat.label} className="flex items-center gap-3 shrink-0">
               <span className={`text-2xl font-black tabular-nums ${stat.accent ? 'text-brand' : 'text-white'}`}>
@@ -366,7 +263,6 @@ const Eventos: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Category Filter ───────────────────────────────────── */}
       <div className="sticky top-0 z-30 bg-[#0A0A0B]/90 backdrop-blur-xl border-b border-white/5">
         <div
           ref={pillsRef}
@@ -390,7 +286,6 @@ const Eventos: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Masonry Grid ─────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {loading ? (
           <SportLoadingScreen message="A carregar eventos..." fullscreen={false} size="md" />
@@ -411,7 +306,6 @@ const Eventos: React.FC = () => {
         )}
       </div>
 
-      {/* ── Footer CTA ───────────────────────────────────────── */}
       <div className="border-t border-white/5 mt-4">
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>

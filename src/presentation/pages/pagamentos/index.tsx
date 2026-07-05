@@ -9,6 +9,7 @@ import {
   getMetodoPagamentoLabel,
   getStatusPagamentoLabel,
 } from '@/presentation/utils/atleta.utils';
+import { SEO } from '../../components/seo/seo';
 
 function StatusBadge({ status }: { status: string }) {
   const confirmed = status === 'CONFIRMADO';
@@ -81,6 +82,7 @@ const Pagamentos: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SEO title="Pagamentos" description="Histórico de pagamentos e inscrições do atleta." />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
           <Wallet className="w-4 h-4 text-[var(--text-muted)] mb-3" />

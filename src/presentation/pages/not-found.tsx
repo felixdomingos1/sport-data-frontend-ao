@@ -5,6 +5,7 @@ import {
   Home, ArrowLeft, Search, Trophy,
   Map, Users, Calendar
 } from 'lucide-react';
+import { SEO } from '../components/seo/seo';
 
 const NotFound: React.FC = () => {
   const suggestions = [
@@ -16,6 +17,7 @@ const NotFound: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-brand-dark flex items-center justify-center p-4">
+      <SEO title="Página não encontrada" description="A página que procura não existe." />
       <div className="max-w-2xl w-full">
         {/* Animated 404 */}
         <motion.div

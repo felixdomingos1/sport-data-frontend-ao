@@ -20,6 +20,7 @@ import {
   getStatusInscricaoLabel,
 } from '@/presentation/utils/atleta.utils';
 import type { StatusDocumento } from '@/core/types/atleta-me.types';
+import { SEO } from '../../components/seo/seo';
 
 function StatusBadge({ status }: { status: StatusDocumento }) {
   if (status === 'APROVADO') {
@@ -69,6 +70,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SEO title="Painel" description="Painel do atleta — Sport Data Angola." />
       <div className="bg-[var(--card-bg)] rounded-2xl p-5 lg:p-6 border border-[var(--card-border)]">
         <div className="flex flex-col lg:flex-row lg:items-center gap-5">
           <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-[#E60000] to-[#990000] flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-[#E60000]/30">

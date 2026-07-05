@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, LayoutDashboard, User, FileText, Bell, CreditCard, Trophy, Shield, X } from 'lucide-react';
+import { Search, LayoutDashboard, User, FileText, Bell, CreditCard, Trophy, X } from 'lucide-react';
 import { useAuthStore } from '../../../store/auth.store';
 
 interface PageItem {

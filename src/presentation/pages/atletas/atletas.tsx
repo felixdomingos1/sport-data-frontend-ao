@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Medal, Search } from 'lucide-react';
 import { useAtletaStore } from '../../../store/atleta.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 function getInitials(name: string): string {
   return name
@@ -30,6 +31,7 @@ const Atletas: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <SEO title="Atletas" description="Perfil dos atletas angolanos registados na plataforma Sport Data Angola." canonical="/atletas" />
       <div className="relative h-[280px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1526676037777-05a232554f77?w=1920&h=400&fit=crop"

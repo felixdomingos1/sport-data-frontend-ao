@@ -495,8 +495,8 @@ export interface Evento {
   createdAt: string;
   updatedAt: string;
   federacao?: Federacao;
-  academia?: any;
-  associacao?: any;
+  academia?: unknown;
+  associacao?: unknown;
 }
 
 export interface Notificacao {

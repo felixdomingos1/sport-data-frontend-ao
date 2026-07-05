@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 const FederacaoDetalhe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,6 +74,7 @@ const FederacaoDetalhe: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <SEO title={federacaoAtual?.nome ?? 'Federação'} description={federacaoAtual?.descricao ?? 'Detalhes da federação desportiva angolana.'} canonical={`/federacoes/${id}`} />
       {/* Hero Section */}
       <div className="relative h-[500px] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
@@ -428,7 +430,7 @@ const FederacaoDetalhe: React.FC = () => {
               {federacaoAtual.atletas && federacaoAtual.atletas.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {federacaoAtual.atletas.map((inscricao) => {
-                    const atletaData = 'atleta' in inscricao ? (inscricao as any).atleta : null;
+                    const atletaData = 'atleta' in inscricao ? (inscricao as Record<string, unknown>).atleta : null;
                     const atletaNome = atletaData?.nomeCompleto || 'Atleta';
                     const atletaImg = atletaData?.imagemUrl;
 

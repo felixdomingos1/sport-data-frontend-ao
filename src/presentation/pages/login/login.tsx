@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../store/auth.store';
 import { useLoadingStore } from '../../../store/loading.store';
-import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 const STADIUM_BG =
   'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1600&q=80';
@@ -138,6 +138,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex">
+      <SEO title="Entrar" description="Aceda à sua conta Sport Data Angola — plataforma de gestão desportiva angolana." canonical="/login" />
       {/* Left- Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div

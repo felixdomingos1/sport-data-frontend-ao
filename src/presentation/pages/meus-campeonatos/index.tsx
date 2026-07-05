@@ -5,6 +5,7 @@ import { campeonatoService } from '@/infrastructure/services/campeonato.service'
 import type { Campeonato } from '@/core/types/api.types';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 import { formatDatePt } from '@/presentation/utils/atleta.utils';
+import { SEO } from '../../components/seo/seo';
 
 type FiltroHistorico = 'todas' | 'nacional' | 'regional';
 
@@ -34,6 +35,7 @@ const MeusCampeonatos: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SEO title="Competições" description="Minhas competições e campeonatos." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
           <Calendar className="w-4 h-4 text-[var(--text-muted)] mb-3" />

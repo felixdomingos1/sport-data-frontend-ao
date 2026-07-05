@@ -25,6 +25,7 @@ import {
   getStatusInscricaoLabel,
 } from '@/presentation/utils/atleta.utils';
 import type { StatusDocumento } from '@/core/types/atleta-me.types';
+import { SEO } from '../../components/seo/seo';
 
 function StatusBadge({ status }: { status: StatusDocumento }) {
   if (status === 'APROVADO') {
@@ -107,6 +108,7 @@ const Perfil: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <SEO title="Meu Perfil" description="Gerir perfil de atleta na Sport Data Angola." />
       <div className="lg:col-span-1">
         <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] p-6 flex flex-col items-center">
           <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#E60000] to-[#990000] flex items-center justify-center ring-4 ring-[#E60000]/20 mb-4 overflow-hidden">

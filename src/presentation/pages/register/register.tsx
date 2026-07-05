@@ -28,6 +28,7 @@ import { apiClient } from '../../../infrastructure/api/client';
 import { API_ENDPOINTS } from '../../../infrastructure/api/endpoints';
 import { StyledSelect } from '../../../presentation/components/ui/styled-select';
 import { StyledDatePicker } from '../../../presentation/components/ui/styled-datepicker';
+import { SEO } from '../../components/seo/seo';
 
 const steps = [
   { id: 1, title: 'Dados pessoais', description: 'Nome, data de nascimento, contacto' },
@@ -55,8 +56,6 @@ const Register: React.FC = () => {
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
   const [loadingClubes, setLoadingClubes] = useState(false);
 
-  const [biFile, setBiFile] = useState<File | null>(null);
-  const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [uploadingBI, setUploadingBI] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
   const [biUploaded, setBiUploaded] = useState(false);
@@ -323,6 +322,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-[#0f0f0f]">
+      <SEO title="Criar Conta" description="Registe-se na Sport Data Angola e faça parte do desporto angolano." canonical="/register" />
       {/* Left- Stepper */}
       <div className="hidden lg:flex w-1/2 flex-col justify-between border-r border-[#1a1a1a] p-10 xl:p-14 shrink-0">
         <div>

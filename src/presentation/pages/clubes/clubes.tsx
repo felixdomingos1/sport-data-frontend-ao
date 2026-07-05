@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Shield, MapPin, Users, Search } from 'lucide-react';
 import { useClubeStore } from '../../../store/clube.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 const Clubes: React.FC = () => {
   const { clubes, fetchAll, isLoading } = useClubeStore();
@@ -21,6 +22,7 @@ const Clubes: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <SEO title="Clubes" description="Descubra os clubes desportivos de Angola filiados às federações nacionais." canonical="/clubes" />
       <div className="relative h-[280px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1577412647305-991150c7d163?w=1920&h=400&fit=crop"

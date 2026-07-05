@@ -5,6 +5,7 @@ import {
   ChevronUp, ChevronDown, Award, Star, Flame, Target
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SEO } from '../../components/seo/seo';
 
 interface RankingItem {
   id: string;
@@ -44,6 +45,7 @@ const Rankings: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <SEO title="Rankings" description="Rankings nacionais do desporto angolano — classificação de atletas por federação e modalidade." canonical="/rankings" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div

@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Mail, Phone, Globe, MapPin, ArrowRight } from 'lucide-react';
+import { Shield, Mail, Phone, Globe, ArrowRight } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 const Federacoes: React.FC = () => {
   const { federacoes, fetchAll, isLoading } = useFederacaoStore();
@@ -13,6 +14,7 @@ const Federacoes: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <SEO title="Federações" description="Conheça as federações desportivas de Angola — federações de basquetebol, futebol, andebol e mais." canonical="/federacoes" />
       <div className="relative h-[320px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1459865264687-287d453a4c7e?w=1920&h=400&fit=crop"

@@ -3,6 +3,7 @@ import { CheckCheck, Info, Bell, CreditCard, FileText, Calendar, Trophy } from '
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 import { formatDatePt } from '@/presentation/utils/atleta.utils';
+import { SEO } from '../../components/seo/seo';
 
 type FiltroNotificacao = 'todas' | 'nao_lidas' | 'competicoes' | 'pagamentos' | 'documentos';
 
@@ -60,6 +61,7 @@ const Notificacoes: React.FC = () => {
 
   return (
     <div className="space-y-5">
+      <SEO title="Notificações" description="Centro de notificações do atleta." />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           {filtros.map((item) => (

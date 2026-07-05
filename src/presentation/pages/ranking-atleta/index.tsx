@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 import { formatDatePt, getInitials } from '@/presentation/utils/atleta.utils';
+import { SEO } from '../../components/seo/seo';
 
 function Avatar({ name, highlighted }: { name: string; highlighted?: boolean }) {
   return (
@@ -43,6 +44,7 @@ const RankingAtletaPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SEO title="Ranking" description="Meu ranking nacional no desporto angolano." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[#E60000] rounded-2xl p-5 border border-[#E60000]">
           <Trophy className="w-4 h-4 text-white mb-3" />

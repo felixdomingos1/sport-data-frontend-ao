@@ -51,8 +51,8 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           await authService.logout();
-        } catch (error) {
-          console.error('Logout error:', error);
+        } catch {
+          // Silently handle logout error
         } finally {
           apiClient.clearAccessToken();
           localStorage.removeItem('refresh_token');
@@ -77,8 +77,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const user = await authService.getMe();
           set({ user, isAuthenticated: true, isLoading: false });
-        } catch (error) {
-          console.error(error);
+        } catch {
           apiClient.clearAccessToken();
           localStorage.removeItem('refresh_token');
           set({ user: null, isAuthenticated: false, isLoading: false });

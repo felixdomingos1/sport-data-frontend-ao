@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   FileText,
-  CheckCircle,
-  Clock,
   AlertCircle,
   Upload,
   Download,
-  FileCheck,
   ChevronDown,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -20,6 +17,7 @@ import {
   TIPO_DOCUMENTO_LABELS,
 } from '@/presentation/utils/atleta.utils';
 import type { StatusDocumento, TipoDocumento } from '@/core/types/atleta-me.types';
+import { SEO } from '../../components/seo/seo';
 
 type FiltroDocumento = 'todas' | 'aprovados' | 'pendentes' | 'rejeitados' | 'obrigatorios';
 
@@ -103,6 +101,7 @@ const Documentos: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <SEO title="Documentos" description="Documentos do atleta — BI, foto 3x4 e certificados." />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">
           <p className="text-[10px] font-semibold text-[var(--text-muted)] tracking-wider uppercase mb-3">Total</p>

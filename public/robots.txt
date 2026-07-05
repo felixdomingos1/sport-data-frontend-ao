@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /perfil/
+Disallow: /documentos/
+Disallow: /pagamentos/
+Disallow: /meus-campeonatos/
+Disallow: /notificacoes/
+Disallow: /ranking-atleta/
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://sportdataangola.com/sitemap.xml

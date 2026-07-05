@@ -47,8 +47,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setIsMobileSidebarOpe
   const location = useLocation();
   const userName = user?.nome?.split(' ')[0] || 'Atleta';
 
-  console.log("USUARIO:",user);
-
   const pageHeader = PAGE_HEADERS[location.pathname];
   const isDashboard = location.pathname === '/dashboard';
   const isCompeticoes = location.pathname === '/meus-campeonatos';

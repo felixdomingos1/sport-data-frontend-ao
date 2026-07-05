@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { eventoService } from '../../../infrastructure/services/evento.service';
 import type { Evento } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import { SEO } from '../../components/seo/seo';
 
 interface EventCardData {
   id: string;
@@ -188,6 +189,7 @@ const Eventos: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white">
+      <SEO title="Eventos" description="Eventos desportivos em Angola — calendário de competições, torneios e campeonatos." canonical="/eventos" />
       <div className="relative h-[480px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1920&h=600&fit=crop"

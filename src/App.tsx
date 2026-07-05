@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
+import { HelmetProvider } from 'react-helmet-async';
 import PrivateRoute from './presentation/routes/private-route';
 import PublicRoute from './presentation/routes/public-route';
 import NotFound from './presentation/pages/not-found';
@@ -27,6 +28,7 @@ import Rankings from './presentation/pages/rankings';
 import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe';
 import SportLoadingScreen from './presentation/components/ui/sport-loading-screen';
 import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
+import { OrganizationLD, WebSiteLD } from './presentation/components/seo/json-ld';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -41,6 +43,7 @@ function App() {
   }
 
   return (
+    <HelmetProvider>
     <ThemeProvider>
     <Router>
       <GlobalLoadingOverlay />
@@ -101,6 +104,9 @@ function App() {
       </AnimatePresence>
     </Router>
     </ThemeProvider>
+    <OrganizationLD />
+    <WebSiteLD />
+    </HelmetProvider>
   );
 }
 

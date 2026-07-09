@@ -3,6 +3,8 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/pub/register',
     LOGIN: '/auth/pub/login',
     REFRESH_TOKEN: '/auth/pub/refresh-token',
+    FORGOT_PASSWORD: '/auth/pub/forgot-password',
+    RESET_PASSWORD: '/auth/pub/reset-password',
     LOGOUT: '/auth/prot/logout',
     ME: '/auth/prot/me',
   },
@@ -43,9 +45,6 @@ export const API_ENDPOINTS = {
   CAMPEONATOS: {
     BASE: '/campeonatos',
     BY_ID: (id: string) => `/campeonatos/${id}`,
-    BY_FEDERACAO: (federacaoId: string) => `/campeonatos/federacao/${federacaoId}`,
-    BY_STATUS: (status: string) => `/campeonatos/status/${status}`,
-    ACTIVE: '/campeonatos/active',
     INSCREVER: (id: string) => `/campeonatos/${id}/inscrever`,
     CLASSIFICACAO: (id: string) => `/campeonatos/${id}/classificacao`,
     JOGOS: (id: string) => `/campeonatos/${id}/jogos`,

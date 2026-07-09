@@ -9,6 +9,8 @@ import NotFound from './presentation/pages/not-found';
 import { useAuthStore } from './store/auth.store';
 import Login from './presentation/pages/login/login';
 import Register from './presentation/pages/register/register';
+import ForgotPassword from './presentation/pages/forgot-password/forgot-password';
+import ResetPassword from './presentation/pages/reset-password/reset-password';
 import Layout from './presentation/components/layout';
 import Home from './presentation/pages/home/home';
 import Federacoes from './presentation/pages/federacoes/federacoes';
@@ -26,6 +28,7 @@ import Pagamentos from './presentation/pages/pagamentos';
 import RankingAtleta from './presentation/pages/ranking-atleta';
 import Rankings from './presentation/pages/rankings';
 import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe';
+import Inscricoes from './presentation/pages/inscricoes';
 import SportLoadingScreen from './presentation/components/ui/sport-loading-screen';
 import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
 import { OrganizationLD, WebSiteLD } from './presentation/components/seo/json-ld';
@@ -75,6 +78,8 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
 
           <Route element={<Layout />}>
@@ -92,6 +97,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/meus-campeonatos" element={<MeusCampeonatos />} />
+              <Route path="/inscricoes" element={<Inscricoes />} />
               <Route path="/notificacoes" element={<Notificacoes />} />
               <Route path="/documentos" element={<Documentos />} />
               <Route path="/pagamentos" element={<Pagamentos />} />

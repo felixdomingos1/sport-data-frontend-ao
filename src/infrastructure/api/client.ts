@@ -13,6 +13,8 @@ const PUBLIC_AUTH_PATHS = [
   '/auth/pub/login',
   '/auth/pub/register',
   '/auth/pub/refresh-token',
+  '/auth/pub/forgot-password',
+  '/auth/pub/reset-password',
 ];
 
 interface RefreshTokenResponse {

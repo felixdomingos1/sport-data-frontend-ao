@@ -3,6 +3,15 @@ import type { LoginResponse, RefreshTokenResponse } from '../../core/types/api.t
 import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
 
+interface ForgotPasswordPayload {
+  email: string;
+}
+
+interface ResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
 interface LoginPayload {
   user: AuthUser;
   token: string;
@@ -43,6 +52,14 @@ class AuthService {
 
   async getMe(): Promise<AuthUser> {
     return apiClient.get<AuthUser>(API_ENDPOINTS.AUTH.ME);
+  }
+
+  async forgotPassword(payload: ForgotPasswordPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, payload);
+  }
+
+  async resetPassword(payload: ResetPasswordPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload);
   }
 }
 

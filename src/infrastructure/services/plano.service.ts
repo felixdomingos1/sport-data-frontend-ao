@@ -3,7 +3,7 @@ import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
 
 class PlanoService {
-  async getAll(params?: { page?: number; limit?: number; ativo?: boolean }): Promise<PaginatedResponse<Plano>> {
+  async getAll(params?: { page?: number; limit?: number; ativo?: boolean; federacaoId?: string }): Promise<PaginatedResponse<Plano>> {
     return apiClient.get<PaginatedResponse<Plano>>(API_ENDPOINTS.PLANOS.BASE, { params });
   }
 

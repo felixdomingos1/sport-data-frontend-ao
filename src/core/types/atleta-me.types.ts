@@ -143,6 +143,14 @@ export interface UploadDocumentoData {
   hash?: string;
 }
 
+export interface InscricaoAtletaData {
+  atletaId: string;
+  federacaoId: string;
+  clubeId?: string;
+  academiaId?: string;
+  planoId: string;
+}
+
 export interface CreatePagamentoData {
   inscricaoId: string;
   metodo: 'MULTICAIXA' | 'UNITEL_MONEY' | 'APPYPAY' | 'BANCO' | 'TRANSFERENCIA';

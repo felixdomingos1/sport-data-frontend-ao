@@ -175,6 +175,27 @@ export interface Clube {
   };
 }
 
+export interface Academia {
+  id: string;
+  federacaoId: string;
+  associacaoId?: string;
+  gestorId?: string;
+  nome: string;
+  slug: string;
+  descricao?: string;
+  logo?: string;
+  email?: string;
+  telefone?: string;
+  endereco?: string;
+  website?: string;
+  status: 'PENDENTE' | 'ATIVO' | 'REJEITADO' | 'SUSPENSO';
+  createdAt: string;
+  updatedAt: string;
+  federacao?: Federacao;
+  associacao?: unknown;
+  gestor?: { id: string; nome: string; email: string };
+}
+
 export interface Campeonato {
   id: string;
   federacaoId: string;
@@ -252,6 +273,7 @@ export interface InscricaoAtleta {
   atletaId: string;
   federacaoId: string;
   clubeId?: string;
+  academiaId?: string;
   status: 'DRAFT' | 'AGUARDANDO_PAGAMENTO' | 'EM_ANALISE' | 'ATIVO' | 'SUSPENSO' | 'EXPIRADO' | 'CANCELADO';
   numeroRegistro?: string;
   planoId: string;
@@ -264,6 +286,7 @@ export interface InscricaoAtleta {
   atleta?: Atleta;
   federacao?: Federacao;
   clube?: Clube;
+  academia?: Academia;
   plano?: Plano;
   pagamentos?: Pagamento[];
   participacoes?: ParticipacaoCampeonato[];
@@ -495,7 +518,7 @@ export interface Evento {
   createdAt: string;
   updatedAt: string;
   federacao?: Federacao;
-  academia?: unknown;
+  academia?: Academia;
   associacao?: unknown;
 }
 

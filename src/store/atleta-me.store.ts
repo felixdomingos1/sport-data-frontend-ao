@@ -3,13 +3,14 @@ import type {
   AtletaDashboard,
   AtletaMe,
   DocumentoAtleta,
+  InscricaoAtletaData,
   RankingAtletaItem,
   UpdateAtletaMeData,
   UploadDocumentoData,
   CreatePagamentoData,
   TipoDocumento,
 } from '@/core/types/atleta-me.types';
-import type { Notificacao, Pagamento } from '@/core/types/api.types';
+import type { InscricaoAtleta, Notificacao, Pagamento } from '@/core/types/api.types';
 import { atletaMeService } from '@/infrastructure/services/atleta-me.service';
 
 interface AtletaMeState {
@@ -36,6 +37,7 @@ interface AtletaMeState {
   fetchNotificacoesCount: () => Promise<void>;
   marcarNotificacaoLida: (id: string) => Promise<void>;
   marcarTodasLidas: () => Promise<void>;
+  inscreverAtletaFederacao: (data: InscricaoAtletaData) => Promise<InscricaoAtleta>;
   fetchRankings: () => Promise<void>;
   clearError: () => void;
 }
@@ -234,6 +236,26 @@ export const useAtletaMeStore = create<AtletaMeState>((set, get) => ({
         isLoading: false,
         error: error instanceof Error ? error.message : 'Erro ao carregar rankings',
       });
+    }
+  },
+
+  inscreverAtletaFederacao: async (data) => {
+    set({ isSaving: true, error: null });
+    try {
+      const inscricao = await atletaMeService.inscreverAtletaFederacao(data);
+      set((state) => ({
+        profile: state.profile
+          ? { ...state.profile, inscricoes: [...(state.profile.inscricoes ?? []), inscricao] }
+          : null,
+        isSaving: false,
+      }));
+      return inscricao;
+    } catch (error) {
+      set({
+        isSaving: false,
+        error: error instanceof Error ? error.message : 'Erro ao inscrever na federação',
+      });
+      throw error;
     }
   },
 

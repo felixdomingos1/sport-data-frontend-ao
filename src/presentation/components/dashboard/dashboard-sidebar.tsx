@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Globe,
+  ClipboardList,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
@@ -35,6 +36,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { label: 'Meu Perfil', icon: User, path: '/perfil' },
+    { label: 'Minha Inscrição', icon: ClipboardList, path: '/inscricoes' },
     { label: 'Documentos', icon: FileText, path: '/documentos' },
     { label: 'Pagamentos', icon: CreditCard, path: '/pagamentos' },
     { label: 'Ranking', icon: Trophy, path: '/ranking-atleta' },

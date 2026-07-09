@@ -74,24 +74,24 @@ class CampeonatoService {
 
   async getByFederacao(federacaoId: string, params?: { page?: number; limit?: number }): Promise<PaginatedResponse<Campeonato>> {
     const response = await apiClient.get<ApiPaginatedResponse<Campeonato>>(
-      API_ENDPOINTS.CAMPEONATOS.BY_FEDERACAO(federacaoId),
-      { params }
+      API_ENDPOINTS.CAMPEONATOS.BASE,
+      { params: { ...params, federacaoId } }
     );
     return toPaginatedResponse(response);
   }
 
   async getByStatus(status: string, params?: { page?: number; limit?: number }): Promise<PaginatedResponse<Campeonato>> {
     const response = await apiClient.get<ApiPaginatedResponse<Campeonato>>(
-      API_ENDPOINTS.CAMPEONATOS.BY_STATUS(status),
-      { params }
+      API_ENDPOINTS.CAMPEONATOS.BASE,
+      { params: { ...params, status } }
     );
     return toPaginatedResponse(response);
   }
 
   async getActive(params?: { page?: number; limit?: number }): Promise<PaginatedResponse<Campeonato>> {
     const response = await apiClient.get<ApiPaginatedResponse<Campeonato>>(
-      API_ENDPOINTS.CAMPEONATOS.ACTIVE,
-      { params }
+      API_ENDPOINTS.CAMPEONATOS.BASE,
+      { params: { ...params, status: 'INSCRICOES_ABERTAS' } }
     );
     return toPaginatedResponse(response);
   }

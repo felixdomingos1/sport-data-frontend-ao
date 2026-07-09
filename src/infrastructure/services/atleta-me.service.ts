@@ -3,6 +3,7 @@ import type {
   AtletaMe,
   CreatePagamentoData,
   DocumentoAtleta,
+  InscricaoAtletaData,
   NotificacoesListResponse,
   PagamentosListResponse,
   RankingAtletaResponse,
@@ -10,7 +11,7 @@ import type {
   UpdateAtletaMeData,
   UploadDocumentoData,
 } from '@/core/types/atleta-me.types';
-import type { Notificacao, Pagamento } from '@/core/types/api.types';
+import type { InscricaoAtleta, Notificacao, Pagamento } from '@/core/types/api.types';
 import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
 
@@ -33,6 +34,10 @@ class AtletaMeService {
 
   async uploadDocumento(data: UploadDocumentoData): Promise<DocumentoAtleta> {
     return apiClient.post<DocumentoAtleta>(API_ENDPOINTS.ATLETAS.DOCUMENTOS, data);
+  }
+
+  async inscreverAtletaFederacao(data: InscricaoAtletaData): Promise<InscricaoAtleta> {
+    return apiClient.post<InscricaoAtleta>(API_ENDPOINTS.ATLETAS.INSCRICAO, data);
   }
 
   async getPagamentos(params?: {

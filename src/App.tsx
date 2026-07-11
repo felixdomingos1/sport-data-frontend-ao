@@ -17,6 +17,7 @@ import Federacoes from './presentation/pages/federacoes/federacoes';
 import Clubes from './presentation/pages/clubes/clubes';
 import Atletas from './presentation/pages/atletas/atletas';
 import Eventos from './presentation/pages/eventos/evento';
+import EventoDetalhe from './presentation/pages/eventos/evento-detalhe';
 import DashboardLayout from './presentation/components/layout/dashboard-layout';
 import Dashboard from './presentation/pages/dashboard/dashboard';
 import Perfil from './presentation/pages/perfil';
@@ -89,6 +90,7 @@ function App() {
             <Route path="/clubes" element={<Clubes />} />
             <Route path="/atletas" element={<Atletas />} />
             <Route path="/eventos" element={<Eventos />} />
+            <Route path="/eventos/:id" element={<EventoDetalhe />} />
             <Route path="/rankings" element={<Rankings />} />
           </Route>
 

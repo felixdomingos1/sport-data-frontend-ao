@@ -29,6 +29,8 @@ import Pagamentos from './presentation/pages/pagamentos';
 import RankingAtleta from './presentation/pages/ranking-atleta';
 import Rankings from './presentation/pages/rankings';
 import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe';
+import ChaveamentoLista from './presentation/pages/chaveamento/chaveamento-lista';
+import ChaveamentoDetalhe from './presentation/pages/chaveamento/chaveamento-detalhe';
 import Inscricoes from './presentation/pages/inscricoes';
 import SportLoadingScreen from './presentation/components/ui/sport-loading-screen';
 import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
@@ -92,6 +94,8 @@ function App() {
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/eventos/:id" element={<EventoDetalhe />} />
             <Route path="/rankings" element={<Rankings />} />
+            <Route path="/chaveamento" element={<ChaveamentoLista />} />
+            <Route path="/chaveamento/:id" element={<ChaveamentoDetalhe />} />
           </Route>
 
           <Route element={<PrivateRoute />}>

@@ -155,7 +155,7 @@ const Eventos: React.FC = () => {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const result = await eventoService.getAll({ limit: 50 });
+        const result = await eventoService.getAll({ limit: 50, status: 'PUBLICADO' });
         setEvents(result.data);
       } catch {
         setEvents([]);

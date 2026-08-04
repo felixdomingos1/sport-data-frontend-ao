@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 const navItems = [
   { name: 'Início', path: '/' },
+  { name: 'Campeonatos', path: '/campeonatos' },
   { name: 'Federações', path: '/federacoes' },
   { name: 'Clubes', path: '/clubes' },
   { name: 'Atletas', path: '/atletas' },

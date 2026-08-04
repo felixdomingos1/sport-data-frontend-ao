@@ -11,7 +11,6 @@ export interface CreateCampeonatoData {
   modalidade: string;
   tipo: 'INDIVIDUAL' | 'EQUIPAS';
   formato: 'LIGA' | 'COPINHA' | 'ELIMINACAO';
-  pesoEvento: number;
   dataInicio: string;
   dataFim: string;
   dataInscricaoInicio: string;

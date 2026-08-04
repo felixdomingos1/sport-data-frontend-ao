@@ -73,4 +73,15 @@ export const API_ENDPOINTS = {
     BASE: '/eventos',
     BY_ID: (id: string) => `/eventos/${id}`,
   },
+  BRACKETS: {
+    BASE: '/brackets',
+    BY_ID: (id: string) => `/brackets/${id}`,
+    GERAR: '/brackets/gerar',
+    RESULTADO: (id: string) => `/brackets/${id}/resultado`,
+    INVALIDAR: (id: string) => `/brackets/${id}/invalidar`,
+    TROCAR: (id: string) => `/brackets/${id}/trocar`,
+    PARTICIPANTE: (id: string) => `/brackets/${id}/participante`,
+    REGENERAR: (id: string) => `/brackets/${id}/regenerar`,
+    PROMOVER_GRUPOS: (id: string) => `/brackets/${id}/promover-grupos`,
+  },
 };

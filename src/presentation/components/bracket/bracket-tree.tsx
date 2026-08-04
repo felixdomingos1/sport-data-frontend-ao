@@ -37,7 +37,7 @@ const RODADA_LABELS: Record<number, string> = {
   5: 'Final',
 };
 
-function getRodadaLabel(rodada: number, totalRodadas: number): string {
+function getRodadaLabel(rodada: number): string {
   if (RODADA_LABELS[rodada]) return RODADA_LABELS[rodada];
   return `${rodada}ª Rodada`;
 }
@@ -164,8 +164,6 @@ function KnockoutBracket({ confrontos }: { confrontos: Confronto[] }) {
     <div className="overflow-x-auto pb-4">
       <div className="flex gap-0 items-center min-w-max" style={{ minHeight: 400 }}>
         {rounds.map(([rodada, matches], roundIdx) => {
-          const isLastRound = roundIdx === totalRounds - 1;
-          const matchCount = matches.length;
           const gapMultiplier = Math.pow(2, roundIdx);
 
           return (
@@ -174,7 +172,7 @@ function KnockoutBracket({ confrontos }: { confrontos: Confronto[] }) {
                 className="text-center mb-4"
               >
                 <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
-                  {getRodadaLabel(rodada, totalRounds)}
+                  {getRodadaLabel(rodada)}
                 </span>
               </div>
 

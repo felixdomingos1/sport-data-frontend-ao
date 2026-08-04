@@ -297,15 +297,8 @@ const MeusCampeonatos: React.FC = () => {
                             }`}
                           >
                             <p className="font-medium">{cat.nome}</p>
-                            {(cat.idadeMinima || cat.idadeMaxima) && (
-                              <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
-                                {cat.idadeMinima && `${cat.idadeMinima}+`}
-                                {cat.idadeMinima && cat.idadeMaxima && ' • '}
-                                {cat.idadeMaxima && `até ${cat.idadeMaxima} anos`}
-                              </p>
-                            )}
                             {cat.genero && (
-                              <p className="text-[10px] text-[var(--text-muted)] mt-0.5 capitalize">{cat.genero.toLowerCase()}</p>
+                              <p className="text-[10px] text-[var(--text-muted)] mt-0.5 capitalize">{cat.genero === "MASCULINO" ? "Masculino" : "Feminino"}</p>
                             )}
                           </button>
                         );

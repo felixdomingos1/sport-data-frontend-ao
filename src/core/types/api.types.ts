@@ -205,7 +205,6 @@ export interface Campeonato {
   modalidade: string;
   tipo: 'INDIVIDUAL' | 'EQUIPAS' | 'MISTO';
   formato: 'LIGA' | 'KNOCKOUT' | 'GRUPOS' | 'MISTO';
-  pesoEvento: number;
   dataInicio: string;
   dataFim: string;
   dataInscricaoInicio?: string;
@@ -213,6 +212,9 @@ export interface Campeonato {
   status: 'RASCUNHO' | 'INSCRICOES_ABERTAS' | 'INSCRICOES_FECHADAS' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO';
   regulamento?: string;
   premioTotal?: number;
+  imagemUrl?: string;
+  bannerUrl?: string;
+  metadata?: Record<string, unknown> & { local?: string; esporte?: string };
   createdAt: string;
   updatedAt: string;
   federacao?: Federacao;
@@ -222,7 +224,7 @@ export interface Campeonato {
   partidas?: Partida[];
   rankingCampeonato?: RankingCampeonato[];
   _count?: {
-    inscricoes: number;
+    participacoes: number;
     partidas: number;
     fases: number;
   };
@@ -232,8 +234,8 @@ export interface CategoriaCampeonato {
   id: string;
   campeonatoId: string;
   nome: string;
-  idadeMinima?: number;
-  idadeMaxima?: number;
+  pesoMinimo?: number;
+  pesoMaximo?: number;
   genero?: string;
   createdAt: string;
 

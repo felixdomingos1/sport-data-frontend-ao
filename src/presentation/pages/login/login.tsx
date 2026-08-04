@@ -11,7 +11,7 @@ import {
   Trophy,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../../../store/auth.store';
 import { useLoadingStore } from '../../../store/loading.store';
 import { SEO } from '../../components/seo/seo';
@@ -33,12 +33,15 @@ const Login: React.FC = () => {
   const { login, isLoading, isAuthenticated } = useAuthStore();
   const { show: showLoading, hide: hideLoading } = useLoadingStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const redirectTo = searchParams.get('redirect');
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      navigate(redirectTo || '/dashboard', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, redirectTo]);
 
   useEffect(() => {
     useAuthStore.getState().clearSession();
@@ -104,7 +107,7 @@ const Login: React.FC = () => {
       }
       toast.success('Login realizado com sucesso!');
       showLoading('Bem-vindo! A preparar o painel...');
-      navigate('/dashboard', { replace: true });
+      navigate(redirectTo || '/dashboard', { replace: true });
     } catch (error: unknown) {
       hideLoading();
       let message: string | undefined;

@@ -26,15 +26,17 @@ function Connector({ width, height, top, left }: { width: number; height: number
       >
         <path
           d={`M 0 0 H ${width / 2} V ${height} H 0`}
-          stroke="rgba(255,255,255,0.18)"
+          stroke="rgba(255,255,255,0.2)"
           strokeWidth="1.5"
-          strokeLinecap="square"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d={`M ${width / 2} ${height / 2} H ${width}`}
-          stroke="rgba(255,255,255,0.18)"
+          stroke="rgba(255,255,255,0.2)"
           strokeWidth="1.5"
-          strokeLinecap="square"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>
@@ -63,7 +65,23 @@ function RoundColumns({ bracket, matches, startRound = 0 }: TreeProps) {
         const feederIdx = isBronzeCol
           ? columns.findIndex((c) => c.list.length === 2)
           : colIdx - 1;
-        const hasConnector = colIdx > 0 && feederIdx >= 0;
+
+        let label: string;
+        if (isBronzeCol) {
+          label = 'Disputa 3º Lugar';
+        } else if (list.length === 1) {
+          label = 'Final';
+        } else {
+          const roundNames: Record<number, string> = {
+            2: 'Semi-Final',
+            4: 'Quartos de Final',
+            8: 'Oitavos de Final',
+            16: '16 avos de Final',
+            32: '32 avos de Final',
+          };
+          label = roundNames[list.length] ?? roundLabel(round, totalRounds + startRound);
+        }
+        const hasConnector = colIdx > 0 && feederIdx >= 0 && !isBronzeCol;
         const slotPrev = hasConnector ? totalHeight / columns[feederIdx].list.length : 0;
         const connWidth = hasConnector
           ? colIdx * (CARD_W + H_GAP) - (feederIdx * (CARD_W + H_GAP) + CARD_W)
@@ -74,13 +92,17 @@ function RoundColumns({ bracket, matches, startRound = 0 }: TreeProps) {
         return (
           <div key={round} className="flex flex-col">
             <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 whitespace-nowrap">
-              {roundLabel(round, totalRounds + startRound)}
+              {label}
             </span>
             <div className="flex flex-col" style={{ height: totalHeight }}>
-              {list.map((m) => (
+              {list.map((m, j) => (
                 <div key={m.id} className="relative flex flex-col justify-center" style={{ height: slotR }}>
                   <div className="relative" style={{ width: CARD_W }}>
-                    <BracketMatchCard match={m} participantes={bracket.participantes} />
+                    <BracketMatchCard
+                      match={m}
+                      participantes={bracket.participantes}
+                      placeAbove={j >= list.length / 2}
+                    />
                     {hasConnector && (
                       <Connector width={connWidth} height={slotPrev} top={connTop} left={connLeft} />
                     )}

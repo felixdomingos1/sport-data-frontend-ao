@@ -19,6 +19,60 @@ const STATUS_STYLE: Record<BracketMatchStatus, { label: string; cls: string }> =
   DESCLASSIFICADA: { label: 'Desclassificada', cls: 'bg-red-500/20 text-red-400' },
 };
 
+function Avatar({ participant, isWinner }: { participant?: BracketParticipant; isWinner: boolean }) {
+  return (
+    <div
+      className={`relative w-6 h-6 rounded-full overflow-hidden shrink-0 bg-white/[0.06] ${
+        isWinner
+          ? 'ring-2 ring-amber-400/90 shadow-[0_0_8px_rgba(251,191,36,0.35)]'
+          : 'ring-1 ring-white/10'
+      }`}
+    >
+      {participant?.foto ? (
+        <img
+          src={participant.foto}
+          alt={participant.nome ?? 'Atleta'}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <span className="w-full h-full flex items-center justify-center text-white/40">
+          <User className="w-3.5 h-3.5" />
+        </span>
+      )}
+    </div>
+  );
+}
+
+function ParticipantInfo({
+  participant,
+  isWinner,
+}: {
+  participant?: BracketParticipant;
+  isWinner: boolean;
+}) {
+  const hasMeta = participant?.peso != null || participant?.pontos != null;
+  return (
+    <div className="flex-1 min-w-0">
+      <p
+        className={`text-[11px] font-semibold truncate leading-tight ${
+          isWinner ? 'text-amber-400' : 'text-white/85'
+        }`}
+      >
+        {participant ? participant.nome ?? 'TBD' : 'TBD'}
+      </p>
+      {hasMeta && (
+        <p className="text-[8px] text-white/40 truncate leading-tight">
+          {participant?.peso != null && `${participant.peso} kg`}
+          {participant?.peso != null && participant?.pontos != null && ' · '}
+          {participant?.pontos != null && `${participant.pontos} pts`}
+          {participant?.clube && ` · ${participant.clube}`}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function ParticipantRow({
   label,
   participant,
@@ -39,30 +93,22 @@ function ParticipantRow({
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 px-3 py-2 ${
+      className={`flex items-center gap-2 px-2.5 py-1.5 ${
         isTop ? 'border-b border-white/5' : ''
-      } ${isWinner ? 'bg-brand/5' : ''}`}
+      } ${isWinner ? 'bg-amber-400/[0.06]' : ''} transition-colors`}
     >
-      <span className="flex items-center gap-2 min-w-0">
-        <span className="text-white/20 shrink-0">
-          {isTop ? <Shield className="w-3 h-3" /> : <User className="w-3 h-3" />}
+      <Avatar participant={participant} isWinner={isWinner} />
+      {isByeSlot ? (
+        <span className="flex-1 min-w-0 text-[11px] font-semibold italic text-white/25">
+          {showBye ? 'BYE' : 'TBD'}
         </span>
-        <span
-          className={`text-xs font-semibold truncate ${
-            isByeSlot
-              ? 'text-white/20 italic'
-              : isWinner
-                ? 'text-brand font-bold'
-                : 'text-white/80'
-          }`}
-        >
-          {isByeSlot ? (showBye ? 'BYE' : 'TBD') : label}
-        </span>
-      </span>
+      ) : (
+        <ParticipantInfo participant={participant} isWinner={isWinner} />
+      )}
       {hasScore && (
         <span
           className={`text-sm font-black tabular-nums shrink-0 ${
-            isWinner ? 'text-brand' : 'text-white/40'
+            isWinner ? 'text-amber-400' : 'text-white/40'
           }`}
         >
           {score}
@@ -72,13 +118,48 @@ function ParticipantRow({
   );
 }
 
+function AthleteTooltip({ participant }: { participant?: BracketParticipant }) {
+  if (!participant || !participant.nome) return null;
+  return (
+    <div className="flex items-center gap-2.5 py-1.5">
+      <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-white/[0.06] ring-1 ring-white/10">
+        {participant.foto ? (
+          <img src={participant.foto} alt={participant.nome} className="w-full h-full object-cover" />
+        ) : (
+          <span className="w-full h-full flex items-center justify-center text-white/40">
+            <User className="w-4 h-4" />
+          </span>
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-bold text-white truncate">{participant.nome}</p>
+        <p className="text-[9px] text-white/40 truncate">
+          {participant.clube ?? 'Sem clube'}
+          {participant.seed != null && ` · Seed ${participant.seed}`}
+        </p>
+        <p className="text-[9px] text-white/50">
+          {participant.peso != null && `${participant.peso} kg`}
+          {participant.peso != null && participant.pontos != null && ' · '}
+          {participant.pontos != null && `${participant.pontos} pts`}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 interface BracketMatchCardProps {
   match: BracketMatch;
   participantes: BracketParticipant[];
   compact?: boolean;
+  placeAbove?: boolean;
 }
 
-const BracketMatchCard: React.FC<BracketMatchCardProps> = ({ match, participantes, compact }) => {
+const BracketMatchCard: React.FC<BracketMatchCardProps> = ({
+  match,
+  participantes,
+  compact,
+  placeAbove,
+}) => {
   const statusInfo = STATUS_STYLE[match.status] ?? STATUS_STYLE.AGENDADA;
   const a = getParticipant(participantes, match.participantA);
   const b = getParticipant(participantes, match.participantB);
@@ -102,7 +183,7 @@ const BracketMatchCard: React.FC<BracketMatchCardProps> = ({ match, participante
 
   return (
     <div
-      className={`flex flex-col h-[112px] bg-white/[0.03] border rounded-lg overflow-hidden w-[210px] transition-all ${
+      className={`group relative z-0 flex flex-col h-[112px] bg-white/[0.03] border rounded-lg w-[210px] transition-all group-hover:z-40 ${
         isFinished
           ? 'border-white/10'
           : isLive
@@ -112,7 +193,7 @@ const BracketMatchCard: React.FC<BracketMatchCardProps> = ({ match, participante
     >
       {(isLive || sectionLabel) && (
         <div
-          className={`flex items-center justify-center gap-1.5 py-1 shrink-0 ${
+          className={`flex items-center justify-center gap-1.5 py-1 rounded-t-lg shrink-0 ${
             isLive ? 'bg-brand/10' : 'bg-white/[0.02]'
           }`}
         >
@@ -150,11 +231,26 @@ const BracketMatchCard: React.FC<BracketMatchCardProps> = ({ match, participante
         />
       </div>
       {!compact && (
-        <div className="flex items-center justify-between px-3 py-1 border-t border-white/5 shrink-0">
+        <div className="flex items-center justify-between px-3 py-1 rounded-b-lg border-t border-white/5 shrink-0">
           <span className="text-[9px] text-white/25 uppercase tracking-widest">{statusInfo.label}</span>
           {match.group && (
             <span className="text-[9px] text-white/25 uppercase tracking-widest">{match.group}</span>
           )}
+        </div>
+      )}
+
+      {(a || b) && (
+        <div
+          className={`absolute left-0 right-0 z-50 hidden group-hover:block pointer-events-none ${
+            placeAbove ? 'bottom-full mb-2' : 'top-full mt-2'
+          } bg-[#171717] border border-white/10 rounded-xl px-3 py-2 shadow-2xl`}
+        >
+          <div className="flex items-center gap-2 text-[8px] font-bold text-white/30 uppercase tracking-widest pb-1">
+            <Shield className="w-3 h-3" />
+            Dados do atleta
+          </div>
+          {a && <AthleteTooltip participant={a} />}
+          {b && <AthleteTooltip participant={b} />}
         </div>
       )}
     </div>

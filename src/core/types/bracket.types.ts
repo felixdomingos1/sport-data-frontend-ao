@@ -63,6 +63,7 @@ export interface BracketParticipant {
   clube?: string | null;
   bandeira?: string | null;
   foto?: string | null;
+  peso?: number | null;
   pontos?: number;
   [key: string]: unknown;
 }

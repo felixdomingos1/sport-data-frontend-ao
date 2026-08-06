@@ -61,7 +61,7 @@ const StatusBadge: React.FC<{ status: EventCardData['status'] }> = ({ status }) 
     </span>
   );
   return (
-    <span className="inline-flex text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full bg-white/20 text-white/70">
+    <span className="inline-flex text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full bg-gray-300 dark:bg-white/20 text-gray-600 dark:text-white/70">
       Finalizado
     </span>
   );
@@ -188,7 +188,7 @@ const Eventos: React.FC = () => {
   const upcomingCount = filtered.filter(e => e.status === 'upcoming').length;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO title="Eventos" description="Eventos desportivos em Angola — calendário de competições, torneios e campeonatos." canonical="/eventos" />
       <div className="relative h-[480px] overflow-hidden">
         <img
@@ -197,7 +197,7 @@ const Eventos: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-transparent to-black/30" />
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-32 bg-brand rounded-full" />
         <div className="relative h-full flex flex-col justify-center pl-14 pr-8 max-w-4xl">
           <motion.p
@@ -223,7 +223,7 @@ const Eventos: React.FC = () => {
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.16 }}
-            className="text-white/60 text-base max-w-sm leading-relaxed"
+          className="text-gray-600 dark:text-white/60 text-base max-w-sm leading-relaxed"
           >
             Descubra e acompanhe as maiores competições desportivas de Angola.
           </motion.p>
@@ -246,7 +246,7 @@ const Eventos: React.FC = () => {
         </div>
       </div>
 
-      <div className="border-y border-white/5 bg-white/[0.02]">
+      <div className="border-y border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-10 overflow-x-auto scrollbar-none">
           {[
             { label: 'Eventos', value: events.length },
@@ -255,17 +255,17 @@ const Eventos: React.FC = () => {
             { label: 'Categorias', value: CATEGORIES.length - 1 },
           ].map(stat => (
             <div key={stat.label} className="flex items-center gap-3 shrink-0">
-              <span className={`text-2xl font-black tabular-nums ${stat.accent ? 'text-brand' : 'text-white'}`}>
+              <span className={`text-2xl font-black tabular-nums ${stat.accent ? 'text-brand' : 'text-gray-900 dark:text-white'}`}>
                 {stat.value}
               </span>
-              <span className="text-white/40 text-xs uppercase tracking-widest">{stat.label}</span>
-              <span className="w-px h-5 bg-white/10 last:hidden" />
+              <span className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-widest">{stat.label}</span>
+              <span className="w-px h-5 bg-gray-200 dark:bg-white/10 last:hidden" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="sticky top-0 z-30 bg-[#0A0A0B]/90 backdrop-blur-xl border-b border-white/5">
+      <div className="sticky top-0 z-30 bg-white/90 dark:bg-[#0A0A0B]/90 backdrop-blur-xl border-b border-gray-200 dark:border-white/5">
         <div
           ref={pillsRef}
           className="max-w-7xl mx-auto px-6 py-3 flex gap-2 overflow-x-auto scrollbar-none"
@@ -278,7 +278,7 @@ const Eventos: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${isActive
                     ? 'bg-white text-gray-900 shadow-lg shadow-white/10'
-                    : 'text-white/50 hover:text-white/80 hover:bg-white/8 border border-white/10'
+                    : 'text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-white/8 border border-gray-200 dark:border-white/10'
                   }`}
               >
                 {cat.name}
@@ -292,7 +292,7 @@ const Eventos: React.FC = () => {
         {loading ? (
           <SportLoadingScreen message="A carregar eventos..." fullscreen={false} size="md" />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-24 text-white/30">
+          <div className="text-center py-24 text-gray-400 dark:text-white/30">
             <p className="text-5xl mb-4">🏟</p>
             <p className="text-lg font-medium">Nenhum evento encontrado</p>
             <p className="text-sm mt-1">Tente seleccionar outra categoria</p>
@@ -308,11 +308,11 @@ const Eventos: React.FC = () => {
         )}
       </div>
 
-      <div className="border-t border-white/5 mt-4">
+      <div className="border-t border-gray-200 dark:border-white/5 mt-4">
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-white font-semibold text-sm">Quer registar o seu evento?</p>
-            <p className="text-white/40 text-xs mt-0.5">Publique competições e alcance atletas em todo o país.</p>
+            <p className="text-gray-900 dark:text-white font-semibold text-sm">Quer registar o seu evento?</p>
+            <p className="text-gray-500 dark:text-white/40 text-xs mt-0.5">Publique competições e alcance atletas em todo o país.</p>
           </div>
           <Link to="/registar-evento">
             <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand hover:bg-brand active:scale-95 transition-all duration-150 text-white text-sm font-bold tracking-wide">

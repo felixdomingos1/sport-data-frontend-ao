@@ -40,8 +40,14 @@ const MeusCampeonatos: React.FC = () => {
   const inscricaoAtiva = getInscricaoAtiva(profile?.inscricoes ?? dashboard?.ultimasInscricoes);
 
   useEffect(() => {
-    fetchDashboard();
-    campeonatoService.getActive({ limit: 10 }).then((res) => setProximos(res.data)).catch(() => setProximos([]));
+    fetchDashboard().then(() => {
+      const state = useAtletaMeStore.getState();
+      const inscricao = getInscricaoAtiva(state.profile?.inscricoes ?? state.dashboard?.ultimasInscricoes);
+      const fedId = inscricao?.federacaoId;
+      campeonatoService.getByFederacao(fedId || '', { limit: 50 })
+        .then((res) => setProximos(res.data.filter((c) => c.status === 'INSCRICOES_ABERTAS' || c.status === 'EM_ANDAMENTO')))
+        .catch(() => setProximos([]));
+    });
   }, [fetchDashboard]);
 
   const handleAbrirModal = async () => {

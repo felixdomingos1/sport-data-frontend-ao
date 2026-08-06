@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Calendar, Users, Trophy, Shield,
   Mail, Phone, Globe, ArrowRight, CheckCircle,
-  Star, TrendingUp,  Zap, Building,
+  TrendingUp,  Zap, Building,
   FileText, Activity, ChevronRight, AlertCircle
 } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
@@ -29,11 +29,11 @@ const FederacaoDetalhe: React.FC = () => {
 
   if (error || !federacaoAtual) {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-[#0A0A0B] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
           <AlertCircle className="w-16 h-16 text-brand mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">Federação não encontrada</h2>
-          <p className="text-white/60 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Federação não encontrada</h2>
+          <p className="text-gray-600 dark:text-white/60 mb-6">
             {error || 'A federação que você está procurando não existe ou foi removida.'}
           </p>
           <Link to="/federacoes" className="inline-flex items-center gap-2 px-6 py-3 bg-brand rounded-xl hover:bg-brand-hover transition">
@@ -49,7 +49,6 @@ const FederacaoDetalhe: React.FC = () => {
     { label: 'Clubes', value: federacaoAtual.clubes?.length || 0, icon: Building, color: 'text-blue-500' },
     { label: 'Atletas', value: federacaoAtual.atletas?.length || 0, icon: Users, color: 'text-green-500' },
     { label: 'Campeonatos', value: federacaoAtual.campeonatos?.length || 0, icon: Trophy, color: 'text-yellow-500' },
-    { label: 'Planos', value: federacaoAtual.planos?.length || 0, icon: Star, color: 'text-purple-500' },
   ];
 
   const getStatusColor = (status: string) => {
@@ -73,12 +72,12 @@ const FederacaoDetalhe: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO title={federacaoAtual?.nome ?? 'Federação'} description={federacaoAtual?.descricao ?? 'Detalhes da federação desportiva angolana.'} canonical={`/federacoes/${id}`} />
       {/* Hero Section */}
       <div className="relative h-[500px] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/40 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-transparent to-black/40 z-10" />
 
         {/* Background Image Pattern */}
         <div className="absolute inset-0 z-0">
@@ -135,7 +134,7 @@ const FederacaoDetalhe: React.FC = () => {
           </div>
 
           {federacaoAtual.descricao && (
-            <p className="mt-6 text-white/70 max-w-2xl leading-relaxed">
+            <p className="mt-6 text-gray-600 dark:text-white/70 max-w-2xl leading-relaxed">
               {federacaoAtual.descricao}
             </p>
           )}
@@ -143,15 +142,15 @@ const FederacaoDetalhe: React.FC = () => {
       </div>
 
       {/* Stats Strip */}
-      <div className="border-y border-white/5 bg-white/[0.02] sticky top-0 z-30 backdrop-blur-xl">
+      <div className="border-y border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-30 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="flex items-center gap-3 shrink-0">
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
                 <div>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/40 uppercase tracking-wider">{stat.label}</p>
+                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                   <p className="text-xs text-gray-500 dark:text-white/40 uppercase tracking-wider">{stat.label}</p>
                 </div>
               </div>
             ))}
@@ -161,13 +160,13 @@ const FederacaoDetalhe: React.FC = () => {
               <span className="animate-ping absolute inset-0 rounded-full bg-green-500/60" />
               <span className="relative rounded-full bg-green-500 w-full h-full" />
             </span>
-            <span className="text-xs text-white/60">Ativo</span>
+            <span className="text-xs text-gray-600 dark:text-white/60">Ativo</span>
           </div>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="border-b border-white/10 bg-[#0A0A0B]/80 backdrop-blur-sm sticky top-[73px] z-20">
+      <div className="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0A0A0B]/80 backdrop-blur-sm sticky top-[73px] z-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {[
@@ -181,8 +180,8 @@ const FederacaoDetalhe: React.FC = () => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-2 py-4 border-b-2 transition-all duration-200 ${activeTab === tab.id
-                    ? 'border-brand text-white'
-                    : 'border-transparent text-white/50 hover:text-white/80'
+                    ? 'border-brand text-gray-900 dark:text-white'
+                    : 'border-transparent text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80'
                   }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -211,91 +210,56 @@ const FederacaoDetalhe: React.FC = () => {
               className="space-y-8"
             >
               {/* Descrição */}
-              <div className="bg-white/5 rounded-2xl p-6">
+              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-brand-light" />
                   Sobre a Federação
                 </h2>
-                <p className="text-white/70 leading-relaxed">
+                <p className="text-gray-600 dark:text-white/70 leading-relaxed">
                   {federacaoAtual.descricao || 'Informações não disponíveis.'}
                 </p>
               </div>
 
-              {/* Planos Disponíveis */}
-              {federacaoAtual.planos && federacaoAtual.planos.length > 0 && (
-                <div>
-                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-400" />
-                    Planos Disponíveis
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {federacaoAtual.planos.map((plano) => (
-                      <div key={plano.id} className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 transition-all">
-                        <h3 className="font-bold text-lg">{plano.nome}</h3>
-                        <p className="text-2xl font-bold text-brand-light mt-2">
-                          {Number(plano.preco).toLocaleString()} KZ
-                        </p>
-                        <p className="text-sm text-white/50">
-                          {plano.duracao === 'TRIMESTRAL' ? 'Trimestral' :
-                            plano.duracao === 'SEMESTRAL' ? 'Semestral' :
-                              plano.duracao === 'ANUAL' ? 'Anual' : 'Mensal'}
-                        </p>
-                        {plano.beneficios && plano.beneficios.length > 0 && (
-                          <div className="mt-3 space-y-1">
-                            {plano.beneficios.slice(0, 3).map((beneficio, idx) => (
-                              <div key={idx} className="flex items-center gap-2 text-sm text-white/60">
-                                <CheckCircle className="w-3 h-3 text-green-400" />
-                                <span>{beneficio}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Informações de Contato */}
-              <div className="bg-white/5 rounded-2xl p-6">
+              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <Mail className="w-5 h-5 text-brand-light" />
                   Contactos
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {federacaoAtual.email && (
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-lg">
                       <Mail className="w-5 h-5 text-brand-light" />
                       <div>
-                        <p className="text-sm text-white/50">Email</p>
-                        <p className="text-white">{federacaoAtual.email}</p>
+                        <p className="text-sm text-gray-500 dark:text-white/50">Email</p>
+                        <p className="text-gray-900 dark:text-white">{federacaoAtual.email}</p>
                       </div>
                     </div>
                   )}
                   {federacaoAtual.telefone && (
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-lg">
                       <Phone className="w-5 h-5 text-brand-light" />
                       <div>
-                        <p className="text-sm text-white/50">Telefone</p>
-                        <p className="text-white">{federacaoAtual.telefone}</p>
+                        <p className="text-sm text-gray-500 dark:text-white/50">Telefone</p>
+                        <p className="text-gray-900 dark:text-white">{federacaoAtual.telefone}</p>
                       </div>
                     </div>
                   )}
                   {federacaoAtual.endereco && (
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-lg">
                       <MapPin className="w-5 h-5 text-brand-light" />
                       <div>
-                        <p className="text-sm text-white/50">Endereço</p>
-                        <p className="text-white">{federacaoAtual.endereco}</p>
+                        <p className="text-sm text-gray-500 dark:text-white/50">Endereço</p>
+                        <p className="text-gray-900 dark:text-white">{federacaoAtual.endereco}</p>
                       </div>
                     </div>
                   )}
                   {federacaoAtual.website && (
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-lg">
                       <Globe className="w-5 h-5 text-brand-light" />
                       <div>
-                        <p className="text-sm text-white/50">Website</p>
-                        <a href={federacaoAtual.website} target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand-light transition">
+                        <p className="text-sm text-gray-500 dark:text-white/50">Website</p>
+                        <a href={federacaoAtual.website} target="_blank" rel="noopener noreferrer" className="text-gray-900 dark:text-white hover:text-brand-light transition">
                           {federacaoAtual.website.replace('https://', '')}
                         </a>
                       </div>
@@ -329,9 +293,9 @@ const FederacaoDetalhe: React.FC = () => {
                           )}
                           <div className="flex-1">
                             <h3 className="font-bold group-hover:text-brand-light transition">{clube.nome}</h3>
-                            <p className="text-sm text-white/50">{clube.cidade || 'Localização não definida'}</p>
+                            <p className="text-sm text-gray-500 dark:text-white/50">{clube.cidade || 'Localização não definida'}</p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-brand-light transition" />
+                          <ChevronRight className="w-5 h-5 text-gray-400 dark:text-white/30 group-hover:text-brand-light transition" />
                         </div>
                       </div>
                     </Link>
@@ -339,8 +303,8 @@ const FederacaoDetalhe: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-16">
-                  <Building className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                  <p className="text-white/50">Nenhum clube registrado nesta federação</p>
+                  <Building className="w-16 h-16 text-gray-300 dark:text-white/20 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-white/50">Nenhum clube registrado nesta federação</p>
                 </div>
               )}
             </motion.div>
@@ -363,7 +327,7 @@ const FederacaoDetalhe: React.FC = () => {
                       onClick={() => setSelectedYear(year)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition whitespace-nowrap ${selectedYear === year
                           ? 'bg-brand text-white'
-                          : 'bg-white/10 text-white/60 hover:bg-white/20'
+                          : 'bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-white/60 hover:bg-gray-300 dark:hover:bg-white/20'
                         }`}
                     >
                       {year}
@@ -382,10 +346,10 @@ const FederacaoDetalhe: React.FC = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <span className={`w-2 h-2 rounded-full ${getStatusColor(camp.status)}`} />
-                              <span className="text-xs text-white/60">{getStatusText(camp.status)}</span>
+                              <span className="text-xs text-gray-600 dark:text-white/60">{getStatusText(camp.status)}</span>
                             </div>
                             <h3 className="text-lg font-bold">{camp.nome}</h3>
-                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-white/50">
+                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500 dark:text-white/50">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
                                 {new Date(camp.dataInicio).toLocaleDateString('pt-PT')} - {new Date(camp.dataFim).toLocaleDateString('pt-PT')}
@@ -412,8 +376,8 @@ const FederacaoDetalhe: React.FC = () => {
 
               {(!federacaoAtual.campeonatos || federacaoAtual.campeonatos.filter(c => c.temporada === selectedYear).length === 0) && (
                 <div className="text-center py-16">
-                  <Trophy className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                  <p className="text-white/50">Nenhum campeonato encontrado para {selectedYear}</p>
+                  <Trophy className="w-16 h-16 text-gray-300 dark:text-white/20 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-white/50">Nenhum campeonato encontrado para {selectedYear}</p>
                 </div>
               )}
             </motion.div>
@@ -436,7 +400,7 @@ const FederacaoDetalhe: React.FC = () => {
 
                     return (
                       <Link key={inscricao.id} to={`/atletas/${inscricao.atletaId}`}>
-                        <div className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-brand/50 hover:bg-white/10 transition-all group">
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 border border-gray-200 dark:border-white/10 hover:border-brand/50 dark:hover:bg-white/10 hover:bg-gray-100 transition-all group">
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-12 bg-gradient-to-br from-brand to-brand-hover rounded-full flex items-center justify-center overflow-hidden shrink-0">
                               {atletaImg ? (
@@ -449,9 +413,9 @@ const FederacaoDetalhe: React.FC = () => {
                             </div>
                             <div className="flex-1">
                               <h3 className="font-bold group-hover:text-brand-light transition">{atletaNome}</h3>
-                              <p className="text-sm text-white/50">Nº Registro: {inscricao.numeroRegistro || 'N/A'}</p>
+                              <p className="text-sm text-gray-500 dark:text-white/50">Nº Registro: {inscricao.numeroRegistro || 'N/A'}</p>
                             </div>
-                            <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-brand-light transition" />
+                            <ChevronRight className="w-5 h-5 text-gray-400 dark:text-white/30 group-hover:text-brand-light transition" />
                           </div>
                         </div>
                       </Link>
@@ -460,8 +424,8 @@ const FederacaoDetalhe: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-16">
-                  <Users className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                  <p className="text-white/50">Nenhum atleta registrado nesta federação</p>
+                  <Users className="w-16 h-16 text-gray-300 dark:text-white/20 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-white/50">Nenhum atleta registrado nesta federação</p>
                 </div>
               )}
             </motion.div>
@@ -476,8 +440,8 @@ const FederacaoDetalhe: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               className="text-center py-16"
             >
-              <TrendingUp className="w-16 h-16 text-white/20 mx-auto mb-4" />
-              <p className="text-white/50">Rankings serão exibidos em breve</p>
+              <TrendingUp className="w-16 h-16 text-gray-300 dark:text-white/20 mx-auto mb-4" />
+              <p className="text-gray-500 dark:text-white/50">Rankings serão exibidos em breve</p>
               <Link to="/rankings" className="inline-block mt-4 text-brand-light hover:text-brand-light transition">
                 Ver rankings gerais →
               </Link>
@@ -491,7 +455,7 @@ const FederacaoDetalhe: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-white font-semibold text-sm">Quer fazer parte desta federação?</p>
-            <p className="text-white/40 text-xs mt-0.5">Registre-se como atleta ou clube e comece a competir.</p>
+            <p className="text-gray-500 dark:text-white/40 text-xs mt-0.5">Registre-se como atleta ou clube e comece a competir.</p>
           </div>
           <Link to="/register">
             <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand hover:bg-brand active:scale-95 transition-all duration-150 text-white text-sm font-bold tracking-wide">

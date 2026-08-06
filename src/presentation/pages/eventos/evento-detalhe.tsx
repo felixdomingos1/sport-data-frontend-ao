@@ -71,7 +71,7 @@ const EventoDetalhe: React.FC = () => {
   const statusInfo = STATUS_MAP[evento.status] ?? STATUS_MAP.PUBLICADO;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO
         title={evento.titulo}
         description={evento.descricao ?? `Evento desportivo: ${evento.titulo}`}
@@ -85,13 +85,13 @@ const EventoDetalhe: React.FC = () => {
           alt={evento.titulo}
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-black/40 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-black/40 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
 
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-24 bg-brand rounded-full" />
 
         <div className="relative h-full flex flex-col justify-end pl-14 pr-8 pb-10 max-w-4xl">
-          <Link to="/eventos" className="inline-flex items-center gap-2 text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-white transition-colors w-fit">
+          <Link to="/eventos" className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-gray-900 dark:hover:text-white transition-colors w-fit">
             <ArrowLeft className="w-3.5 h-3.5" />
             Voltar aos eventos
           </Link>
@@ -122,7 +122,7 @@ const EventoDetalhe: React.FC = () => {
             </h1>
 
             {evento.modalidade && (
-              <p className="text-white/50 text-sm font-semibold tracking-wide">{evento.modalidade}</p>
+              <p className="text-gray-500 dark:text-white/50 text-sm font-semibold tracking-wide">{evento.modalidade}</p>
             )}
           </motion.div>
         </div>
@@ -135,36 +135,36 @@ const EventoDetalhe: React.FC = () => {
           transition={{ delay: 0.15 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
-          <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
+          <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-4">
             <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-brand" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Início</p>
-              <p className="text-sm font-bold text-white">{formatDate(evento.dataInicio)}</p>
+              <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Início</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(evento.dataInicio)}</p>
             </div>
           </div>
 
           {evento.dataFim && (
-            <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
-              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-white/60" />
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-4">
+              <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-gray-500 dark:text-white/60" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Fim</p>
-                <p className="text-sm font-bold text-white">{formatDate(evento.dataFim)}</p>
+                <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Fim</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(evento.dataFim)}</p>
               </div>
             </div>
           )}
 
           {evento.local && (
-            <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
-              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-white/60" />
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-4">
+              <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-gray-500 dark:text-white/60" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Local</p>
-                <p className="text-sm font-bold text-white">{evento.local}</p>
+                <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Local</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{evento.local}</p>
               </div>
             </div>
           )}
@@ -176,8 +176,8 @@ const EventoDetalhe: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
           >
-            <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">Sobre o Evento</h2>
-            <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">{evento.descricao}</p>
+            <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest mb-3">Sobre o Evento</h2>
+            <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed whitespace-pre-line">{evento.descricao}</p>
           </motion.div>
         )}
 
@@ -187,8 +187,8 @@ const EventoDetalhe: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
           >
-            <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">Endereço</h2>
-            <div className="flex items-center gap-2 text-white/60 text-sm">
+            <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest mb-3">Endereço</h2>
+            <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-sm">
               <MapPin className="w-4 h-4 shrink-0" />
               <span>{evento.endereco}</span>
             </div>
@@ -200,15 +200,15 @@ const EventoDetalhe: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="bg-white/[0.03] border border-white/5 rounded-xl p-5"
+            className="bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-5"
           >
-            <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">Organização</h2>
+            <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest mb-3">Organização</h2>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-white/60" />
+              <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-gray-500 dark:text-white/60" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">
+                <p className="text-sm font-bold text-gray-900 dark:text-white">
                   {evento.federacao?.nome ?? evento.academia?.nome ?? "Entidade Desportiva"}
                 </p>
               </div>

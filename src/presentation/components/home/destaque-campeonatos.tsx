@@ -36,17 +36,17 @@ const DestaqueCampeonatos: React.FC = () => {
   if (loading || campeonatos.length === 0) return null;
 
   return (
-    <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+    <section className="py-20 lg:py-28 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-12 gap-6">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-1 h-8 bg-[#E60000] rounded-full" />
-              <h2 className="text-3xl lg:text-4xl font-bold text-white">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                 Campeonatos de Combate
               </h2>
             </div>
-            <p className="text-gray-500 text-base lg:text-lg">
+            <p className="text-gray-600 dark:text-gray-500 text-base lg:text-lg">
               Jiu-Jitsu, Karaté e Judo — inscreva-se e acompanhe o chaveamento
             </p>
           </div>
@@ -99,11 +99,11 @@ const DestaqueCampeonatos: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="p-5 bg-[#0f0f0f] border border-[#1a1a1a] border-t-0 rounded-b-2xl">
-                    <h3 className="text-white font-bold leading-snug line-clamp-2 mb-3 group-hover:text-[#E60000] transition-colors">
+                  <div className="p-5 bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a] border-t-0 rounded-b-2xl">
+                    <h3 className="text-gray-900 dark:text-white font-bold leading-snug line-clamp-2 mb-3 group-hover:text-[#E60000] transition-colors">
                       {campeonato.nome}
                     </h3>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-500">
                       <span className="inline-flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
                         {formatDate(campeonato.dataInicio)} — {formatDate(campeonato.dataFim)}

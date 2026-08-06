@@ -154,10 +154,14 @@ export function StyledDatePicker({
     }
   }
 
+  const inputCls = `w-full pl-10 pr-10 py-3 border rounded-xl text-sm transition focus:outline-none focus:border-[#E60000]/50 ${
+    showError ? 'border-red-500' : 'border-gray-200 dark:border-[#2a2a2a]'
+  } bg-gray-100 dark:bg-[#1a1a1a] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600`;
+
   return (
     <div ref={containerRef} className="relative">
       {label && (
-        <label className="block text-sm font-medium text-gray-400 mb-2">{label}</label>
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{label}</label>
       )}
       <div className="relative">
         <input
@@ -169,38 +173,36 @@ export function StyledDatePicker({
           onKeyDown={handleInputKeyDown}
           onFocus={() => setOpen(true)}
           placeholder="DD/MM/AAAA"
-          className={`w-full pl-10 pr-10 py-3 bg-[#1a1a1a] border rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition ${
-            showError ? 'border-brand' : 'border-[#2a2a2a]'
-          }`}
+          className={inputCls}
         />
-        <CalendarIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+        <CalendarIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
         <button
           type="button"
           onClick={() => setOpen(!open)}
           tabIndex={-1}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-[#2a2a2a] text-gray-500 hover:text-white transition"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2a2a2a] text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white transition"
         >
           <ChevronDown className={`w-4 h-4 transition ${open ? 'rotate-180' : ''}`} />
         </button>
       </div>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-[300px] bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-2xl p-4">
+        <div className="absolute z-50 mt-1 w-[300px] bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-xl shadow-2xl p-4">
           <div className="flex items-center justify-between mb-4">
-            <button type="button" onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-[#2a2a2a] text-gray-400 hover:text-white transition">
+            <button type="button" onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2a] text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white transition">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-sm font-medium text-white">
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
               {MONTHS[viewMonth]} {viewYear}
             </span>
-            <button type="button" onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-[#2a2a2a] text-gray-400 hover:text-white transition">
+            <button type="button" onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2a] text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white transition">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-1 mb-2">
             {DAYS.map((d) => (
-              <div key={d} className="text-center text-xs text-gray-500 font-medium py-1">{d}</div>
+              <div key={d} className="text-center text-xs text-gray-400 dark:text-gray-500 font-medium py-1">{d}</div>
             ))}
           </div>
 
@@ -216,7 +218,7 @@ export function StyledDatePicker({
                         ? 'bg-[#E60000] text-white'
                         : isToday(day)
                           ? 'border border-[#E60000] text-[#E60000]'
-                          : 'text-gray-300 hover:bg-[#2a2a2a]'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2a2a2a]'
                     }`}
                   >
                     {day}

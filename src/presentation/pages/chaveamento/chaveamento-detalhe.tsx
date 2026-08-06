@@ -10,6 +10,7 @@ import {
   BarChart3,
   Shield,
   Network,
+  Monitor,
 } from 'lucide-react';
 import { competicaoService, type ClassificacaoItem } from '../../../infrastructure/services/competicao.service';
 import { bracketService } from '../../../infrastructure/services/bracket.service';
@@ -74,17 +75,17 @@ const StandingsTable: React.FC<{ data: ClassificacaoItem[] }> = ({ data }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-sm">
       <thead>
-        <tr className="border-b border-white/5">
-          <th className="text-left text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">#</th>
-          <th className="text-left text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">Equipa / Atleta</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">J</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">V</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">E</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">D</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">GP</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">GC</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">SG</th>
-          <th className="text-center text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">Pts</th>
+        <tr className="border-b border-gray-200 dark:border-white/5">
+          <th className="text-left text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">#</th>
+          <th className="text-left text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">Equipa / Atleta</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">J</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">V</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">E</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">D</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">GP</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">GC</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-2">SG</th>
+          <th className="text-center text-gray-500 dark:text-white/40 text-xs font-bold uppercase tracking-widest py-3 px-4">Pts</th>
         </tr>
       </thead>
       <tbody>
@@ -97,13 +98,13 @@ const StandingsTable: React.FC<{ data: ClassificacaoItem[] }> = ({ data }) => (
             <td className="py-3 px-4 text-white font-semibold text-sm">
               {row.nomeEquipa ?? row.nomeAtleta ?? '—'}
             </td>
-            <td className="text-center py-3 px-2 text-white/50 text-xs">{row.vitorias + row.derrotas + row.empates}</td>
+            <td className="text-center py-3 px-2 text-gray-500 dark:text-white/50 text-xs">{row.vitorias + row.derrotas + row.empates}</td>
             <td className="text-center py-3 px-2 text-emerald-400 text-xs font-semibold">{row.vitorias}</td>
             <td className="text-center py-3 px-2 text-amber-400 text-xs">{row.empates}</td>
             <td className="text-center py-3 px-2 text-red-400 text-xs">{row.derrotas}</td>
-            <td className="text-center py-3 px-2 text-white/50 text-xs">{row.golsPro}</td>
-            <td className="text-center py-3 px-2 text-white/50 text-xs">{row.golsContra}</td>
-            <td className="text-center py-3 px-2 text-white/50 text-xs">
+            <td className="text-center py-3 px-2 text-gray-500 dark:text-white/50 text-xs">{row.golsPro}</td>
+            <td className="text-center py-3 px-2 text-gray-500 dark:text-white/50 text-xs">{row.golsContra}</td>
+            <td className="text-center py-3 px-2 text-gray-500 dark:text-white/50 text-xs">
               {row.saldoGols > 0 ? `+${row.saldoGols}` : row.saldoGols}
             </td>
             <td className="text-center py-3 px-4 text-white font-bold text-sm">{row.pontos}</td>
@@ -138,7 +139,7 @@ const FasesView: React.FC<{
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
                 activeTab === fase.id
                   ? 'bg-brand text-white shadow-lg shadow-brand/20'
-                  : 'bg-white/5 text-white/50 hover:text-white/80 hover:bg-white/10 border border-white/5'
+                  : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/50 hover:text-white/80 hover:bg-white/10 border border-gray-200 dark:border-white/5'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
@@ -148,8 +149,8 @@ const FasesView: React.FC<{
       </div>
 
       {activeFase && (
-        <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-white/5 flex items-center gap-3">
+        <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-gray-200 dark:border-white/5 rounded-xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-200 dark:border-white/5 flex items-center gap-3">
             <Trophy className="w-4 h-4 text-brand" />
             <span className="text-white font-bold text-sm">{activeFase.nome}</span>
           </div>
@@ -165,10 +166,10 @@ const FasesView: React.FC<{
                     {confrontos.map((partida) => (
                       <div
                         key={partida.id}
-                        className="bg-white/[0.03] border border-white/5 rounded-lg overflow-hidden min-w-[220px]"
+                        className="bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg overflow-hidden min-w-[220px]"
                       >
-                        <div className="px-3 py-1.5 border-b border-white/5 flex items-center justify-between">
-                          <span className="text-white/30 text-[10px] uppercase tracking-wider font-semibold">
+                        <div className="px-3 py-1.5 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+                          <span className="text-gray-400 dark:text-white/30 text-[10px] uppercase tracking-wider font-semibold">
                             Ronda {partida.rodada ?? 1}
                           </span>
                           <MatchStatusBadge status={partida.status} />
@@ -184,14 +185,14 @@ const FasesView: React.FC<{
                                   jp.participacao?.inscricao?.clube?.nome ??
                                   `Participante ${idx + 1}`}
                               </span>
-                              <span className={`text-sm font-black tabular-nums ${jp.vencedor ? 'text-white' : 'text-white/40'}`}>
+                              <span className={`text-sm font-black tabular-nums ${jp.vencedor ? 'text-white' : 'text-gray-500 dark:text-white/40'}`}>
                                 {jp.gols}
                               </span>
                             </div>
                           ))}
                         </div>
                         <div className="px-3 py-1 bg-white/[0.02]">
-                          <span className="text-white/30 text-[10px]">{formatMatchDate(partida.dataHora)}</span>
+                          <span className="text-gray-400 dark:text-white/30 text-[10px]">{formatMatchDate(partida.dataHora)}</span>
                         </div>
                       </div>
                     ))}
@@ -199,11 +200,11 @@ const FasesView: React.FC<{
                 </div>
               )}
               {showBracket && confrontos.length === 0 && (
-                <div className="py-12 text-center text-white/30 text-sm">Sem confrontos disponíveis</div>
+                <div className="py-12 text-center text-gray-400 dark:text-white/30 text-sm">Sem confrontos disponíveis</div>
               )}
               {!showBracket && classificacao.length > 0 && <StandingsTable data={classificacao} />}
               {!showBracket && classificacao.length === 0 && (
-                <div className="py-12 text-center text-white/30 text-sm">Sem classificação disponível</div>
+                <div className="py-12 text-center text-gray-400 dark:text-white/30 text-sm">Sem classificação disponível</div>
               )}
             </div>
           )}
@@ -280,6 +281,15 @@ const ChaveamentoDetalhe: React.FC = () => {
     useBracketStore.getState().fetchById(selectedBracketId).catch(() => undefined);
   }, [selectedBracketId]);
 
+  // RF-07.4 — tempo real no detalhe do chaveamento (socket público incluído)
+  useEffect(() => {
+    if (!selectedBracketId) return;
+    useBracketStore.getState().subscribeToBracket(selectedBracketId);
+    return () => {
+      useBracketStore.getState().unsubscribeFromBracket(selectedBracketId);
+    };
+  }, [selectedBracketId]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
@@ -308,7 +318,7 @@ const ChaveamentoDetalhe: React.FC = () => {
   const activeBracket: BracketDto | null = selectedBracket;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO
         title={campeonato.nome}
         description={`${campeonato.modalidade} — ${FORMATO_MAP[campeonato.formato] ?? campeonato.formato}. ${campeonato.descricao ?? 'Chaveamento e classificações do campeonato.'}`}
@@ -321,13 +331,13 @@ const ChaveamentoDetalhe: React.FC = () => {
           alt={campeonato.nome}
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-black/50 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-black/50 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
 
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-24 bg-brand rounded-full" />
 
         <div className="relative h-full flex flex-col justify-end pl-14 pr-8 pb-10 max-w-4xl">
-          <Link to="/chaveamento" className="inline-flex items-center gap-2 text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-white transition-colors w-fit">
+          <Link to="/chaveamento" className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-gray-900 dark:hover:text-white transition-colors w-fit">
             <ArrowLeft className="w-3.5 h-3.5" />
             Voltar aos chaveamentos
           </Link>
@@ -353,7 +363,7 @@ const ChaveamentoDetalhe: React.FC = () => {
               {campeonato.nome}
             </h1>
 
-            <p className="text-white/50 text-sm font-semibold tracking-wide">{campeonato.modalidade}</p>
+            <p className="text-gray-500 dark:text-gray-500 dark:text-white/50 text-sm font-semibold tracking-wide">{campeonato.modalidade}</p>
           </motion.div>
         </div>
       </div>
@@ -365,43 +375,55 @@ const ChaveamentoDetalhe: React.FC = () => {
           transition={{ delay: 0.15 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
-          <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
+          <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-gray-200 dark:border-white/5 rounded-xl p-4">
             <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center">
               <Calendar className="w-5 h-5 text-brand" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Início</p>
-              <p className="text-sm font-bold text-white">{formatDate(campeonato.dataInicio)}</p>
+              <p className="text-[10px] font-bold text-gray-500 dark:text-gray-500 dark:text-white/40 uppercase tracking-widest">Início</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(campeonato.dataInicio)}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white/60" />
+          <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-gray-200 dark:border-white/5 rounded-xl p-4">
+            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-gray-500 dark:text-white/60" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Fim</p>
-              <p className="text-sm font-bold text-white">{formatDate(campeonato.dataFim)}</p>
+              <p className="text-[10px] font-bold text-gray-500 dark:text-gray-500 dark:text-white/40 uppercase tracking-widest">Fim</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(campeonato.dataFim)}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
-              <Layers className="w-5 h-5 text-white/60" />
+          <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-gray-200 dark:border-white/5 rounded-xl p-4">
+            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+              <Layers className="w-5 h-5 text-gray-500 dark:text-white/60" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Tipo</p>
-              <p className="text-sm font-bold text-white">{campeonato.tipo === 'EQUIPAS' ? 'Equipes' : campeonato.tipo === 'INDIVIDUAL' ? 'Individual' : 'Misto'}</p>
+              <p className="text-[10px] font-bold text-gray-500 dark:text-gray-500 dark:text-white/40 uppercase tracking-widest">Tipo</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">{campeonato.tipo === 'EQUIPAS' ? 'Equipes' : campeonato.tipo === 'INDIVIDUAL' ? 'Individual' : 'Misto'}</p>
             </div>
           </div>
         </motion.div>
 
         {campeonato.descricao && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">Sobre o Campeonato</h2>
-            <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">{campeonato.descricao}</p>
+            <h2 className="text-sm font-bold text-gray-500 dark:text-gray-500 dark:text-white/40 uppercase tracking-widest mb-3">Sobre o Campeonato</h2>
+            <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed whitespace-pre-line">{campeonato.descricao}</p>
           </motion.div>
         )}
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <a
+            href={`/display/${campeonato.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-brand text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:brightness-110 transition-all"
+          >
+            <Monitor className="w-4 h-4" />
+            Abrir ecrã de resultados ao vivo
+          </a>
+        </motion.div>
 
         {showBrackets ? (
           <motion.div
@@ -420,7 +442,7 @@ const ChaveamentoDetalhe: React.FC = () => {
                     className={`px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
                       selectedBracketId === b.id
                         ? 'bg-brand text-white shadow-lg shadow-brand/20'
-                        : 'bg-white/5 text-white/50 hover:text-white/80 hover:bg-white/10 border border-white/5'
+                  : 'bg-gray-100 dark:bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-gray-200 dark:border-white/5'
                     }`}
                   >
                     {b.nome}
@@ -433,13 +455,13 @@ const ChaveamentoDetalhe: React.FC = () => {
             )}
 
             {isLoadingDetail && !activeBracket ? (
-              <div className="bg-white/[0.02] border border-white/5 rounded-xl py-20 flex justify-center">
+              <div className="bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl py-20 flex justify-center">
                 <SportLoadingScreen message="A carregar chaveamento..." fullscreen={false} size="md" />
               </div>
             ) : activeBracket ? (
               <BracketViewer bracket={activeBracket} />
             ) : (
-              <div className="bg-white/[0.02] border border-white/5 rounded-xl py-16 text-center text-white/30">
+              <div className="bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl py-16 text-center text-gray-400 dark:text-white/30">
                 <p className="text-sm">Chaveamento indisponível</p>
               </div>
             )}
@@ -453,7 +475,7 @@ const ChaveamentoDetalhe: React.FC = () => {
           >
             <div className="flex items-center gap-3">
               <Shield className="w-4 h-4 text-brand" />
-              <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest">Fases</h2>
+              <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Fases</h2>
             </div>
             {fases.length > 0 ? (
               <FasesView
@@ -465,7 +487,7 @@ const ChaveamentoDetalhe: React.FC = () => {
                 classificacao={classificacao}
               />
             ) : (
-              <div className="text-center py-16 text-white/30">
+              <div className="text-center py-16 text-gray-400 dark:text-white/30">
                 <p className="text-sm">Nenhuma fase configurada para este campeonato</p>
               </div>
             )}

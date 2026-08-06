@@ -13,6 +13,7 @@ import {
   X,
   Globe,
   ClipboardList,
+  ShieldCheck,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
@@ -39,6 +40,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
     { label: 'Minha Inscrição', icon: ClipboardList, path: '/inscricoes' },
     { label: 'Documentos', icon: FileText, path: '/documentos' },
     { label: 'Pagamentos', icon: CreditCard, path: '/pagamentos' },
+    { label: 'Minha Assinatura', icon: ShieldCheck, path: '/minha-assinatura' },
     { label: 'Ranking', icon: Trophy, path: '/ranking-atleta' },
     { label: 'Competições', icon: Calendar, path: '/meus-campeonatos' },
     { label: 'Notificações', icon: Bell, path: '/notificacoes' },

@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
-import { Wallet, Calendar, CheckCircle, Download, Receipt } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Wallet, Calendar, CheckCircle, Download, Receipt, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
+import { assinaturaService, type Assinatura } from '@/infrastructure/services/assinatura.service';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 import {
   formatDatePt,
@@ -29,6 +30,8 @@ function StatusBadge({ status }: { status: string }) {
 const Pagamentos: React.FC = () => {
   const { profile, pagamentos, isLoading, isSaving, fetchMe, fetchPagamentos, createPagamento } =
     useAtletaMeStore();
+  const [minhaAssinatura, setMinhaAssinatura] = useState<Assinatura | null>(null);
+  const [loadingAssinatura, setLoadingAssinatura] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -38,6 +41,14 @@ const Pagamentos: React.FC = () => {
     };
     load();
   }, [fetchMe, fetchPagamentos]);
+
+  useEffect(() => {
+    setLoadingAssinatura(true);
+    assinaturaService.minhasAssinaturas()
+      .then((res) => setMinhaAssinatura(res?.ativa ?? null))
+      .catch(() => setMinhaAssinatura(null))
+      .finally(() => setLoadingAssinatura(false));
+  }, []);
 
   const inscricao = getInscricaoAtiva(profile?.inscricoes);
   const confirmados = pagamentos.filter((p) => p.status === 'CONFIRMADO');
@@ -103,9 +114,42 @@ const Pagamentos: React.FC = () => {
         </div>
       </div>
 
+      {minhaAssinatura && (
+        <div className="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-2xl p-5">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[var(--text-primary)]">{minhaAssinatura.plano?.nome ?? 'Plano'}</p>
+                <p className="text-xs text-[var(--text-muted)]">
+                  {minhaAssinatura.status === 'ATIVA' ? 'Activo' : 'Aguardando pagamento'} • Desde {formatDatePt(minhaAssinatura.dataInicio)} • Até {formatDatePt(minhaAssinatura.dataFim)}
+                </p>
+              </div>
+            </div>
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide border ${
+              minhaAssinatura.status === 'ATIVA'
+                ? 'bg-green-500/10 text-[#22C55E] border-green-500/20'
+                : 'bg-orange-500/10 text-[#F59E0B] border-orange-500/20'
+            }`}>
+              {minhaAssinatura.status === 'ATIVA' ? 'Activo' : 'Aguardando'}
+            </span>
+          </div>
+          <div className="mt-4 h-2 bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.min(100, ((new Date(minhaAssinatura.dataFim).getTime() - Date.now()) / (365 * 24 * 60 * 60 * 1000)) * 100)}%` }} />
+          </div>
+          {minhaAssinatura.status === 'AGUARDANDO_PAGAMENTO' && (
+            <p className="text-xs text-amber-400 mt-3">
+              Pagamento pendente. Use o endpoint público para confirmar: POST /api/v1/assinaturas/confirmar-pagamento
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
         <div className="px-5 py-4 border-b border-[var(--card-border)]">
-          <h3 className="text-base font-semibold text-[var(--text-primary)]">Plano Activo</h3>
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">Histórico de Pagamentos</h3>
         </div>
         <div className="p-5">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-5">

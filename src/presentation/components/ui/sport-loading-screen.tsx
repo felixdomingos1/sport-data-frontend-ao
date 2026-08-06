@@ -15,7 +15,7 @@ const SportLoadingScreen: React.FC<SportLoadingScreenProps> = ({
   if (fullscreen) {
     return (
       <div
-        className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a]"
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-[#0a0a0a]"
         role="status"
         aria-live="polite"
         aria-busy="true"

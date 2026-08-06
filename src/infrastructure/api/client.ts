@@ -118,6 +118,16 @@ class ApiClient {
       async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
+        // Normaliza a mensagem de erro para acesso consistente: error.message
+        const data = (error.response?.data ?? {}) as Record<string, unknown>;
+        if (data && typeof data === 'object') {
+          if (data.error && typeof data.error === 'object' && (data.error as Record<string, unknown>).message) {
+            (error as any).message = (data.error as Record<string, unknown>).message;
+          } else if (data.message && typeof data.message === 'string') {
+            (error as any).message = data.message;
+          }
+        }
+
         if (
           error.response?.status === 401 &&
           originalRequest &&
@@ -143,8 +153,9 @@ class ApiClient {
   }
 
   private handleSessionExpired(): void {
-    const isAuthPage =
-      window.location.pathname === '/login' || window.location.pathname === '/register';
+    console.log('[ApiClient] Sessão expirada — a limpar tokens');
+    const pathname = window.location.pathname;
+    const isAuthPage = pathname === '/login' || pathname === '/register';
 
     if (isAuthPage) {
       return;
@@ -155,9 +166,22 @@ class ApiClient {
     this.clearAccessToken();
     emitSessionCleared();
 
-    if (!this.isRedirectingToLogin) {
+    const isPrivatePage = pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/perfil') ||
+      pathname.startsWith('/meus-campeonatos') ||
+      pathname.startsWith('/inscricoes') ||
+      pathname.startsWith('/notificacoes') ||
+      pathname.startsWith('/documentos') ||
+      pathname.startsWith('/pagamentos') ||
+      pathname.startsWith('/minha-assinatura') ||
+      pathname.startsWith('/ranking-atleta');
+
+    if (isPrivatePage && !this.isRedirectingToLogin) {
       this.isRedirectingToLogin = true;
+      console.log('[ApiClient] Página privada — a redirecionar para /login');
       window.location.href = '/login';
+    } else {
+      console.log('[ApiClient] Página pública — sessão limpa sem redirect');
     }
   }
 

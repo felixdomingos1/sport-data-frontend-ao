@@ -16,7 +16,7 @@ const NotFound: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-brand-dark flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center p-4">
       <SEO title="Página não encontrada" description="A página que procura não existe." />
       <div className="max-w-2xl w-full">
         {/* Animated 404 */}
@@ -27,10 +27,10 @@ const NotFound: React.FC = () => {
           className="text-center mb-8"
         >
           <div className="relative">
-            <h1 className="text-9xl md:text-9xl font-bold text-white opacity-20">404</h1>
+            <h1 className="text-9xl md:text-9xl font-bold text-gray-900 dark:text-white opacity-20">404</h1>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mt-4">Página Não Encontrada</h2>
-          <p className="text-gray-400 mt-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">Página Não Encontrada</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Oops! A página que você está procurando não existe ou foi movida.
           </p>
         </motion.div>
@@ -40,14 +40,14 @@ const NotFound: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-8"
+          className="bg-gray-100 dark:bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-8"
         >
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Buscar por federações, clubes, atletas..."
-              className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand"
+              className="w-full pl-12 pr-4 py-3 bg-gray-200 dark:bg-white/20 border border-gray-300 dark:border-white/30 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand"
             />
           </div>
         </motion.div>
@@ -63,11 +63,11 @@ const NotFound: React.FC = () => {
             <Link
               key={item.name + index}
               to={item.path}
-              className="group relative overflow-hidden bg-white/10 backdrop-blur-lg rounded-xl p-4 text-center hover:bg-white/20 transition-all duration-300"
+              className="group relative overflow-hidden bg-gray-100 dark:bg-white/10 backdrop-blur-lg rounded-xl p-4 text-center hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-300"
             >
               <div className={`absolute inset-0 ${item.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
               <item.icon className={`w-8 h-8 mx-auto mb-2 ${item.color.replace('bg-', 'text-')}`} />
-              <p className="text-white font-medium">{item.name}</p>
+              <p className="text-gray-900 dark:text-white font-medium">{item.name}</p>
             </Link>
           ))}
         </motion.div>
@@ -81,7 +81,7 @@ const NotFound: React.FC = () => {
         >
           <button
             onClick={() => window.history.back()}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-lg rounded-xl text-white hover:bg-white/20 transition group"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 backdrop-blur-lg rounded-xl text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-white/20 transition group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             Voltar
@@ -97,9 +97,9 @@ const NotFound: React.FC = () => {
 
         {/* Footer Decoration */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full">
+          <div           className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/5 rounded-full">
             <Map className="w-4 h-4 text-gray-400" />
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               Sport Data Angola • Plataforma Nacional de Gestão Desportiva
             </span>
           </div>

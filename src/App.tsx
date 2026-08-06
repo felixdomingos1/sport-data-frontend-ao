@@ -26,11 +26,14 @@ import { ThemeProvider } from './presentation/components/ui/theme-provider';
 import MeusCampeonatos from './presentation/pages/meus-campeonatos';
 import Notificacoes from './presentation/pages/notificacoes';
 import Pagamentos from './presentation/pages/pagamentos';
+import MinhaAssinatura from './presentation/pages/assinatura/minha-assinatura';
 import RankingAtleta from './presentation/pages/ranking-atleta';
 import Rankings from './presentation/pages/rankings';
 import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe';
 import ChaveamentoLista from './presentation/pages/chaveamento/chaveamento-lista';
 import ChaveamentoDetalhe from './presentation/pages/chaveamento/chaveamento-detalhe';
+import DisplayLista from './presentation/pages/display/display-lista';
+import DisplayAoVivo from './presentation/pages/display/display-ao-vivo';
 import Campeonatos from './presentation/pages/campeonatos/campeonatos';
 import CampeonatoDetalhe from './presentation/pages/campeonatos/campeonato-detalhe';
 import Inscricoes from './presentation/pages/inscricoes';
@@ -102,6 +105,9 @@ function App() {
             <Route path="/chaveamento/:id" element={<ChaveamentoDetalhe />} />
           </Route>
 
+          <Route path="/display" element={<DisplayLista />} />
+          <Route path="/display/:id" element={<DisplayAoVivo />} />
+
           <Route element={<PrivateRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -111,6 +117,7 @@ function App() {
               <Route path="/notificacoes" element={<Notificacoes />} />
               <Route path="/documentos" element={<Documentos />} />
               <Route path="/pagamentos" element={<Pagamentos />} />
+              <Route path="/minha-assinatura" element={<MinhaAssinatura />} />
               <Route path="/ranking-atleta" element={<RankingAtleta />} />
             </Route>
           </Route>

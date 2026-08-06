@@ -42,6 +42,12 @@ export const API_ENDPOINTS = {
   PLANOS: {
     BASE: '/planos',
   },
+  ASSINATURAS: {
+    BASE: '/assinaturas',
+    MINHAS: '/assinaturas/minhas',
+    CONFIRMAR: (id: string) => `/assinaturas/${id}/confirmar`,
+    CANCELAR: (id: string) => `/assinaturas/${id}/cancelar`,
+  },
   CAMPEONATOS: {
     BASE: '/campeonatos',
     BY_ID: (id: string) => `/campeonatos/${id}`,

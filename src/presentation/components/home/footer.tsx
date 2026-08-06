@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Shield } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#0f0f0f] border-t border-[#1a1a1a] text-white">
+    <footer className="bg-white dark:bg-[#0f0f0f] border-t border-gray-200 dark:border-[#1a1a1a] text-gray-900 dark:text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
@@ -24,27 +24,27 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4">Plataforma</h3>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Plataforma</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/federacoes" className="text-sm text-gray-500 hover:text-white transition">Federações</Link></li>
-              <li><Link to="/clubes" className="text-sm text-gray-500 hover:text-white transition">Clubes</Link></li>
-              <li><Link to="/atletas" className="text-sm text-gray-500 hover:text-white transition">Atletas</Link></li>
-              <li><Link to="/rankings" className="text-sm text-gray-500 hover:text-white transition">Rankings</Link></li>
-              <li><Link to="/eventos" className="text-sm text-gray-500 hover:text-white transition">Eventos</Link></li>
+              <li><Link to="/federacoes" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Federações</Link></li>
+              <li><Link to="/clubes" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Clubes</Link></li>
+              <li><Link to="/atletas" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Atletas</Link></li>
+              <li><Link to="/rankings" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Rankings</Link></li>
+              <li><Link to="/eventos" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Eventos</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4">Conta</h3>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Conta</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/login" className="text-sm text-gray-500 hover:text-white transition">Entrar</Link></li>
-              <li><Link to="/register" className="text-sm text-gray-500 hover:text-white transition">Criar conta</Link></li>
-              <li><Link to="/dashboard" className="text-sm text-gray-500 hover:text-white transition">Painel do Atleta</Link></li>
+              <li><Link to="/login" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Entrar</Link></li>
+              <li><Link to="/register" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Criar conta</Link></li>
+              <li><Link to="/dashboard" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Painel do Atleta</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4">Contacto</h3>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Contacto</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5 text-sm text-gray-500">
                 <MapPin className="w-4 h-4 text-[#E60000] shrink-0 mt-0.5" />
@@ -62,13 +62,13 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-[#1a1a1a] mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-gray-600 text-sm">
+        <div className="border-t border-gray-200 dark:border-[#1a1a1a] mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-gray-500 dark:text-gray-600 text-sm">
             &copy; {new Date().getFullYear()} Sport Data Angola. Todos os direitos reservados.
           </p>
           <div className="flex gap-6">
-            <Link to="/termos" className="text-xs text-gray-600 hover:text-gray-400 transition">Termos</Link>
-            <Link to="/privacidade" className="text-xs text-gray-600 hover:text-gray-400 transition">Privacidade</Link>
+            <Link to="/termos" className="text-xs text-gray-500 dark:text-gray-600 hover:text-gray-800 dark:hover:text-gray-400 transition">Termos</Link>
+            <Link to="/privacidade" className="text-xs text-gray-500 dark:text-gray-600 hover:text-gray-800 dark:hover:text-gray-400 transition">Privacidade</Link>
           </div>
         </div>
       </div>

@@ -65,36 +65,40 @@ export function StyledSelect({
 
   const showError = error && touched;
 
+  const btnBase = 'w-full flex items-center gap-3 px-3.5 py-3 border rounded-xl text-sm transition cursor-pointer';
+  const btnDark = 'bg-gray-100 dark:bg-[#1a1a1a] text-gray-900 dark:text-white';
+  const btnBorder = showError
+    ? 'border-red-500'
+    : 'border-gray-200 dark:border-[#2a2a2a] hover:border-gray-300 dark:hover:border-[#3a3a3a]';
+
   return (
     <div ref={containerRef} className="relative">
       {label && (
-        <label className="block text-sm font-medium text-gray-400 mb-2">{label}</label>
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">{label}</label>
       )}
       <button
         type="button"
         onClick={() => { if (!disabled) { setOpen(!open); if (!open) setSearch(''); } }}
         disabled={disabled}
-        className={`w-full flex items-center gap-3 px-3.5 py-3 bg-[#1a1a1a] border rounded-xl text-sm transition cursor-pointer ${
-          showError ? 'border-brand' : 'border-[#2a2a2a] hover:border-[#3a3a3a]'
-        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`${btnBase} ${btnDark} ${btnBorder} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        {icon && <span className="text-gray-500 shrink-0">{icon}</span>}
-        <span className={`flex-1 text-left ${selected ? 'text-white' : 'text-gray-500'}`}>
+        {icon && <span className="text-gray-400 dark:text-gray-500 shrink-0">{icon}</span>}
+        <span className={`flex-1 text-left ${selected ? '' : 'text-gray-400 dark:text-gray-500'}`}>
           {selected ? selected.label : placeholder}
         </span>
-        <ChevronDown className={`w-4 h-4 text-gray-500 transition ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden">
-          <div className="p-2 border-b border-[#2a2a2a]">
+        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden">
+          <div className="p-2 border-b border-gray-100 dark:border-[#2a2a2a]">
             <input
               ref={inputRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Pesquisar..."
-              className="w-full px-3 py-2 bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
+              className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#2a2a2a] rounded-lg text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
               onKeyDown={(e) => {
                 if (e.key === 'Escape') { setOpen(false); setSearch(''); }
                 if (e.key === 'Enter' && filtered.length === 1) handleSelect(filtered[0]);
@@ -103,17 +107,17 @@ export function StyledSelect({
           </div>
           <div className="max-h-48 overflow-y-auto">
             {filtered.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-500 text-center">Nenhum resultado</div>
+              <div className="px-4 py-3 text-sm text-gray-400 dark:text-gray-500 text-center">Nenhum resultado</div>
             ) : (
               filtered.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   onClick={() => handleSelect(option)}
-                  className={`w-full px-4 py-2.5 text-left text-sm transition hover:bg-[#2a2a2a] ${
+                  className={`w-full px-4 py-2.5 text-left text-sm transition hover:bg-gray-100 dark:hover:bg-[#2a2a2a] ${
                     option.value === value
-                      ? 'text-[#E60000] bg-[#E60000]/5 font-medium'
-                      : 'text-gray-300'
+                      ? 'text-[#E60000] bg-red-50 dark:bg-[#E60000]/5 font-medium'
+                      : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   {option.label}

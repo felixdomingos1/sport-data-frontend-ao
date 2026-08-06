@@ -42,13 +42,9 @@ const ResetPassword: React.FC = () => {
       setIsSuccess(true);
       toast.success('Senha redefinida com sucesso!');
     } catch (err: unknown) {
-      let message = 'Ocorreu um erro inesperado. Tenta novamente.';
+      let message = (err as any)?.message || 'Ocorreu um erro inesperado. Tenta novamente.';
 
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { message?: string; error?: { message?: string } } } };
-        const data = axiosError.response?.data;
-        message = data?.error?.message ?? data?.message ?? message;
-      } else if (err instanceof Error) {
+      if (err instanceof Error) {
         message = err.message;
       }
 
@@ -61,7 +57,7 @@ const ResetPassword: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex bg-[#0f0f0f]">
+      <div className="min-h-screen flex bg-white dark:bg-[#0f0f0f]">
         <SEO title="Senha Redefinida" description="A sua senha foi redefinida com sucesso." />
         <div className="flex-1 flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md text-center">
@@ -70,8 +66,8 @@ const ResetPassword: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Senha redefinida</h2>
-            <p className="text-sm text-gray-400 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Senha redefinida</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
               A tua senha foi redefinida com sucesso.
             </p>
             <Link
@@ -88,15 +84,15 @@ const ResetPassword: React.FC = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex bg-[#0f0f0f]">
+      <div className="min-h-screen flex bg-white dark:bg-[#0f0f0f]">
         <SEO title="Link Inválido" description="Link de recuperação inválido ou expirado." />
         <div className="flex-1 flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/20 mb-6">
               <AlertCircle className="h-8 w-8 text-red-500" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Link inválido</h2>
-            <p className="text-sm text-gray-400 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Link inválido</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
               Este link de recuperação é inválido ou expirou.
             </p>
             <Link
@@ -113,7 +109,7 @@ const ResetPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0f0f0f]">
+    <div className="min-h-screen flex bg-white dark:bg-[#0f0f0f]">
       <SEO title="Recuperar Senha" description="Defina a sua nova senha." />
 
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
@@ -146,18 +142,22 @@ const ResetPassword: React.FC = () => {
 
       <div className="flex-1 flex items-center justify-center px-6 py-12 sm:px-10">
         <div className="w-full max-w-md">
+          <Link to="/login" className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 dark:hover:text-white hover:text-gray-900 text-sm mb-6 transition">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar para iniciar sessão
+          </Link>
           <div className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-10 h-10 bg-[#E60000] rounded-lg flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" fill="white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white tracking-wide">SPORT DATA</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">SPORT DATA</p>
               <p className="text-[11px] text-gray-500 tracking-widest">ANGOLA</p>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white">Recuperar senha</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recuperar senha</h2>
             <p className="text-sm text-gray-500 mt-1">
               Define a tua nova senha.
             </p>
@@ -172,20 +172,20 @@ const ResetPassword: React.FC = () => {
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Nova senha</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nova senha</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
+                  className="w-full pl-10 pr-12 py-3 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 dark:hover:text-gray-300 hover:text-gray-600 transition"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -193,14 +193,14 @@ const ResetPassword: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Confirmar nova senha</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmar nova senha</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
                   placeholder="••••••••"
                 />
               </div>

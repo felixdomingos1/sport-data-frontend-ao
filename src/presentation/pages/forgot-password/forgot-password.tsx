@@ -26,13 +26,9 @@ const ForgotPassword: React.FC = () => {
       await authService.forgotPassword({ email: email.trim() });
       setIsSent(true);
     } catch (err: unknown) {
-      let message = 'Ocorreu um erro inesperado. Tenta novamente.';
+      let message = (err as any)?.message || 'Ocorreu um erro inesperado. Tenta novamente.';
 
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { message?: string; error?: { message?: string } } } };
-        const data = axiosError.response?.data;
-        message = data?.error?.message ?? data?.message ?? message;
-      } else if (err instanceof Error) {
+      if (err instanceof Error) {
         message = err.message;
       }
 
@@ -45,7 +41,7 @@ const ForgotPassword: React.FC = () => {
 
   if (isSent) {
     return (
-      <div className="min-h-screen flex bg-[#0f0f0f]">
+      <div className="min-h-screen flex bg-white dark:bg-[#0f0f0f]">
         <SEO title="Email Enviado" description="Instruções de recuperação de senha enviadas." />
         <div className="flex-1 flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md text-center">
@@ -54,8 +50,8 @@ const ForgotPassword: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Email enviado</h2>
-            <p className="text-sm text-gray-400 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Email enviado</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
               Se existir uma conta associada a esse email, receberás as instruções para recuperar a senha.
             </p>
             <Link
@@ -72,7 +68,7 @@ const ForgotPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0f0f0f]">
+    <div className="min-h-screen flex bg-white dark:bg-[#0f0f0f]">
       <SEO title="Esqueci a Senha" description="Recupere o acesso à sua conta Sport Data Angola." canonical="/forgot-password" />
 
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
@@ -105,18 +101,22 @@ const ForgotPassword: React.FC = () => {
 
       <div className="flex-1 flex items-center justify-center px-6 py-12 sm:px-10">
         <div className="w-full max-w-md">
+          <Link to="/login" className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 dark:hover:text-white hover:text-gray-900 text-sm mb-6 transition">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar para iniciar sessão
+          </Link>
           <div className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-10 h-10 bg-[#E60000] rounded-lg flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" fill="white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white tracking-wide">SPORT DATA</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">SPORT DATA</p>
               <p className="text-[11px] text-gray-500 tracking-widest">ANGOLA</p>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white">Esqueci a senha</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Esqueci a senha</h2>
             <p className="text-sm text-gray-500 mt-1">
               Insere o teu email para receberes instruções de recuperação.
             </p>
@@ -131,14 +131,14 @@ const ForgotPassword: React.FC = () => {
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">E-mail</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-mail</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
                   placeholder="seu@email.com"
                 />
               </div>

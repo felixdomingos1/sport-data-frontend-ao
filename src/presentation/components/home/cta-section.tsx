@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Shield } from 'lucide-react';
 
 const CtaSection: React.FC = () => (
-  <section className="py-20 lg:py-24 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+  <section className="py-20 lg:py-24 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-[#1a1a1a]">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="relative bg-[#E60000] rounded-3xl overflow-hidden px-8 py-12 lg:px-16 lg:py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-[#E60000] to-[#990000]" />

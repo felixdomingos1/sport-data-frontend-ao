@@ -62,6 +62,7 @@ export const useAuthStore = create<AuthState>()(
 
       loadUser: async () => {
         const token = localStorage.getItem('access_token');
+        console.log('[AuthStore] loadUser — token presente:', !!token);
         if (!token || token === 'undefined' || token === 'null') {
           apiClient.clearAccessToken();
           set({
@@ -69,6 +70,7 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             isLoading: false,
           });
+          console.log('[AuthStore] Sem token — utilizador não autenticado');
           return;
         }
 
@@ -76,9 +78,12 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const user = await authService.getMe();
+          console.log('[AuthStore] Token válido — utilizador autenticado:', user.email);
           set({ user, isAuthenticated: true, isLoading: false });
         } catch {
+          console.log('[AuthStore] Token inválido/expirado — a limpar sessão');
           apiClient.clearAccessToken();
+          localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
@@ -97,20 +102,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({ user: state.user }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-
-        const token = localStorage.getItem('access_token');
-        const hasValidToken = Boolean(token && token !== 'undefined' && token !== 'null');
-        const liveState = useAuthStore.getState();
-
-        if (liveState.isAuthenticated && liveState.user) {
-          state.user = liveState.user;
-          state.isAuthenticated = true;
-          return;
-        }
-
-        if (hasValidToken) {
-          state.isAuthenticated = true;
-        }
+        state.isAuthenticated = false;
       },
     }
   )

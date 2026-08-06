@@ -9,6 +9,8 @@ import { bracketService, type ListarBracketsParams } from '../infrastructure/ser
 import {
   joinCampeonato,
   leaveCampeonato,
+  joinBracket,
+  leaveBracket,
   onBracketAtualizado,
   onBracketRemovido,
 } from '../infrastructure/services/socket.service';
@@ -46,11 +48,14 @@ interface BracketStoreState {
   isLoadingDetail: boolean;
   error: string | null;
   campeonatoIdSubscribed: string | null;
+  bracketIdSubscribed: string | null;
 
   fetchList: (params?: ListarBracketsParams) => Promise<BracketSummary[]>;
   fetchById: (bracketId: string) => Promise<BracketDto>;
   subscribeToCampeonato: (campeonatoId: string) => void;
   unsubscribeFromCampeonato: (campeonatoId: string) => void;
+  subscribeToBracket: (bracketId: string) => void;
+  unsubscribeFromBracket: (bracketId: string) => void;
   applySocketUpdate: (payload: {
     bracketId: string;
     state: BracketState;
@@ -66,6 +71,7 @@ export const useBracketStore = create<BracketStoreState>()((set, get) => ({
   isLoadingDetail: false,
   error: null,
   campeonatoIdSubscribed: null,
+  bracketIdSubscribed: null,
 
   fetchList: async (params?: ListarBracketsParams) => {
     set({ isLoadingList: true, error: null });
@@ -126,6 +132,24 @@ export const useBracketStore = create<BracketStoreState>()((set, get) => ({
     set({ campeonatoIdSubscribed: null });
   },
 
+  subscribeToBracket: (bracketId: string) => {
+    if (!bracketId) return;
+    const current = get().bracketIdSubscribed;
+    if (current === bracketId) return;
+    if (current) {
+      leaveBracket(current);
+    }
+
+    joinBracket(bracketId);
+    set({ bracketIdSubscribed: bracketId });
+  },
+
+  unsubscribeFromBracket: (bracketId: string) => {
+    if (get().bracketIdSubscribed !== bracketId) return;
+    leaveBracket(bracketId);
+    set({ bracketIdSubscribed: null });
+  },
+
   applySocketUpdate: (payload) => {
     const selected = get().selected;
     if (!selected) return;
@@ -161,6 +185,10 @@ export const useBracketStore = create<BracketStoreState>()((set, get) => ({
     if (campeonatoId) {
       leaveCampeonato(campeonatoId);
     }
-    set({ brackets: [], selected: null, campeonatoIdSubscribed: null, error: null });
+    const bracketId = get().bracketIdSubscribed;
+    if (bracketId) {
+      leaveBracket(bracketId);
+    }
+    set({ brackets: [], selected: null, campeonatoIdSubscribed: null, bracketIdSubscribed: null, error: null });
   },
 }));

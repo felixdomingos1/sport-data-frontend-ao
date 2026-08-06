@@ -202,8 +202,8 @@ const CampeonatoDetalhe: React.FC = () => {
           <div className="w-14 h-14 mx-auto rounded-2xl bg-brand/10 flex items-center justify-center mb-4">
             <Lock className="w-6 h-6 text-brand" />
           </div>
-          <p className="text-white font-bold text-sm mb-1">Inscrições abertas</p>
-          <p className="text-white/50 text-xs mb-5">
+          <p className="text-gray-900 dark:text-white font-bold text-sm mb-1">Inscrições abertas</p>
+          <p className="text-gray-500 dark:text-white/50 text-xs mb-5">
             Entre na sua conta de atleta para se inscrever neste campeonato.
           </p>
           <Link
@@ -220,8 +220,8 @@ const CampeonatoDetalhe: React.FC = () => {
     if (!profile) {
       return (
         <div className="text-center py-8">
-          <Loader2 className="w-6 h-6 text-white/30 animate-spin mx-auto mb-3" />
-          <p className="text-white/50 text-xs">A verificar perfil de atleta...</p>
+          <Loader2 className="w-6 h-6 text-gray-400 dark:text-white/30 animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 dark:text-white/50 text-xs">A verificar perfil de atleta...</p>
         </div>
       );
     }
@@ -232,8 +232,8 @@ const CampeonatoDetalhe: React.FC = () => {
           <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 flex items-center justify-center mb-4">
             <Shield className="w-6 h-6 text-amber-400" />
           </div>
-          <p className="text-white font-bold text-sm mb-1">Faltam dados federativos</p>
-          <p className="text-white/50 text-xs leading-relaxed mb-5">
+          <p className="text-gray-900 dark:text-white font-bold text-sm mb-1">Faltam dados federativos</p>
+          <p className="text-gray-500 dark:text-white/50 text-xs leading-relaxed mb-5">
             Para se inscrever num campeonato precisa de ter uma inscrição federativa ativa.
           </p>
           <Link
@@ -253,11 +253,11 @@ const CampeonatoDetalhe: React.FC = () => {
           <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 flex items-center justify-center mb-4">
             <Layers className="w-6 h-6 text-amber-400" />
           </div>
-          <p className="text-white font-bold text-sm mb-1">Federação diferente</p>
-          <p className="text-white/50 text-xs leading-relaxed mb-5">
+          <p className="text-gray-900 dark:text-white font-bold text-sm mb-1">Federação diferente</p>
+          <p className="text-gray-500 dark:text-white/50 text-xs leading-relaxed mb-5">
             A sua inscrição federativa ativa pertence a outra federação.
             {campeonato.federacao && (
-              <span className="block mt-1 text-white/70">Necessária inscrição em: {campeonato.federacao.nome}</span>
+              <span className="block mt-1 text-gray-600 dark:text-white/70">Necessária inscrição em: {campeonato.federacao.nome}</span>
             )}
           </p>
           <Link
@@ -273,7 +273,7 @@ const CampeonatoDetalhe: React.FC = () => {
 
     return (
       <div className="space-y-2 py-2">
-        <p className="text-white/60 text-xs leading-relaxed mb-3">
+        <p className="text-gray-600 dark:text-white/60 text-xs leading-relaxed mb-3">
           Escolha a categoria onde pretende competir. A inscrição fica registada na sua federação.
         </p>
         {(campeonato.categorias ?? []).map((categoria) => {
@@ -289,7 +289,7 @@ const CampeonatoDetalhe: React.FC = () => {
               className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-left text-xs font-semibold transition-all duration-150 ${
                 inscrito
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/[0.03] border-white/10 text-white hover:bg-white/[0.07] hover:border-brand/40 active:scale-[0.99] disabled:opacity-50'
+                  : 'bg-gray-50 dark:bg-white/[0.03] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.07] hover:border-brand/40 active:scale-[0.99] disabled:opacity-50'
               }`}
             >
               <span>{categoria.nome}</span>
@@ -311,7 +311,7 @@ const CampeonatoDetalhe: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO
         title={campeonato.nome}
         description={`${modal.label} — ${FORMATO_MAP[campeonato.formato] ?? campeonato.formato}. ${campeonato.descricao ?? 'Categorias, inscrições e chaveamento do campeonato.'}`}
@@ -324,13 +324,13 @@ const CampeonatoDetalhe: React.FC = () => {
           alt={campeonato.nome}
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-black/55 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-black/55 to-black/30" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent" />
 
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-24 bg-brand rounded-full" />
 
         <div className="relative h-full flex flex-col justify-end pl-14 pr-8 pb-10 max-w-4xl">
-          <Link to="/campeonatos" className="inline-flex items-center gap-2 text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-white transition-colors w-fit">
+          <Link to="/campeonatos" className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs font-bold tracking-wide mb-4 hover:text-gray-900 dark:hover:text-white transition-colors w-fit">
             <ArrowLeft className="w-3.5 h-3.5" />
             Voltar aos campeonatos
           </Link>
@@ -356,7 +356,7 @@ const CampeonatoDetalhe: React.FC = () => {
               {campeonato.nome}
             </h1>
             {campeonato.metadata?.local && (
-              <p className="inline-flex items-center gap-1.5 text-white/60 text-sm">
+              <p className="inline-flex items-center gap-1.5 text-gray-600 dark:text-white/60 text-sm">
                 <MapPin className="w-3.5 h-3.5" />
                 {campeonato.metadata.local}
               </p>
@@ -378,13 +378,13 @@ const CampeonatoDetalhe: React.FC = () => {
             { icon: Users, label: 'Participantes', value: String(totalParticipantes) },
             { icon: GridIcon, label: 'Categorias', value: String(totalCategorias) },
           ].map((s) => (
-            <div key={s.label} className="flex items-center gap-3 bg-white/[0.03] border border-white/5 rounded-xl p-4">
+            <div key={s.label} className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-4">
               <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
                 <s.icon className="w-5 h-5 text-brand" />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{s.label}</p>
-                <p className="text-sm font-bold text-white truncate">{s.value}</p>
+                <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">{s.label}</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{s.value}</p>
               </div>
             </div>
           ))}
@@ -395,7 +395,7 @@ const CampeonatoDetalhe: React.FC = () => {
             {campeonato.descricao && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                 <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-3">Sobre o Campeonato</h2>
-                <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">{campeonato.descricao}</p>
+                <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed whitespace-pre-line">{campeonato.descricao}</p>
               </motion.div>
             )}
 
@@ -403,7 +403,7 @@ const CampeonatoDetalhe: React.FC = () => {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
                   <GridIcon className="w-4 h-4 text-brand" />
-                  <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest">Categorias</h2>
+                  <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Categorias</h2>
                 </div>
                 {totalBrackets > 0 && (
                   <Link
@@ -417,7 +417,7 @@ const CampeonatoDetalhe: React.FC = () => {
               </div>
 
               {totalCategorias === 0 ? (
-                <div className="bg-white/[0.02] border border-white/5 rounded-xl py-12 text-center text-white/30 text-sm">
+                <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl py-12 text-center text-gray-400 dark:text-white/30 text-sm">
                   Sem categorias definidas
                 </div>
               ) : (
@@ -428,7 +428,7 @@ const CampeonatoDetalhe: React.FC = () => {
                     return (
                       <div
                         key={categoria.id}
-                        className="bg-white/[0.03] border border-white/5 rounded-xl p-4 hover:border-white/10 transition-all duration-200"
+                        className="bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-4 hover:border-gray-300 dark:hover:border-white/10 transition-all duration-200"
                       >
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-2.5 min-w-0">
@@ -436,8 +436,8 @@ const CampeonatoDetalhe: React.FC = () => {
                               <Medal className="w-4 h-4 text-brand" />
                             </div>
                             <div className="min-w-0">
-                              <h3 className="text-white font-bold text-sm truncate">{categoria.nome}</h3>
-                              <p className="text-white/40 text-[11px]">
+                            <h3 className="text-gray-900 dark:text-white font-bold text-sm truncate">{categoria.nome}</h3>
+                            <p className="text-gray-500 dark:text-white/40 text-[11px]">
                                 {categoria.genero === 'M' ? 'Masculino' : categoria.genero === 'F' ? 'Feminino' : 'Misto'}
                                 {categoria.pesoMinimo !== undefined && categoria.pesoMinimo !== null
                                   ? ` · ${categoria.pesoMinimo}-${categoria.pesoMaximo ?? '∞'} kg`
@@ -445,7 +445,7 @@ const CampeonatoDetalhe: React.FC = () => {
                               </p>
                             </div>
                           </div>
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white/50 px-2 py-1 rounded-full bg-white/5 shrink-0">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-gray-500 dark:text-white/50 px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 shrink-0">
                             <Users className="w-3 h-3" />
                             {participantes}
                           </span>
@@ -454,7 +454,7 @@ const CampeonatoDetalhe: React.FC = () => {
                         <div className="flex gap-2">
                           <Link
                             to={`/chaveamento/${campeonato.id}`}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/5 text-white text-[11px] font-bold hover:bg-white/10 transition"
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white text-[11px] font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition"
                           >
                             <Network className="w-3 h-3" />
                             {bracket ? 'Visualizar Chave' : 'Chaveamento'}
@@ -484,23 +484,23 @@ const CampeonatoDetalhe: React.FC = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
               <div className="flex items-center gap-2.5 mb-4">
                 <Users className="w-4 h-4 text-brand" />
-                <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest">Inscritos</h2>
-                <span className="text-white/30 text-xs font-semibold">({totalParticipantes})</span>
+                <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Inscritos</h2>
+                <span className="text-gray-400 dark:text-white/30 text-xs font-semibold">({totalParticipantes})</span>
               </div>
               {(campeonato.inscricoes ?? []).length === 0 ? (
-                <div className="bg-white/[0.02] border border-white/5 rounded-xl py-12 text-center text-white/30 text-sm">
+                <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl py-12 text-center text-gray-400 dark:text-white/30 text-sm">
                   Ainda não há inscritos
                 </div>
               ) : (
-                <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-                  <div className="max-h-[420px] overflow-y-auto divide-y divide-white/[0.04]">
+                <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl overflow-hidden">
+                  <div className="max-h-[420px] overflow-y-auto divide-y divide-gray-200 dark:divide-white/[0.04]">
                     {(campeonato.inscricoes ?? []).map((p, idx) => {
                       const foto = getAthletePhoto(p);
                       const nome = getAthleteName(p);
                       const categoria = p.categoria ?? (campeonato.categorias ?? []).find((c) => c.id === p.categoriaId);
                       return (
                         <div key={p.id} className="flex items-center gap-3 px-4 py-3">
-                          <span className="text-white/30 text-xs font-mono w-6 shrink-0">{idx + 1}</span>
+                          <span className="text-gray-400 dark:text-white/30 text-xs font-mono w-6 shrink-0">{idx + 1}</span>
                           {foto ? (
                             <img src={foto} alt={nome} className="w-9 h-9 rounded-full object-cover border border-white/10 shrink-0" />
                           ) : (
@@ -509,13 +509,13 @@ const CampeonatoDetalhe: React.FC = () => {
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="text-white text-xs font-semibold truncate">{nome}</p>
-                            <p className="text-white/40 text-[11px] truncate">
+                          <p className="text-gray-900 dark:text-white text-xs font-semibold truncate">{nome}</p>
+                          <p className="text-gray-500 dark:text-white/40 text-[11px] truncate">
                               {p.inscricao?.clube?.nome ?? p.inscricao?.academia?.nome ?? '—'}
                             </p>
                           </div>
                           {categoria && (
-                            <span className="text-[10px] font-bold text-white/40 px-2 py-1 rounded-full bg-white/5 shrink-0">
+                            <span className="text-[10px] font-bold text-gray-500 dark:text-white/40 px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 shrink-0">
                               {categoria.nome}
                             </span>
                           )}
@@ -533,11 +533,11 @@ const CampeonatoDetalhe: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/[0.03] border border-white/5 rounded-xl p-5"
+              className="bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl p-5"
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <UserPlus className="w-4 h-4 text-brand" />
-                <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest">Inscrição</h2>
+                <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Inscrição</h2>
               </div>
               {renderRegistrationPanel()}
             </motion.div>
@@ -550,33 +550,33 @@ const CampeonatoDetalhe: React.FC = () => {
             >
               <div className="flex items-center gap-2.5">
                 <Trophy className="w-4 h-4 text-brand" />
-                <h2 className="text-sm font-bold text-white/40 uppercase tracking-widest">Informações</h2>
+                <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Informações</h2>
               </div>
-              <div className="flex items-center gap-2 text-white/60 text-xs">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                 <Tag className="w-3.5 h-3.5 shrink-0" />
                 <span>Formato: {FORMATO_MAP[campeonato.formato] ?? campeonato.formato}</span>
               </div>
-              <div className="flex items-center gap-2 text-white/60 text-xs">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                 <Calendar className="w-3.5 h-3.5 shrink-0" />
                 <span>Início: {formatDate(campeonato.dataInicio)}</span>
               </div>
-              <div className="flex items-center gap-2 text-white/60 text-xs">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                 <Clock className="w-3.5 h-3.5 shrink-0" />
                 <span>Fim: {formatDate(campeonato.dataFim)}</span>
               </div>
               {campeonato.dataInscricaoFim && (
-                <div className="flex items-center gap-2 text-white/60 text-xs">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                   <Clock className="w-3.5 h-3.5 shrink-0" />
                   <span>Fim das inscrições: {formatDateTime(campeonato.dataInscricaoFim)}</span>
                 </div>
               )}
               {campeonato.metadata?.local && (
-                <div className="flex items-center gap-2 text-white/60 text-xs">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                   <MapPin className="w-3.5 h-3.5 shrink-0" />
                   <span>{campeonato.metadata.local}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-white/60 text-xs">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-white/60 text-xs">
                 <Layers className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">{campeonato.federacao?.nome ?? 'Federação'}</span>
               </div>

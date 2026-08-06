@@ -70,8 +70,8 @@ const Inscricoes: React.FC = () => {
     setSelectedPlano(null);
     setLoadingPlanos(true);
     try {
-      const res = await planoService.getAll({ federacaoId: federacao.id, ativo: true, limit: 50 });
-      setPlanos(res.data);
+      const res = await planoService.getAll({ ativo: true, limit: 50 });
+      setPlanos(res.data.filter((p) => p.tipo === 'ATLETA'));
       setStep('choose-plano');
     } catch {
       toast.error('Erro ao carregar planos');

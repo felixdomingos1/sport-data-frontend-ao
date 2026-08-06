@@ -9,7 +9,7 @@ import { SEO } from '../../components/seo/seo';
 
 const Home: React.FC = () => {
   return (
-    <div className="bg-[#0a0a0a]">
+    <div className="bg-white dark:bg-[#0a0a0a]">
       <SEO title="Início" description="Sport Data Angola — Plataforma angolana de gestão desportiva. Federações, atletas, clubes, competições e rankings." canonical="/" />
       <HeroSlider />
       <FeaturesSection />

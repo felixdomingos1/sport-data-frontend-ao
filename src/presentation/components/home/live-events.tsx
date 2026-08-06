@@ -224,7 +224,7 @@ const LiveEvents: React.FC = () => {
       },
       finished: {
         label: 'FINALIZADO',
-        className: 'bg-[#1a1a1a] text-gray-400 border border-[#2a2a2a]',
+        className: 'bg-gray-200 dark:bg-[#1a1a1a] text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-[#2a2a2a]',
         icon: <Trophy className="w-3 h-3" />,
         animated: false,
       },
@@ -250,26 +250,26 @@ const LiveEvents: React.FC = () => {
   };
 
   return (
-    <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+    <section className="py-20 lg:py-28 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER COM ESTATÍSTICAS */}
         <div className="flex flex-col lg:flex-row justify-between items-end mb-12 gap-6">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-1 h-8 bg-[#E60000] rounded-full" />
-              <h2 className="text-3xl lg:text-4xl font-bold text-white">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                 Eventos Desportivos
               </h2>
             </div>
-            <p className="text-gray-500 text-base lg:text-lg">
+            <p className="text-gray-600 dark:text-gray-500 text-base lg:text-lg">
               Acompanhe as maiores competições do país em tempo real
             </p>
           </div>
 
           <div className="flex gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0f0f0f] border border-[#1a1a1a]">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a]">
               <div className="w-2 h-2 bg-[#E60000] rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-gray-300">{events.filter(e => e.status === 'live').length} AO VIVO</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{events.filter(e => e.status === 'live').length} AO VIVO</span>
             </div>
             {hasMore && (
               <button
@@ -298,7 +298,7 @@ const LiveEvents: React.FC = () => {
                 whileHover={{ y: -8 }}
                 className="group relative"
               >
-                <div className="relative bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl overflow-hidden hover:border-[#2a2a2a] transition-all duration-300">
+                <div className="relative bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a] rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-[#2a2a2a] transition-all duration-300">
 
                   {/* BACKGROUND IMAGE COM OVERLAY */}
                   <div className="relative h-48 overflow-hidden">
@@ -318,23 +318,23 @@ const LiveEvents: React.FC = () => {
                     </div>
 
                     {/* SPORT BADGE */}
-                    <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-xs font-medium">
+                    <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-md text-gray-900 dark:text-white text-xs font-medium">
                       {event.sport}
                     </div>
 
                     {/* LIVE INDICATOR ANIMADO */}
                     {isLive && (
                       <div className="absolute top-4 left-4 flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/50 backdrop-blur-md">
+                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-md">
                           <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute h-full w-full rounded-full bg-brand opacity-75"></span>
                             <span className="relative h-2 w-2 rounded-full bg-brand"></span>
                           </span>
-                          <span className="text-xs font-bold text-white">LIVE</span>
+                          <span className="text-xs font-bold text-gray-900 dark:text-white">LIVE</span>
                         </div>
                         {event.period && (
-                          <div className="px-2 py-1 rounded-full bg-black/50 backdrop-blur-md">
-                            <span className="text-xs text-white">{event.period}</span>
+                          <div className="px-2 py-1 rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-md">
+                            <span className="text-xs text-gray-900 dark:text-white">{event.period}</span>
                           </div>
                         )}
                       </div>
@@ -355,28 +355,28 @@ const LiveEvents: React.FC = () => {
                               className="w-12 h-8 object-cover rounded shadow-md mx-auto mb-2"
                             />
                           </div>
-                          <p className="font-bold text-white text-sm line-clamp-2">
+                          <p className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2">
                             {event.homeTeam.name}
                           </p>
                         </div>
 
                         {/* PLACAR CENTRAL */}
-                        <div className="mx-4 px-4 py-2 rounded-xl bg-[#1a1a1a]">
+                        <div className="mx-4 px-4 py-2 rounded-xl bg-gray-200 dark:bg-[#1a1a1a]">
                           {isLive || event.status === 'halftime' || event.status === 'finished' ? (
                             <div className="text-center">
                               <div className="flex items-center gap-3">
-                                <span className="text-3xl font-black text-white">
+                                <span className="text-3xl font-black text-gray-900 dark:text-white">
                                   {event.homeTeam.score}
                                 </span>
-                                <span className="text-xl font-bold text-gray-500">VS</span>
-                                <span className="text-3xl font-black text-white">
+                                <span className="text-xl font-bold text-gray-600 dark:text-gray-500">VS</span>
+                                <span className="text-3xl font-black text-gray-900 dark:text-white">
                                   {event.awayTeam.score}
                                 </span>
                               </div>
                             </div>
                           ) : (
                             <div className="text-center">
-                              <span className="text-sm font-semibold text-gray-500">VS</span>
+                              <span className="text-sm font-semibold text-gray-600 dark:text-gray-500">VS</span>
                             </div>
                           )}
                         </div>
@@ -390,7 +390,7 @@ const LiveEvents: React.FC = () => {
                               className="w-12 h-8 object-cover rounded shadow-md mx-auto mb-2"
                             />
                           </div>
-                          <p className="font-bold text-white text-sm line-clamp-2">
+                          <p className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2">
                             {event.awayTeam.name}
                           </p>
                         </div>
@@ -398,24 +398,24 @@ const LiveEvents: React.FC = () => {
                     </div>
 
                     {/* DETALHES DO EVENTO */}
-                    <div className="space-y-2 mb-4 pt-3 border-t border-[#1a1a1a]">
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="space-y-2 mb-4 pt-3 border-t border-gray-200 dark:border-[#1a1a1a]">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                         <MapPin size={14} className="shrink-0" />
                         <span className="truncate">{event.location}</span>
                       </div>
 
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                         <Calendar size={14} className="shrink-0" />
                         <span>{formatDate(event.date)}</span>
                       </div>
 
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                         <Users size={14} className="shrink-0" />
                         <span>{event.participants} participantes</span>
                       </div>
 
                       {event.spectators && (
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-500">
                           <Eye size={14} className="shrink-0" />
                           <span>{event.spectators.toLocaleString()} espectadores</span>
                         </div>
@@ -430,7 +430,7 @@ const LiveEvents: React.FC = () => {
                     </div>
 
                     {/* BOTÕES DE AÇÃO */}
-                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#1a1a1a]">
+                    <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-[#1a1a1a]">
                       <Link
                         to={`/eventos/${event.id}`}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#E60000] hover:bg-[#cc0000] text-white rounded-xl font-medium transition"
@@ -439,11 +439,11 @@ const LiveEvents: React.FC = () => {
                         <ChevronRight size={16} />
                       </Link>
 
-                      <button className="p-2 rounded-xl bg-[#1a1a1a] text-gray-500 hover:text-[#E60000] transition-colors">
+                      <button className="p-2 rounded-xl bg-gray-200 dark:bg-[#1a1a1a] text-gray-600 dark:text-gray-500 hover:text-[#E60000] transition-colors">
                         <Heart size={18} />
                       </button>
 
-                      <button className="p-2 rounded-xl bg-[#1a1a1a] text-gray-500 hover:text-[#E60000] transition-colors">
+                      <button className="p-2 rounded-xl bg-gray-200 dark:bg-[#1a1a1a] text-gray-600 dark:text-gray-500 hover:text-[#E60000] transition-colors">
                         <Share2 size={18} />
                       </button>
                     </div>
@@ -463,7 +463,7 @@ const LiveEvents: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="mt-16 bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl overflow-hidden"
+          className="mt-16 bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a] rounded-2xl overflow-hidden"
         >
           <div className="px-8 py-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -472,8 +472,8 @@ const LiveEvents: React.FC = () => {
                   <Trophy className="w-6 h-6 text-[#E60000]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Próximos Eventos Importantes</h3>
-                  <p className="text-gray-500 text-sm">Não perca as principais competições do calendário desportivo angolano</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Próximos Eventos Importantes</h3>
+                  <p className="text-gray-600 dark:text-gray-500 text-sm">Não perca as principais competições do calendário desportivo angolano</p>
                 </div>
               </div>
               <Link

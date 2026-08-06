@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Menu, X, Shield } from 'lucide-react';
+import { Search, Menu, X, Shield, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../../../store/auth.store';
+import { useTheme } from '../ui/theme-provider';
 import clsx from 'clsx';
 
 const navItems = [
@@ -12,6 +13,7 @@ const navItems = [
   { name: 'Atletas', path: '/atletas' },
   { name: 'Rankings', path: '/rankings' },
   { name: 'Eventos', path: '/eventos' },
+  { name: 'Display', path: '/display' },
 ];
 
 const Header: React.FC = () => {
@@ -20,6 +22,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { resolved, setTheme } = useTheme();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +34,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f0f0f]/95 backdrop-blur-md border-b border-[#1a1a1a]">
+    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${resolved === 'dark' ? 'bg-[#0f0f0f]/95 border-[#1a1a1a]' : 'bg-white/95 border-gray-200'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-[72px]">
           <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -39,7 +42,7 @@ const Header: React.FC = () => {
               <Shield className="w-5 h-5 text-white" fill="white" />
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-bold text-white tracking-wide leading-tight">SPORT DATA</p>
+              <p className={`text-sm font-bold tracking-wide leading-tight ${resolved === 'dark' ? 'text-white' : 'text-gray-900'}`}>SPORT DATA</p>
               <p className="text-[10px] text-gray-500 tracking-widest">ANGOLA</p>
             </div>
           </Link>
@@ -54,8 +57,8 @@ const Header: React.FC = () => {
                   className={clsx(
                     'px-4 py-2 rounded-lg text-sm font-medium transition',
                     active
-                      ? 'text-white bg-[#1a1a1a]'
-                      : 'text-gray-400 hover:text-white hover:bg-[#141414]'
+                      ? resolved === 'dark' ? 'text-white bg-[#1a1a1a]' : 'text-[#E60000] bg-red-50'
+                      : resolved === 'dark' ? 'text-gray-400 hover:text-white hover:bg-[#141414]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                   )}
                 >
                   {item.name}
@@ -73,10 +76,18 @@ const Header: React.FC = () => {
                   placeholder="Pesquisar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-44 lg:w-52 pl-9 pr-4 py-2 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-[#E60000]/50 transition"
+                  className={`w-44 lg:w-52 pl-9 pr-4 py-2 rounded-xl text-sm transition focus:outline-none focus:border-[#E60000]/50 ${resolved === 'dark' ? 'bg-[#080808] border border-[#1a1a1a] text-white placeholder:text-gray-600' : 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
                 />
               </div>
             </form>
+
+            <button
+              onClick={() => setTheme(resolved === 'dark' ? 'light' : 'dark')}
+              className={`p-2 rounded-lg transition ${resolved === 'dark' ? 'text-gray-400 hover:text-white hover:bg-[#1a1a1a]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
+              title={resolved === 'dark' ? 'Modo claro' : 'Modo escuro'}
+            >
+              {resolved === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
 
             {isAuthenticated ? (
               <Link
@@ -89,7 +100,7 @@ const Header: React.FC = () => {
               <div className="hidden sm:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm text-gray-400 hover:text-white transition"
+                  className={clsx('px-4 py-2 text-sm transition', resolved === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900')}
                 >
                   Entrar
                 </Link>
@@ -104,7 +115,7 @@ const Header: React.FC = () => {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#1a1a1a] transition"
+              className={`lg:hidden p-2 rounded-lg transition ${resolved === 'dark' ? 'text-gray-400 hover:text-white hover:bg-[#1a1a1a]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -112,13 +123,13 @@ const Header: React.FC = () => {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="lg:hidden pb-4 border-t border-[#1a1a1a] pt-4 space-y-1">
+          <div className={`lg:hidden pb-4 border-t pt-4 space-y-1 ${resolved === 'dark' ? 'border-[#1a1a1a]' : 'border-gray-200'}`}>
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-[#141414] rounded-lg transition"
+                className={`block px-3 py-2.5 text-sm rounded-lg transition ${resolved === 'dark' ? 'text-gray-400 hover:text-white hover:bg-[#141414]' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
               >
                 {item.name}
               </Link>
@@ -131,7 +142,7 @@ const Header: React.FC = () => {
                   placeholder="Pesquisar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 bg-[#080808] border border-[#1a1a1a] rounded-xl text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-[#E60000]/50"
+                  className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm transition focus:outline-none focus:border-[#E60000]/50 ${resolved === 'dark' ? 'bg-[#080808] border border-[#1a1a1a] text-white placeholder:text-gray-600' : 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
                 />
               </div>
             </form>
@@ -140,7 +151,7 @@ const Header: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 text-center py-2.5 border border-[#2a2a2a] text-gray-400 rounded-xl text-sm"
+                  className={`flex-1 text-center py-2.5 border rounded-xl text-sm ${resolved === 'dark' ? 'border-[#2a2a2a] text-gray-400' : 'border-gray-200 text-gray-600'}`}
                 >
                   Entrar
                 </Link>

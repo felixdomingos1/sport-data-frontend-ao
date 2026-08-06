@@ -26,7 +26,7 @@ const HeroSlider: React.FC = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-black pt-16 lg:pt-[72px]">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-white dark:bg-black -mt-16 lg:-mt-[72px]">
       <div
         className="absolute inset-0 bg-cover bg-center scale-105"
         style={{ backgroundImage: `url(${HERO_BG})` }}
@@ -61,7 +61,7 @@ const HeroSlider: React.FC = () => {
             </Link>
             <Link
               to="/rankings"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border border-[#2a2a2a] hover:border-[#3a3a3a] bg-[#0f0f0f]/60 text-white font-medium rounded-xl transition"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border border-gray-200 dark:border-[#2a2a2a] hover:border-gray-300 dark:hover:border-[#3a3a3a] bg-gray-100/60 dark:bg-[#0f0f0f]/60 text-gray-900 dark:text-white font-medium rounded-xl transition"
             >
               Ver Rankings
             </Link>
@@ -74,7 +74,7 @@ const HeroSlider: React.FC = () => {
             return (
               <div
                 key={stat.label}
-                className="bg-[#0f0f0f]/80 backdrop-blur-sm border border-[#1a1a1a] rounded-2xl p-5"
+                className="bg-gray-100/80 dark:bg-[#0f0f0f]/80 backdrop-blur-sm border border-gray-200 dark:border-[#1a1a1a] rounded-2xl p-5"
               >
                 <Icon className="w-5 h-5 text-[#E60000] mb-3" />
                 <p className="text-2xl font-bold text-white">{stat.value}</p>

@@ -86,14 +86,14 @@ const ModalitiesSection: React.FC = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+      <section className="py-20 lg:py-28 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-[#1a1a1a]">
         <SportLoadingScreen message="A carregar modalidades..." fullscreen={false} size="md" />
       </section>
     );
   }
 
   return (
-    <section className="py-20 lg:py-28 bg-[#0a0a0a] border-t border-[#1a1a1a]">
+    <section className="py-20 lg:py-28 bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER */}
         <motion.div
@@ -106,20 +106,20 @@ const ModalitiesSection: React.FC = () => {
             <Trophy className="w-4 h-4" />
             <span>Federações Oficiais</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Modalidades Esportivas
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto text-base lg:text-lg">
+          <p className="text-gray-600 dark:text-gray-500 max-w-2xl mx-auto text-base lg:text-lg">
             Conheça as federações que movimentam o esporte angolano
           </p>
         </motion.div>
 
         {displayFederacoes.length === 0 ? (
-          <div className="text-center py-20 bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#1a1a1a] mb-4">
+          <div className="text-center py-20 bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a] rounded-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-200 dark:bg-[#1a1a1a] mb-4">
               <Trophy className="w-10 h-10 text-gray-500" />
             </div>
-            <p className="text-gray-500 text-lg">
+            <p className="text-gray-600 dark:text-gray-500 text-lg">
               Nenhuma federação encontrada. As federações aparecerão aqui em breve.
             </p>
           </div>
@@ -140,13 +140,13 @@ const ModalitiesSection: React.FC = () => {
                   className="group"
                 >
                   <Link to={`/federacoes/${federacao.id}`}>
-                    <div className="relative bg-[#0f0f0f] border border-[#1a1a1a] rounded-2xl overflow-hidden hover:border-[#2a2a2a] transition-all duration-300">
+                    <div className="relative bg-gray-100 dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1a1a1a] rounded-2xl overflow-hidden hover:border-gray-300 dark:hover:border-[#2a2a2a] transition-all duration-300">
 
                       {/* IMAGEM COM OVERLAY */}
                       <div className="relative h-56 overflow-hidden">
                         {isImgLoading ? (
-                          <div className="w-full h-full bg-[#1a1a1a] animate-pulse flex items-center justify-center">
-                            <div className="w-12 h-12 rounded-full border-4 border-[#2a2a2a] border-t-[#E60000] animate-spin" />
+                          <div className="w-full h-full bg-gray-200 dark:bg-[#1a1a1a] animate-pulse flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-[#2a2a2a] border-t-[#E60000] animate-spin" />
                           </div>
                         ) : (
                           <>
@@ -177,42 +177,42 @@ const ModalitiesSection: React.FC = () => {
 
                       {/* CONTEÚDO */}
                       <div className="p-5">
-                        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">
                           {federacao.nome}
                         </h3>
 
-                        <p className="text-gray-500 text-sm line-clamp-2 mb-4">
+                        <p className="text-gray-600 dark:text-gray-500 text-sm line-clamp-2 mb-4">
                           {federacao.descricao || `Federação oficial de ${federacao.nome} em Angola`}
                         </p>
 
                         {/* ESTATÍSTICAS RÁPIDAS */}
-                        <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-[#1a1a1a]">
+                        <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-gray-200 dark:border-[#1a1a1a]">
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-1 text-[#E60000] mb-1">
                               <Calendar className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-300">{stats.events}</p>
-                            <p className="text-xs text-gray-500">Eventos</p>
+                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.events}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-500">Eventos</p>
                           </div>
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-1 text-blue-400 mb-1">
                               <Users className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-300">{stats.athletes}</p>
-                            <p className="text-xs text-gray-500">Atletas</p>
+                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.athletes}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-500">Atletas</p>
                           </div>
                           <div className="text-center">
                             <div className="flex items-center justify-center gap-1 text-yellow-400 mb-1">
                               <Trophy className="w-3 h-3" />
                             </div>
-                            <p className="text-xs font-semibold text-gray-300">{stats.titles}</p>
-                            <p className="text-xs text-gray-500">Títulos</p>
+                            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{stats.titles}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-500">Títulos</p>
                           </div>
                         </div>
 
                         {/* BOTÃO */}
-                        <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
-                          <span className="text-sm font-medium text-gray-500">Ver federação</span>
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-[#1a1a1a]">
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-500">Ver federação</span>
                           <div className="w-8 h-8 rounded-full bg-[#E60000]/10 flex items-center justify-center group-hover:bg-[#E60000] transition-colors duration-300">
                             <ChevronRight className="w-4 h-4 text-[#E60000] group-hover:text-white transition-colors" />
                           </div>

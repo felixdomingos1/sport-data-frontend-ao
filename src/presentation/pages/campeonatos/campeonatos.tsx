@@ -70,7 +70,7 @@ const CampeonatoCard: React.FC<{ campeonato: Campeonato; index: number }> = ({ c
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative bg-white/[0.03] border border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-white/10 hover:bg-white/[0.05]">
+      <div className="relative bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl overflow-hidden transition-all duration-300 hover:border-gray-300 dark:hover:border-white/10 hover:bg-gray-100 dark:hover:bg-white/[0.05]">
         <div
           className={`h-20 bg-gradient-to-br ${modal.color} relative overflow-hidden`}
         >
@@ -87,10 +87,10 @@ const CampeonatoCard: React.FC<{ campeonato: Campeonato; index: number }> = ({ c
                 <Trophy className="w-5 h-5 text-brand" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-white font-bold text-sm leading-tight line-clamp-2">
+                <h3 className="text-gray-900 dark:text-white font-bold text-sm leading-tight line-clamp-2">
                   {campeonato.nome}
                 </h3>
-                <p className="text-white/40 text-xs mt-0.5 truncate">
+                <p className="text-gray-500 dark:text-white/40 text-xs mt-0.5 truncate">
                   {modal.label} · {campeonato.temporada}
                 </p>
               </div>
@@ -115,20 +115,20 @@ const CampeonatoCard: React.FC<{ campeonato: Campeonato; index: number }> = ({ c
           </div>
 
           <div className="space-y-2 mb-5">
-            <div className="flex items-center gap-2 text-white/50 text-xs">
+            <div className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs">
               <Tag className="w-3.5 h-3.5 shrink-0" />
               <span>{FORMATO_MAP[campeonato.formato] ?? campeonato.formato}</span>
             </div>
-            <div className="flex items-center gap-2 text-white/50 text-xs">
+            <div className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs">
               <Calendar className="w-3.5 h-3.5 shrink-0" />
               <span>{formatDate(campeonato.dataInicio)} — {formatDate(campeonato.dataFim)}</span>
             </div>
-            <div className="flex items-center gap-2 text-white/50 text-xs">
+            <div className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs">
               <Users className="w-3.5 h-3.5 shrink-0" />
               <span>{campeonato._count?.participacoes ?? 0} participantes</span>
             </div>
             {campeonato.federacao && (
-              <div className="flex items-center gap-2 text-white/50 text-xs">
+              <div className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs">
                 <Layers className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">{campeonato.federacao.nome}</span>
               </div>
@@ -204,7 +204,7 @@ const Campeonatos: React.FC = () => {
   const totalParticipants = campeonatos.reduce((acc, c) => acc + (c._count?.participacoes ?? 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
       <SEO
         title="Campeonatos"
         description="Explore os campeonatos de Jiu-Jitsu, Karaté, Judo e outras modalidades em Angola. Inscreva-se e acompanhe os chaveamentos em tempo real."
@@ -218,7 +218,7 @@ const Campeonatos: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover object-center scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#0A0A0B] via-transparent to-black/30" />
         <div className="absolute left-8 top-1/2 -translate-y-1/2 w-1 h-32 bg-brand rounded-full" />
         <div className="relative h-full flex flex-col justify-center pl-14 pr-8 max-w-4xl">
           <motion.p
@@ -244,7 +244,7 @@ const Campeonatos: React.FC = () => {
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.16 }}
-            className="text-white/60 text-base max-w-sm leading-relaxed"
+            className="text-gray-600 dark:text-white/60 text-base max-w-sm leading-relaxed"
           >
             Jiu-Jitsu, Karaté e Judo. Inscreva-se e acompanhe os chaveamentos em tempo real.
           </motion.p>
@@ -267,7 +267,7 @@ const Campeonatos: React.FC = () => {
         </div>
       </div>
 
-      <div className="border-y border-white/5 bg-white/[0.02]">
+      <div className="border-y border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-10 overflow-x-auto scrollbar-none">
           {[
             { label: 'Total', value: campeonatos.length },
@@ -277,20 +277,20 @@ const Campeonatos: React.FC = () => {
             { label: 'Atletas', value: totalParticipants },
           ].map((stat) => (
             <div key={stat.label} className="flex items-center gap-3 shrink-0">
-              <span className={`text-2xl font-black tabular-nums ${stat.accent ? 'text-brand' : 'text-white'}`}>
+              <span className={`text-2xl font-black tabular-nums ${stat.accent ? 'text-brand' : 'text-gray-900 dark:text-white'}`}>
                 {stat.value}
               </span>
-              <span className="text-white/40 text-xs uppercase tracking-widest">{stat.label}</span>
-              <span className="w-px h-5 bg-white/10 last:hidden" />
+              <span className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-widest">{stat.label}</span>
+              <span className="w-px h-5 bg-gray-200 dark:bg-white/10 last:hidden" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="sticky top-0 z-30 bg-[#0A0A0B]/90 backdrop-blur-xl border-b border-white/5">
+      <div className="sticky top-0 z-30 bg-white/90 dark:bg-[#0A0A0B]/90 backdrop-blur-xl border-b border-gray-200 dark:border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-3 space-y-3">
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-            <Filter className="w-4 h-4 text-white/30 shrink-0 mr-1" />
+            <Filter className="w-4 h-4 text-gray-400 dark:text-white/30 shrink-0 mr-1" />
             {STATUS_FILTERS.map((f) => {
               const isActive = selectedStatus === f.id;
               return (
@@ -300,14 +300,14 @@ const Campeonatos: React.FC = () => {
                   className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
                     isActive
                       ? 'bg-white text-gray-900 shadow-lg shadow-white/10'
-                      : 'text-white/50 hover:text-white/80 hover:bg-white/8 border border-white/10'
+                      : 'text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-white/8 border border-gray-200 dark:border-white/10'
                   }`}
                 >
                   {f.name}
                 </button>
               );
             })}
-            <span className="w-px h-5 bg-white/10 mx-2 shrink-0" />
+            <span className="w-px h-5 bg-gray-200 dark:bg-white/10 mx-2 shrink-0" />
             {MODALIDADE_FILTERS.map((f) => {
               const isActive = selectedModalidade === f.id;
               return (
@@ -317,7 +317,7 @@ const Campeonatos: React.FC = () => {
                   className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
                     isActive
                       ? 'bg-brand text-white shadow-lg shadow-brand/20'
-                      : 'text-white/50 hover:text-white/80 hover:bg-white/8 border border-white/10'
+                      : 'text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-white/8 border border-gray-200 dark:border-white/10'
                   }`}
                 >
                   {f.name}
@@ -327,13 +327,13 @@ const Campeonatos: React.FC = () => {
           </div>
 
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-white/30" />
             <input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Pesquisar campeonato, modalidade, federação..."
-              className="w-full pl-9 pr-4 py-2 bg-white/[0.04] border border-white/10 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-brand/50 transition"
+              className="w-full pl-9 pr-4 py-2 bg-gray-100 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/30 focus:outline-none focus:border-brand/50 transition"
             />
           </div>
         </div>
@@ -343,7 +343,7 @@ const Campeonatos: React.FC = () => {
         {loading ? (
           <SportLoadingScreen message="A carregar campeonatos..." fullscreen={false} size="md" />
         ) : filtered.length === 0 ? (
-          <div className="text-center py-24 text-white/30">
+          <div className="text-center py-24 text-gray-400 dark:text-white/30">
             <p className="text-5xl mb-4">🏆</p>
             <p className="text-lg font-medium">Nenhum campeonato encontrado</p>
             <p className="text-sm mt-1">Tente ajustar os filtros ou a pesquisa</p>

@@ -196,6 +196,20 @@ class ApiClient {
         throw new Error('No refresh token available');
       }
 
+      // Verifica se o refresh token ainda é válido (não expirou)
+      try {
+        const payload = JSON.parse(atob(refreshToken.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.exp && now > payload.exp) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          throw new Error('Refresh token expired ( > 7 dias)');
+        }
+      } catch (e: any) {
+        if (e.message.includes('expired')) throw e;
+        // Se não conseguir decodificar, tenta na mesma fazer o refresh
+      }
+
       const response = await axios.post(
         `${API_BASE_URL}/auth/pub/refresh-token`,
         { refreshToken },

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Medal, Search } from 'lucide-react';
 import { useAtletaStore } from '../../../store/atleta.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
 
 function getInitials(name: string): string {
@@ -15,12 +16,14 @@ function getInitials(name: string): string {
 }
 
 const Atletas: React.FC = () => {
-  const { atletas, fetchAll, isLoading } = useAtletaStore();
+  const { atletas, fetchAll, isLoading, pagination } = useAtletaStore();
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const limit = 15;
 
   useEffect(() => {
-    fetchAll(1, 50);
-  }, [fetchAll]);
+    fetchAll(page, limit);
+  }, [fetchAll, page]);
 
   const filtered = search
     ? atletas.filter(a =>
@@ -54,15 +57,17 @@ const Atletas: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="relative max-w-md mb-8">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-white/30" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Pesquisar atleta..."
-            className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:border-brand/50 transition text-sm"
-          />
+        <div className="flex justify-center mb-8">
+          <div className="relative w-full max-w-lg">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Pesquisar atleta por nome ou BI..."
+              className="w-full pl-12 pr-4 py-3.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand/50 transition text-sm"
+            />
+          </div>
         </div>
 
         {isLoading ? (
@@ -98,6 +103,9 @@ const Atletas: React.FC = () => {
               </motion.div>
             ))}
           </div>
+        )}
+        {pagination && (
+          <Pagination page={page} totalPages={pagination.totalPages} onPageChange={setPage} />
         )}
       </div>
     </div>

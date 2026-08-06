@@ -3,15 +3,18 @@ import { motion } from 'framer-motion';
 import { Shield, MapPin, Users, Search } from 'lucide-react';
 import { useClubeStore } from '../../../store/clube.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
 
 const Clubes: React.FC = () => {
-  const { clubes, fetchAll, isLoading } = useClubeStore();
+  const { clubes, fetchAll, isLoading, pagination } = useClubeStore();
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const limit = 15;
 
   useEffect(() => {
-    fetchAll(1, 50);
-  }, [fetchAll]);
+    fetchAll(page, limit);
+  }, [fetchAll, page]);
 
   const filtered = search
     ? clubes.filter(c =>
@@ -103,6 +106,9 @@ const Clubes: React.FC = () => {
               </motion.div>
             ))}
           </div>
+        )}
+        {pagination && (
+          <Pagination page={page} totalPages={pagination.totalPages} onPageChange={setPage} />
         )}
       </div>
     </div>

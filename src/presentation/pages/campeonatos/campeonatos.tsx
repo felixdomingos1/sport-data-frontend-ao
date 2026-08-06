@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { competicaoService } from '../../../infrastructure/services/competicao.service';
 import type { Campeonato } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
 
 const STATUS_MAP: Record<string, { label: string; color: string; dot: boolean }> = {
@@ -167,12 +168,16 @@ const Campeonatos: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedModalidade, setSelectedModalidade] = useState('all');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 15;
 
   useEffect(() => {
     async function fetchCampeonatos() {
       try {
-        const result = await competicaoService.getCampeonatosPublicos({ limit: 100 });
+        const result = await competicaoService.getCampeonatosPublicos({ page, limit });
         setCampeonatos(result.data);
+        setTotalPages(result.pagination.totalPages);
       } catch {
         setCampeonatos([]);
       } finally {
@@ -180,7 +185,7 @@ const Campeonatos: React.FC = () => {
       }
     }
     fetchCampeonatos();
-  }, []);
+  }, [page]);
 
   const filtered = useMemo(() => {
     return campeonatos.filter((c) => {
@@ -357,6 +362,7 @@ const Campeonatos: React.FC = () => {
             </AnimatePresence>
           </div>
         )}
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
     </div>
   );

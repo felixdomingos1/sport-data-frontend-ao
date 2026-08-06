@@ -106,6 +106,33 @@ const DisplayAoVivo: React.FC = () => {
   const isWA = currentMatch?.winnerId === currentMatch?.participantA;
   const isWB = currentMatch?.winnerId === currentMatch?.participantB;
 
+  // Timer local independente — continua a contar mesmo sem eventos do árbitro
+  const [localTimer, setLocalTimer] = useState<number | null>(null);
+  useEffect(() => {
+    if (!currentMatch || currentMatch.status === 'FINALIZADA') { setLocalTimer(null); return; }
+    const meta = (currentMatch.metadata ?? {}) as any;
+    if (currentMatch.status === 'EM_ANDAMENTO' && meta.startTime && meta.duracao) {
+      const elapsed = Math.floor((Date.now() - meta.startTime) / 1000);
+      const remaining = Math.max(0, meta.duracao - elapsed);
+      setLocalTimer(remaining);
+      if (remaining <= 0) return;
+      const i = setInterval(() => {
+        setLocalTimer(prev => {
+          if (prev === null || prev <= 0) { clearInterval(i); return 0; }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(i);
+    }
+    setLocalTimer(null);
+  }, [currentMatch?.id, currentMatch?.status]);
+
+  const displayTempo = currentMatch?.tempo && currentMatch.tempo !== '--:--'
+    ? currentMatch.tempo
+    : localTimer !== null
+      ? `${Math.floor(localTimer / 60)}:${String(localTimer % 60).padStart(2, '0')}`
+      : (currentMatch?.tempo ?? '--:--');
+
   if (loading) return <div className="h-screen bg-black flex items-center justify-center"><SportLoadingScreen message="A carregar..." size="md" /></div>;
   if (!campeonato) return <div className="h-screen bg-black text-white flex items-center justify-center"><p className="text-white/30">Não encontrado</p></div>;
 
@@ -172,13 +199,13 @@ const DisplayAoVivo: React.FC = () => {
                 {done ? (
                   <>
                     <div className="text-[10px] sm:text-xs font-bold text-white/10 uppercase tracking-[0.4em] mb-2">Tempo Final</div>
-                    <div className="text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] font-black text-white/10 tabular-nums leading-none">{currentMatch.tempo ?? '--:--'}</div>
+                    <div className="text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] font-black text-white/10 tabular-nums leading-none">{displayTempo}</div>
                     <div className="mt-3 sm:mt-4 text-lg sm:text-2xl md:text-3xl font-black text-green-500 uppercase tracking-[0.2em]">Finalizado</div>
                   </>
                 ) : (
                   <>
                     <div className="text-[10px] sm:text-xs font-bold text-white/10 uppercase tracking-[0.4em] mb-2">Tempo</div>
-                    <div className="text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[12rem] font-black text-amber-400 tabular-nums leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">{currentMatch.tempo ?? '--:--'}</div>
+                    <div className="text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[12rem] font-black text-amber-400 tabular-nums leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">{displayTempo}</div>
                   </>
                 )}
               </div>

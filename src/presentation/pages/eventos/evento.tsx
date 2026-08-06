@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { eventoService } from '../../../infrastructure/services/evento.service';
 import type { Evento } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
 
 interface EventCardData {
@@ -150,13 +151,17 @@ const Eventos: React.FC = () => {
   const [events, setEvents] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 15;
   const pillsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const result = await eventoService.getAll({ limit: 50, status: 'PUBLICADO' });
+        const result = await eventoService.getAll({ page, limit, status: 'PUBLICADO' });
         setEvents(result.data);
+        setTotalPages(result.pagination.totalPages);
       } catch {
         setEvents([]);
       } finally {
@@ -164,7 +169,7 @@ const Eventos: React.FC = () => {
       }
     }
     fetchEvents();
-  }, []);
+  }, [page]);
 
   const mapToCardData = (evento: Evento): EventCardData => ({
     id: evento.id,
@@ -306,6 +311,7 @@ const Eventos: React.FC = () => {
             </AnimatePresence>
           </div>
         )}
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
       <div className="border-t border-gray-200 dark:border-white/5 mt-4">

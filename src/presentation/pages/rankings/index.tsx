@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEO } from '../../components/seo/seo';
+import Pagination from '../../components/ui/pagination';
 import { apiClient } from '../../../infrastructure/api/client';
 import { API_ENDPOINTS } from '../../../infrastructure/api/endpoints';
 
@@ -49,25 +50,32 @@ const modalidades = ['Todas', 'Judo', 'Karaté', 'Jujitsu', 'Boxe', 'Taekwondo',
 const Rankings: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedModalidade, setSelectedModalidade] = useState('Todas');
+  const [selectedCategoria, setSelectedCategoria] = useState('');
   const [ranking, setRanking] = useState<RankingAtleta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const limit = 15;
 
   const fetchRanking = useCallback(async () => {
     setLoading(true);
     try {
       const res = await apiClient.get<RankingResponse>(API_ENDPOINTS.COMPETICAO.RANKING_GERAL, {
         params: {
-          limit: 100,
+          page,
+          limit,
           modalidade: selectedModalidade !== 'Todas' ? selectedModalidade : undefined,
+          categoria: selectedCategoria || undefined,
         },
       });
       setRanking(res?.ranking ?? []);
+      setTotal(res?.total ?? 0);
     } catch {
       setRanking([]);
     } finally {
       setLoading(false);
     }
-  }, [selectedModalidade]);
+  }, [selectedModalidade, selectedCategoria, page]);
 
   useEffect(() => {
     fetchRanking();
@@ -98,7 +106,7 @@ const Rankings: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
                 <Trophy className="w-5 h-5" />
-                <span className="font-semibold">{ranking.length} atletas</span>
+                <span className="font-semibold">{total} atletas</span>
               </div>
             </div>
           </div>
@@ -124,6 +132,13 @@ const Rankings: React.FC = () => {
               <option key={m} value={m}>{m}</option>
             ))}
           </select>
+          <input
+            type="text"
+            placeholder="Categoria (ex: -73 kg)"
+            value={selectedCategoria}
+            onChange={(e) => setSelectedCategoria(e.target.value)}
+            className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand transition w-48"
+          />
         </div>
 
         {loading ? (
@@ -215,6 +230,7 @@ const Rankings: React.FC = () => {
             )}
           </div>
         )}
+        <Pagination page={page} totalPages={Math.ceil(total / limit)} onPageChange={setPage} />
       </div>
     </div>
   );

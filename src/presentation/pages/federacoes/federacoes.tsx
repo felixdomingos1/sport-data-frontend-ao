@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Mail, Phone, Globe, ArrowRight } from 'lucide-react';
 import { useFederacaoStore } from '../../../store/federacao.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
+import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
 
 const Federacoes: React.FC = () => {
-  const { federacoes, fetchAll, isLoading } = useFederacaoStore();
+  const { federacoes, fetchAll, isLoading, pagination } = useFederacaoStore();
+  const [page, setPage] = useState(1);
+  const limit = 15;
 
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    fetchAll(page, limit);
+  }, [fetchAll, page]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
@@ -117,6 +120,9 @@ const Federacoes: React.FC = () => {
               </Link>
             ))}
           </div>
+        )}
+        {pagination && (
+          <Pagination page={page} totalPages={pagination.totalPages} onPageChange={setPage} />
         )}
       </div>
     </div>

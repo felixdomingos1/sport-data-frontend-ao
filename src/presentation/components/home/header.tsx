@@ -9,6 +9,7 @@ const navItems = [
   { name: 'Início', path: '/' },
   { name: 'Campeonatos', path: '/campeonatos' },
   { name: 'Federações', path: '/federacoes' },
+  { name: 'Academias', path: '/academias' },
   { name: 'Clubes', path: '/clubes' },
   { name: 'Atletas', path: '/atletas' },
   { name: 'Rankings', path: '/rankings' },

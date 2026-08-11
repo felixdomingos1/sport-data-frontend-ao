@@ -292,7 +292,7 @@ const Register: React.FC = () => {
               .then((res: any) => setAcademias(res.data ?? []));
           } else {
             return clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
-              .then((res) => setClubes(res.data));
+              .then((res) => setClubes(res));
           }
         })
         .catch(() => toast.error('Erro ao carregar entidades'))

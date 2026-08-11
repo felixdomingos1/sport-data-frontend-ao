@@ -57,7 +57,9 @@ const Register: React.FC = () => {
   const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
   const [clubes, setClubes] = useState<{ id: string; nome: string }[]>([]);
   const [modelo, setModelo] = useState<string>('ambos');
-  const todasEntidades = modelo === 'ambos' ? [...academias, ...clubes] : modelo === 'equipas' ? clubes : academias;
+  const todasEntidades = modelo === 'ambos'
+    ? [...(academias ?? []), ...(clubes ?? [])]
+    : modelo === 'equipas' ? (clubes ?? []) : (academias ?? []);
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
   const [loadingEntidade, setLoadingEntidade] = useState(false);
 
@@ -292,10 +294,10 @@ const Register: React.FC = () => {
           if (fedModelo === 'ambos') {
             return Promise.all([
               apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`),
-              clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }),
+              clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }).catch(() => []),
             ]).then(([acadRes, clubesArr]: any) => {
-              const acads = acadRes.data ?? [];
-              const clubs = clubesArr;
+              const acads = (acadRes?.data ?? []);
+              const clubs = (Array.isArray(clubesArr) ? clubesArr : []);
               console.log('[Register] Academias:', acads.length, 'Clubes:', clubs.length);
               setAcademias(acads);
               setClubes(clubs);

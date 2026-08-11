@@ -34,7 +34,7 @@ import { SEO } from '../../components/seo/seo';
 const steps = [
   { id: 1, title: 'Dados pessoais', description: 'Nome, data de nascimento, contacto' },
   { id: 2, title: 'Credenciais de acesso', description: 'Email e palavra-passe' },
-  { id: 3, title: 'Filiação', description: 'Federação, academia ou associação' },
+  { id: 3, title: 'Filiação', description: 'Federação e clube' },
   { id: 4, title: 'Documentos', description: 'Bilhete de identidade e foto' },
 ];
 
@@ -54,7 +54,6 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [federacoes, setFederacoes] = useState<Federacao[]>([]);
-  const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
   const [clubes, setClubes] = useState<{ id: string; nome: string }[]>([]);
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
   const [loadingEntidade, setLoadingEntidade] = useState(false);
@@ -323,7 +322,7 @@ const Register: React.FC = () => {
       toast.success('Conta criada com sucesso!');
       try {
         await login(formData.email.trim(), formData.password);
-        toast.success('A sua inscrição foi enviada para aprovação da academia. Pode acompanhar o estado no painel.', { duration: 6000 });
+        toast.success('A sua inscrição foi enviada para aprovação do clube. Pode acompanhar o estado no painel.', { duration: 6000 });
         navigate('/dashboard');
       } catch {
         navigate('/login?redirect=/dashboard');

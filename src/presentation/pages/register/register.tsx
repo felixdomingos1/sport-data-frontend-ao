@@ -60,6 +60,8 @@ const Register: React.FC = () => {
 
   const [uploadingBI, setUploadingBI] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
+  const [biFile, setBiFile] = useState<File | null>(null);
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [biUploaded, setBiUploaded] = useState(false);
   const [fotoUploaded, setFotoUploaded] = useState(false);
   const [biUrl, setBiUrl] = useState('');
@@ -281,11 +283,13 @@ const Register: React.FC = () => {
 
       clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
         .then((res) => {
-          console.log('[Register] Clubes:', res.length);
-          setClubes(res ?? []);
+          const arr = Array.isArray(res) ? res : [];
+          console.log('[Register] Clubes:', arr.length);
+          setClubes(arr);
         })
         .catch((err) => {
           console.error('[Register] Erro ao carregar clubes:', err);
+          setClubes([]);
           toast.error('Erro ao carregar clubes');
         })
         .finally(() => setLoadingEntidade(false));

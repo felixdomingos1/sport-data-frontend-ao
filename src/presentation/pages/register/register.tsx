@@ -22,8 +22,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../../infrastructure/services/auth.service';
 import { useAuthStore } from '../../../store/auth.store';
 import { federacaoService } from '../../../infrastructure/services/federacao.service';
-import { clubeService } from '../../../infrastructure/services/clube.service';
-import { Federacao, Clube } from '@core/types/api.types';
+import { Federacao } from '@core/types/api.types';
 import { PROVINCIAS, MODALIDADES } from '@core/constants/angola';
 import { apiClient } from '../../../infrastructure/api/client';
 import { API_ENDPOINTS } from '../../../infrastructure/api/endpoints';
@@ -54,9 +53,9 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [federacoes, setFederacoes] = useState<Federacao[]>([]);
-  const [clubes, setClubes] = useState<Clube[]>([]);
+  const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
-  const [loadingClubes, setLoadingClubes] = useState(false);
+  const [loadingAcademias, setLoadingAcademias] = useState(false);
 
   const [uploadingBI, setUploadingBI] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
@@ -78,7 +77,7 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     federacao: '',
-    clube: '',
+    academia: '',
   });
 
   const updateField = (field: string, value: string | boolean) => {
@@ -125,9 +124,9 @@ const Register: React.FC = () => {
   const validateStep3 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.federacao) newErrors.federacao = 'Seleccione a federação';
-    if (!formData.clube) newErrors.clube = 'Seleccione o clube ou academia';
+    if (!formData.academia) newErrors.academia = 'Seleccione a academia';
     setErrors(newErrors);
-    setTouched({ federacao: true, clube: true });
+    setTouched({ federacao: true, academia: true });
     return Object.keys(newErrors).length === 0;
   };
 
@@ -152,7 +151,7 @@ const Register: React.FC = () => {
       return formData.email.trim() && formData.password && formData.confirmPassword && formData.password === formData.confirmPassword && formData.password.length >= 6;
     }
     if (currentStep === 3) {
-      return formData.federacao && formData.clube;
+      return !!formData.federacao && !!formData.academia;
     }
     return true;
   };
@@ -163,10 +162,9 @@ const Register: React.FC = () => {
     const limited = without244.slice(0, 9);
 
     let display = '+244 ';
-    if (limited.length > 0) display += limited[0];
-    if (limited.length > 1) display += limited.slice(1, 4);
-    if (limited.length > 4) display += '-' + limited.slice(4, 7);
-    if (limited.length > 7) display += '-' + limited.slice(7, 9);
+    if (limited.length > 0) display += limited.slice(0, 3);
+    if (limited.length > 3) display += '-' + limited.slice(3, 6);
+    if (limited.length > 6) display += '-' + limited.slice(6, 9);
 
     updateField('telefone', display);
   };
@@ -276,15 +274,15 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (formData.federacao) {
-      setLoadingClubes(true);
-      setClubes([]);
-      setFormData((prev) => ({ ...prev, clube: '' }));
-      clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
-        .then((res) => setClubes(res.data))
-        .catch(() => toast.error('Erro ao carregar clubes'))
-        .finally(() => setLoadingClubes(false));
+      setLoadingAcademias(true);
+      setAcademias([]);
+      setFormData((prev) => ({ ...prev, academia: '' }));
+      apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`)
+        .then((res) => setAcademias(res.data ?? []))
+        .catch(() => toast.error('Erro ao carregar academias'))
+        .finally(() => setLoadingAcademias(false));
     } else {
-      setClubes([]);
+      setAcademias([]);
     }
   }, [formData.federacao]);
 
@@ -309,7 +307,7 @@ const Register: React.FC = () => {
         provincia: formData.provincia,
         modalidade: formData.modalidade,
         federacaoId: formData.federacao || undefined,
-        clubeId: formData.clube || undefined,
+        academiaId: formData.academia || undefined,
         biUrl: biUrl || undefined,
         fotoUrl: fotoUrl || undefined,
       });
@@ -522,8 +520,8 @@ const Register: React.FC = () => {
                     <input type="checkbox" checked={formData.acceptTerms} onChange={(e) => updateField('acceptTerms', e.target.checked)} onBlur={() => handleBlur('acceptTerms')}
                       className="mt-0.5 w-4 h-4 rounded border-gray-300 dark:border-[#2a2a2a] bg-gray-100 dark:bg-[#1a1a1a] accent-[#E60000] cursor-pointer" />
                     <span className="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition">
-                      Concordo com os <span className="text-[#E60000]">Termos de Serviço</span> e a{' '}
-                      <span className="text-[#E60000]">Política de Privacidade</span> da Sport Data Angola.
+                      Concordo com os <Link to="/termos" target="_blank" className="text-[#E60000] hover:underline">Termos de Serviço</Link> e a{' '}
+                      <Link to="/privacidade" target="_blank" className="text-[#E60000] hover:underline">Política de Privacidade</Link> da Sport Data Angola.
                     </span>
                   </label>
                   <FieldError field="acceptTerms" />
@@ -592,21 +590,18 @@ const Register: React.FC = () => {
                   </div>
                   <div>
                     <StyledSelect
-                      label="Clube / Academia"
-                      value={formData.clube}
-                      onChange={(v) => { updateField('clube', v); handleBlur('clube'); }}
+                      label="Academia"
+                      value={formData.academia}
+                      onChange={(v) => { updateField('academia', v); handleBlur('academia'); }}
                       options={!formData.federacao
                         ? [{ label: 'Seleccione primeiro uma federação', value: '' }]
-                        : loadingClubes
+                        : loadingAcademias
                           ? [{ label: 'A carregar...', value: '' }]
-                          : clubes.map((c) => ({ label: c.nome, value: c.id }))
+                          : [{ label: 'Seleccionar academia', value: '' }, ...academias.map((a) => ({ label: a.nome, value: a.id }))]
                       }
-                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingClubes ? 'A carregar clubes...' : 'Seleccionar clube'}
-                      error={!!errors.clube}
-                      touched={!!touched.clube}
-                      disabled={!formData.federacao || loadingClubes}
+                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingAcademias ? 'A carregar academias...' : 'Seleccionar academia'}
+                      disabled={!formData.federacao || loadingAcademias}
                     />
-                    <FieldError field="clube" />
                   </div>
                 </>
               )}

@@ -390,3 +390,64 @@ body::-webkit-scrollbar {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Arena Fight Penalty Flash ── */
+@keyframes penalty-flash-in {
+  0% { opacity: 0; transform: scale(0.2); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes penalty-flash-out {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes penalty-text-glow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+  50% { filter: drop-shadow(0 0 50px rgba(255,255,255,0.5)); }
+}
+
+@keyframes osae-timer-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+  50% { box-shadow: 0 0 30px rgba(168,85,247,0.6); }
+}
+
+@keyframes ippon-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+@keyframes disqualify-pulse {
+  0%, 100% { border-color: rgba(239,68,68,0.3); }
+  50% { border-color: rgba(239,68,68,0.8); }
+}
+
+@keyframes victory-glow {
+  0%, 100% { text-shadow: 0 0 20px rgba(74,222,128,0.3); }
+  50% { text-shadow: 0 0 40px rgba(74,222,128,0.6), 0 0 60px rgba(74,222,128,0.2); }
+}
+
+.animate-penalty-flash {
+  animation: penalty-flash-in 0.3s ease-out forwards, penalty-flash-out 0.5s ease-in 3s forwards;
+}
+
+.animate-penalty-glow {
+  animation: penalty-text-glow 1.5s ease-in-out infinite;
+}
+
+.animate-osae-pulse {
+  animation: osae-timer-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-ippon-flash {
+  animation: ippon-flash 0.5s ease-in-out infinite;
+}
+
+.animate-disqualify {
+  animation: disqualify-pulse 1s ease-in-out infinite;
+}
+
+.animate-victory-glow {
+  animation: victory-glow 2s ease-in-out infinite;
+}
+

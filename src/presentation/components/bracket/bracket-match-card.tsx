@@ -19,6 +19,16 @@ const STATUS_STYLE: Record<BracketMatchStatus, { label: string; cls: string }> =
   DESCLASSIFICADA: { label: 'Desclassificada', cls: 'bg-red-500/20 text-red-400' },
 };
 
+function motivoLabel(motivo?: string | null): string | null {
+  if (!motivo || motivo === 'PONTOS') return null;
+  const map: Record<string, string> = {
+    FUSEN_GACHI: 'Fusen-Gachi', KIKEN_GACHI: 'Kiken-Gachi',
+    HANSOKU_MAKE: 'Hansoku-Make', OSAE_KOMI: 'Osae-Komi',
+    WO: 'W.O.', DESCLASSIFICACAO: 'Desclassificação',
+  };
+  return map[motivo] ?? motivo;
+}
+
 function Avatar({ participant, isWinner }: { participant?: BracketParticipant; isWinner: boolean }) {
   return (
     <div
@@ -167,6 +177,8 @@ const BracketMatchCard: React.FC<BracketMatchCardProps> = ({
   const isWinnerB = !!match.winnerId && match.winnerId === match.participantB;
   const isLive = match.status === 'EM_ANDAMENTO' || match.status === 'CHAMANDO';
   const isFinished = match.status === 'FINALIZADA';
+  const meta = (match.metadata ?? {}) as any;
+  const winReason = motivoLabel(meta?.pontoTipo || meta?.motivo);
 
   const sectionLabel =
     match.section === 'BRONZE'
@@ -233,6 +245,9 @@ const BracketMatchCard: React.FC<BracketMatchCardProps> = ({
       {!compact && (
         <div className="flex items-center justify-between px-3 py-1 rounded-b-lg border-t border-white/5 shrink-0">
           <span className="text-[9px] text-white/25 uppercase tracking-widest">{statusInfo.label}</span>
+          {winReason && (
+            <span className="text-[9px] font-bold text-amber-400/70 uppercase tracking-widest">{winReason}</span>
+          )}
           {match.group && (
             <span className="text-[9px] text-white/25 uppercase tracking-widest">{match.group}</span>
           )}

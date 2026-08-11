@@ -16,6 +16,8 @@ import Home from './presentation/pages/home/home';
 import Federacoes from './presentation/pages/federacoes/federacoes';
 import Clubes from './presentation/pages/clubes/clubes';
 import Atletas from './presentation/pages/atletas/atletas';
+import AtletaDetalhe from './presentation/pages/atletas/atleta-detalhe';
+import ClubeDetalhe from './presentation/pages/clubes/clube-detalhe';
 import Eventos from './presentation/pages/eventos/evento';
 import EventoDetalhe from './presentation/pages/eventos/evento-detalhe';
 import DashboardLayout from './presentation/components/layout/dashboard-layout';
@@ -34,12 +36,15 @@ import ChaveamentoLista from './presentation/pages/chaveamento/chaveamento-lista
 import ChaveamentoDetalhe from './presentation/pages/chaveamento/chaveamento-detalhe';
 import DisplayLista from './presentation/pages/display/display-lista';
 import DisplayAoVivo from './presentation/pages/display/display-ao-vivo';
+import ArenaFightDisplay from './presentation/pages/arena-fight/display';
 import Campeonatos from './presentation/pages/campeonatos/campeonatos';
 import CampeonatoDetalhe from './presentation/pages/campeonatos/campeonato-detalhe';
 import Inscricoes from './presentation/pages/inscricoes';
+import TermosServico from './presentation/pages/termos/termos';
+import PoliticaPrivacidade from './presentation/pages/privacidade/privacidade';
 import SportLoadingScreen from './presentation/components/ui/sport-loading-screen';
 import GlobalLoadingOverlay from './presentation/components/ui/global-loading-overlay';
-import { OrganizationLD, WebSiteLD } from './presentation/components/seo/json-ld';
+import { OrganizationLD, WebSiteLD, LocalBusinessLD } from './presentation/components/seo/json-ld';
 
 function App() {
   const { loadUser } = useAuthStore();
@@ -95,7 +100,9 @@ function App() {
             <Route path="/federacoes" element={<Federacoes />} />
             <Route path="/federacoes/:id" element={<FederacaoDetalhe />} />
             <Route path="/clubes" element={<Clubes />} />
+            <Route path="/clubes/:id" element={<ClubeDetalhe />} />
             <Route path="/atletas" element={<Atletas />} />
+            <Route path="/atletas/:id" element={<AtletaDetalhe />} />
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/eventos/:id" element={<EventoDetalhe />} />
             <Route path="/rankings" element={<Rankings />} />
@@ -103,10 +110,13 @@ function App() {
             <Route path="/campeonatos/:id" element={<CampeonatoDetalhe />} />
             <Route path="/chaveamento" element={<ChaveamentoLista />} />
             <Route path="/chaveamento/:id" element={<ChaveamentoDetalhe />} />
+            <Route path="/termos" element={<TermosServico />} />
+            <Route path="/privacidade" element={<PoliticaPrivacidade />} />
           </Route>
 
           <Route path="/display" element={<DisplayLista />} />
           <Route path="/display/:id" element={<DisplayAoVivo />} />
+          <Route path="/arena-fight/display" element={<ArenaFightDisplay />} />
 
           <Route element={<PrivateRoute />}>
             <Route element={<DashboardLayout />}>
@@ -129,6 +139,7 @@ function App() {
     </ThemeProvider>
     <OrganizationLD />
     <WebSiteLD />
+    <LocalBusinessLD />
     </HelmetProvider>
   );
 }

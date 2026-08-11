@@ -16,6 +16,14 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
 }
 
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(
+    new RegExp(`(?:^|;\\s*)${name}=([^;]*)`),
+  );
+  return match ? match[1] : null;
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -26,15 +34,12 @@ export const useAuthStore = create<AuthState>()(
       login: async (email, password) => {
         set({ isLoading: true });
 
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        apiClient.clearAccessToken();
+        apiClient.clearTokens();
 
         try {
           const { user, tokens } = await authService.login({ email, password });
 
-          apiClient.setAccessToken(tokens.token);
-          localStorage.setItem('refresh_token', tokens.refreshToken);
+          apiClient.setTokens(tokens.token, tokens.refreshToken);
 
           set({
             user,
@@ -54,23 +59,20 @@ export const useAuthStore = create<AuthState>()(
         } catch {
           // Silently handle logout error
         } finally {
-          apiClient.clearAccessToken();
-          localStorage.removeItem('refresh_token');
+          apiClient.clearTokens();
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },
 
       loadUser: async () => {
-        const token = localStorage.getItem('access_token');
-        console.log('[AuthStore] loadUser — token presente:', !!token);
+        const token = getCookie('sport_token');
         if (!token || token === 'undefined' || token === 'null') {
-          apiClient.clearAccessToken();
+          apiClient.clearTokens();
           set({
             isAuthenticated: false,
             user: null,
             isLoading: false,
           });
-          console.log('[AuthStore] Sem token — utilizador não autenticado');
           return;
         }
 
@@ -78,20 +80,15 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const user = await authService.getMe();
-          console.log('[AuthStore] Token válido — utilizador autenticado:', user.email);
           set({ user, isAuthenticated: true, isLoading: false });
         } catch {
-          console.log('[AuthStore] Token inválido/expirado — a limpar sessão');
-          apiClient.clearAccessToken();
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          apiClient.clearTokens();
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },
 
       clearSession: () => {
-        apiClient.clearAccessToken();
-        localStorage.removeItem('refresh_token');
+        apiClient.clearTokens();
         set({ user: null, isAuthenticated: false, isLoading: false });
       },
 
@@ -104,8 +101,8 @@ export const useAuthStore = create<AuthState>()(
         if (!state) return;
         state.isAuthenticated = false;
       },
-    }
-  )
+    },
+  ),
 );
 
 if (typeof window !== 'undefined') {

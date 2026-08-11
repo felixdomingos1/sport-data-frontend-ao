@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Users, Medal, Search } from 'lucide-react';
 import { useAtletaStore } from '../../../store/atleta.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
@@ -80,8 +81,8 @@ const Atletas: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filtered.map((atleta, index) => (
+              <Link to={`/atletas/${atleta.id}`} key={atleta.id}>
               <motion.div
-                key={atleta.id}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.03 }}
@@ -101,6 +102,7 @@ const Atletas: React.FC = () => {
                   <span>Atleta</span>
                 </div>
               </motion.div>
+              </Link>
             ))}
           </div>
         )}

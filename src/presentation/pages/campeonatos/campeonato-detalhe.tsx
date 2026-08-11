@@ -29,6 +29,7 @@ import type { BracketSummary } from '@/core/types/bracket.types';
 import { getInscricaoAtiva } from '@/presentation/utils/atleta.utils';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 import { SEO } from '@/presentation/components/seo/seo';
+import { SportsEventLD, BreadcrumbLD } from '@/presentation/components/seo/json-ld';
 
 const STATUS_MAP: Record<string, { label: string; color: string; dot: boolean }> = {
   INSCRICOES_ABERTAS: { label: 'Inscrições Abertas', color: 'bg-emerald-500', dot: false },
@@ -317,6 +318,18 @@ const CampeonatoDetalhe: React.FC = () => {
         description={`${modal.label} — ${FORMATO_MAP[campeonato.formato] ?? campeonato.formato}. ${campeonato.descricao ?? 'Categorias, inscrições e chaveamento do campeonato.'}`}
         canonical={`/campeonatos/${campeonato.id}`}
       />
+      <SportsEventLD
+        name={campeonato.nome}
+        description={`${modal.label} — ${FORMATO_MAP[campeonato.formato] ?? campeonato.formato}. ${campeonato.descricao ?? 'Categorias, inscrições e chaveamento do campeonato.'}`}
+        startDate={campeonato.dataInicio}
+        endDate={campeonato.dataFim}
+        image={campeonato.bannerUrl ?? undefined}
+        url={`/campeonatos/${campeonato.id}`}
+        organizerName={campeonato.federacao?.nome ?? undefined}
+        sport={campeonato.modalidade ?? undefined}
+        status={campeonato.status === 'INSCRICOES_ABERTAS' ? 'Scheduled' : campeonato.status === 'EM_ANDAMENTO' ? 'Scheduled' : campeonato.status === 'FINALIZADO' ? 'Completed' : campeonato.status === 'CANCELADO' ? 'Cancelled' : 'Scheduled'}
+      />
+      <BreadcrumbLD items={[{ name: 'Campeonatos', url: '/campeonatos' }, { name: campeonato.nome, url: `/campeonatos/${campeonato.id}` }]} />
 
       <div className="relative h-[320px] md:h-[400px] overflow-hidden">
         <img

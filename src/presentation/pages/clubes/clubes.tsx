@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Shield, MapPin, Users, Search } from 'lucide-react';
 import { useClubeStore } from '../../../store/clube.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
@@ -69,8 +70,8 @@ const Clubes: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map((clube, index) => (
+              <Link to={`/clubes/${clube.id}`} key={clube.id}>
               <motion.div
-                key={clube.id}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.03 }}
@@ -104,6 +105,7 @@ const Clubes: React.FC = () => {
                   </span>
                 </div>
               </motion.div>
+              </Link>
             ))}
           </div>
         )}

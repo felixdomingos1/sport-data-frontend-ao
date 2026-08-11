@@ -23,7 +23,11 @@ export interface SumulaSocketPayload {
 }
 
 function getStoredToken(): string | null {
-  const token = localStorage.getItem('access_token');
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(
+    new RegExp(`(?:^|;\\s*)sport_token=([^;]*)`),
+  );
+  const token = match ? match[1] : null;
   if (!token || token === 'undefined' || token === 'null') {
     return null;
   }

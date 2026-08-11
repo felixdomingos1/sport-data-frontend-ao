@@ -6,6 +6,7 @@ import { eventoService } from '../../../infrastructure/services/evento.service';
 import type { Evento } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import { SEO } from '../../components/seo/seo';
+import { SportsEventLD } from '../../components/seo/json-ld';
 
 const STATUS_MAP: Record<string, { label: string; color: string; dot: boolean }> = {
   PUBLICADO: { label: 'Próximo', color: 'bg-emerald-500', dot: false },
@@ -77,6 +78,16 @@ const EventoDetalhe: React.FC = () => {
         description={evento.descricao ?? `Evento desportivo: ${evento.titulo}`}
         canonical={`/eventos/${evento.id}`}
         image={evento.imagemUrl}
+      />
+      <SportsEventLD
+        name={evento.titulo}
+        description={evento.descricao ?? `Evento desportivo: ${evento.titulo}`}
+        startDate={evento.dataInicio}
+        endDate={evento.dataFim ?? undefined}
+        location={evento.local ?? evento.cidade}
+        image={evento.imagemUrl ?? undefined}
+        url={`/eventos/${evento.id}`}
+        status={evento.status === 'EM_ANDAMENTO' ? 'Scheduled' : evento.status === 'FINALIZADO' ? 'Completed' : evento.status === 'CANCELADO' ? 'Cancelled' : 'Scheduled'}
       />
 
       <div className="relative h-[400px] md:h-[480px] overflow-hidden">

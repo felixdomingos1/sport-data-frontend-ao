@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Menu, X, Shield, Sun, Moon } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Shield, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../../../store/auth.store';
 import { useTheme } from '../ui/theme-provider';
 import clsx from 'clsx';
@@ -18,20 +18,9 @@ const navItems = [
 
 const Header: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
-  const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { resolved, setTheme } = useTheme();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/atletas?q=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery('');
-      setIsMobileMenuOpen(false);
-    }
-  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${resolved === 'dark' ? 'bg-[#0f0f0f]/95 border-[#1a1a1a]' : 'bg-white/95 border-gray-200'}`}>
@@ -68,19 +57,6 @@ const Header: React.FC = () => {
           </nav>
 
           <div className="flex items-center gap-3">
-            <form onSubmit={handleSearch} className="hidden md:block">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <input
-                  type="search"
-                  placeholder="Pesquisar..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-44 lg:w-52 pl-9 pr-4 py-2 rounded-xl text-sm transition focus:outline-none focus:border-[#E60000]/50 ${resolved === 'dark' ? 'bg-[#080808] border border-[#1a1a1a] text-white placeholder:text-gray-600' : 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
-                />
-              </div>
-            </form>
-
             <button
               onClick={() => setTheme(resolved === 'dark' ? 'light' : 'dark')}
               className={`p-2 rounded-lg transition ${resolved === 'dark' ? 'text-gray-400 hover:text-white hover:bg-[#1a1a1a]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
@@ -134,18 +110,6 @@ const Header: React.FC = () => {
                 {item.name}
               </Link>
             ))}
-            <form onSubmit={handleSearch} className="pt-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <input
-                  type="search"
-                  placeholder="Pesquisar..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm transition focus:outline-none focus:border-[#E60000]/50 ${resolved === 'dark' ? 'bg-[#080808] border border-[#1a1a1a] text-white placeholder:text-gray-600' : 'bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
-                />
-              </div>
-            </form>
             {!isAuthenticated && (
               <div className="flex gap-2 pt-2">
                 <Link

@@ -22,6 +22,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../../infrastructure/services/auth.service';
 import { useAuthStore } from '../../../store/auth.store';
 import { federacaoService } from '../../../infrastructure/services/federacao.service';
+import { clubeService } from '../../../infrastructure/services/clube.service';
 import { Federacao } from '@core/types/api.types';
 import { PROVINCIAS, MODALIDADES } from '@core/constants/angola';
 import { apiClient } from '../../../infrastructure/api/client';
@@ -54,8 +55,10 @@ const Register: React.FC = () => {
 
   const [federacoes, setFederacoes] = useState<Federacao[]>([]);
   const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
+  const [clubes, setClubes] = useState<{ id: string; nome: string }[]>([]);
+  const [modelo, setModelo] = useState<string>('ambos');
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
-  const [loadingAcademias, setLoadingAcademias] = useState(false);
+  const [loadingEntidade, setLoadingEntidade] = useState(false);
 
   const [uploadingBI, setUploadingBI] = useState(false);
   const [uploadingFoto, setUploadingFoto] = useState(false);
@@ -124,7 +127,7 @@ const Register: React.FC = () => {
   const validateStep3 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.federacao) newErrors.federacao = 'Seleccione a federação';
-    if (!formData.academia) newErrors.academia = 'Seleccione a academia';
+    if (!formData.academia) newErrors.academia = modelo === 'equipas' ? 'Seleccione o clube' : 'Seleccione a academia';
     setErrors(newErrors);
     setTouched({ federacao: true, academia: true });
     return Object.keys(newErrors).length === 0;
@@ -274,15 +277,30 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (formData.federacao) {
-      setLoadingAcademias(true);
+      setLoadingEntidade(true);
       setAcademias([]);
+      setClubes([]);
       setFormData((prev) => ({ ...prev, academia: '' }));
-      apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`)
-        .then((res) => setAcademias(res.data ?? []))
-        .catch(() => toast.error('Erro ao carregar academias'))
-        .finally(() => setLoadingAcademias(false));
+
+      apiClient.get<{ data: Federacao }>(`/federations/${formData.federacao}`)
+        .then((federacao: any) => {
+          const fedModelo = (federacao.configuracao as any)?.modelo || 'ambos';
+          setModelo(fedModelo);
+
+          if (fedModelo === 'academias') {
+            return apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`)
+              .then((res: any) => setAcademias(res.data ?? []));
+          } else {
+            return clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
+              .then((res) => setClubes(res.data));
+          }
+        })
+        .catch(() => toast.error('Erro ao carregar entidades'))
+        .finally(() => setLoadingEntidade(false));
     } else {
       setAcademias([]);
+      setClubes([]);
+      setModelo('ambos');
     }
   }, [formData.federacao]);
 
@@ -307,7 +325,9 @@ const Register: React.FC = () => {
         provincia: formData.provincia,
         modalidade: formData.modalidade,
         federacaoId: formData.federacao || undefined,
-        academiaId: formData.academia || undefined,
+        ...(modelo === 'equipas'
+          ? { clubeId: formData.academia || undefined }
+          : { academiaId: formData.academia || undefined }),
         biUrl: biUrl || undefined,
         fotoUrl: fotoUrl || undefined,
       });
@@ -590,17 +610,19 @@ const Register: React.FC = () => {
                   </div>
                   <div>
                     <StyledSelect
-                      label="Academia"
+                      label={modelo === 'equipas' ? 'Clube' : 'Academia'}
                       value={formData.academia}
                       onChange={(v) => { updateField('academia', v); handleBlur('academia'); }}
                       options={!formData.federacao
                         ? [{ label: 'Seleccione primeiro uma federação', value: '' }]
-                        : loadingAcademias
+                        : loadingEntidade
                           ? [{ label: 'A carregar...', value: '' }]
-                          : [{ label: 'Seleccionar academia', value: '' }, ...academias.map((a) => ({ label: a.nome, value: a.id }))]
+                          : modelo === 'equipas'
+                            ? [{ label: 'Seleccionar clube', value: '' }, ...clubes.map((c) => ({ label: c.nome, value: c.id }))]
+                            : [{ label: 'Seleccionar academia', value: '' }, ...academias.map((a) => ({ label: a.nome, value: a.id }))]
                       }
-                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingAcademias ? 'A carregar academias...' : 'Seleccionar academia'}
-                      disabled={!formData.federacao || loadingAcademias}
+                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingEntidade ? 'A carregar...' : modelo === 'equipas' ? 'Seleccionar clube' : 'Seleccionar academia'}
+                      disabled={!formData.federacao || loadingEntidade}
                     />
                   </div>
                 </>

@@ -334,9 +334,10 @@ const Register: React.FC = () => {
       toast.success('Conta criada com sucesso!');
       try {
         await login(formData.email.trim(), formData.password);
-        navigate('/minha-assinatura');
+        toast.success('A sua inscrição foi enviada para aprovação da academia. Pode acompanhar o estado no painel.', { duration: 6000 });
+        navigate('/dashboard');
       } catch {
-        navigate('/login?redirect=/minha-assinatura');
+        navigate('/login?redirect=/dashboard');
       }
     } catch (error: unknown) {
       const message = (error as any)?.message || 'Erro ao criar conta';

@@ -8,6 +8,11 @@ import {
   Building2,
   Users,
   Upload,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  GraduationCap,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
@@ -118,6 +123,49 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {dashboard?.ultimasInscricoes && dashboard.ultimasInscricoes.length > 0 && (
+        <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-[var(--card-border)]">
+            <h3 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-[var(--text-muted)]" />
+              As Minhas Inscrições
+            </h3>
+          </div>
+          <div className="divide-y divide-[var(--card-border)]">
+            {dashboard.ultimasInscricoes.map((inscricao) => {
+              const status = inscricao.status;
+              const isActive = status === 'ATIVO';
+              const isPending = status === 'DRAFT' || status === 'AGUARDANDO_PAGAMENTO' || status === 'EM_ANALISE';
+              const isRejected = status === 'CANCELADO';
+              return (
+                <div key={inscricao.id} className="flex items-center gap-4 px-5 py-4 hover:bg-[var(--hover-bg)] transition">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    isActive ? 'bg-green-500/10' : isRejected ? 'bg-red-500/10' : 'bg-orange-500/10'
+                  }`}>
+                    {isActive ? <CheckCircle className="w-4 h-4 text-[#22C55E]" /> :
+                     isRejected ? <XCircle className="w-4 h-4 text-[#EF4444]" /> :
+                     <Clock className="w-4 h-4 text-[#F59E0B]" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{inscricao.federacao?.nome ?? 'Federação'}</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                      {inscricao.academia?.nome ?? inscricao.clube?.nome ?? 'Sem academia'} · {getStatusInscricaoLabel(status)}
+                    </p>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                    isActive ? 'bg-green-500/10 text-[#22C55E] border-green-500/20' :
+                    isRejected ? 'bg-red-500/10 text-[#EF4444] border-red-500/20' :
+                    'bg-orange-500/10 text-[#F59E0B] border-orange-500/20'
+                  }`}>
+                    {getStatusInscricaoLabel(status).toUpperCase()}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[var(--card-bg)] rounded-2xl p-5 border border-[var(--card-border)]">

@@ -122,3 +122,21 @@ export function onSumulaAtualizada(cb: (payload: SumulaSocketPayload) => void): 
     s.off('bracket:sumula-atualizada', cb);
   };
 }
+
+export interface NotificacaoSocketPayload {
+  id: string;
+  titulo: string;
+  mensagem: string;
+  tipo?: string;
+  lida: boolean;
+  createdAt: string;
+}
+
+export function onNovaNotificacao(cb: (payload: NotificacaoSocketPayload) => void): () => void {
+  const s = connectSocket();
+  if (!s) return () => undefined;
+  s.on('new_notification', cb);
+  return () => {
+    s.off('new_notification', cb);
+  };
+}

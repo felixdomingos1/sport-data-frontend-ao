@@ -8,6 +8,8 @@ import { useLoadingStore } from '@/store/loading.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useTheme } from '../ui/theme-provider';
+import { connectSocket, disconnectSocket, onNovaNotificacao } from '@/infrastructure/services/socket.service';
+import toast from 'react-hot-toast';
 
 const DashboardLayout: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -24,8 +26,32 @@ const DashboardLayout: React.FC = () => {
     fetchDashboard();
     fetchNotificacoesCount();
     const timer = setTimeout(hide, 700);
+
     return () => clearTimeout(timer);
   }, [isAuthenticated, fetchMe, fetchDashboard, fetchNotificacoesCount, hide]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const socket = connectSocket();
+    if (!socket) return;
+
+    const unsubscribe = onNovaNotificacao((payload) => {
+      useAtletaMeStore.setState((state) => ({
+        notificacoes: [payload as any, ...state.notificacoes],
+        notificacoesNaoLidas: state.notificacoesNaoLidas + 1,
+      }));
+      toast(payload.mensagem, {
+        icon: '🔔',
+        duration: 5000,
+      });
+    });
+
+    return () => {
+      unsubscribe();
+      disconnectSocket();
+    };
+  }, [isAuthenticated]);
 
   return (
     <div className={`min-h-screen ${resolved === 'dark' ? 'bg-black' : 'bg-gray-50'}`}>

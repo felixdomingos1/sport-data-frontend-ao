@@ -58,6 +58,14 @@ const Dashboard: React.FC = () => {
     fetchRankings();
   }, [dashboard, fetchDashboard, fetchRankings]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchDashboard();
+      fetchRankings();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [fetchDashboard, fetchRankings]);
+
   if (isLoading && !dashboard) {
     return <SportLoadingScreen message="A carregar o painel..." fullscreen={false} size="md" />;
   }

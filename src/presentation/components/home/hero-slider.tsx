@@ -47,7 +47,7 @@ const HeroSlider: React.FC = () => {
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-gray-400 leading-relaxed max-w-xl">
-            A plataforma oficial que conecta atletas, federações, associações e academias.
+            A plataforma oficial que conecta atletas, federações, associações e clubes.
             Rankings, competições e documentos num só lugar.
           </p>
 

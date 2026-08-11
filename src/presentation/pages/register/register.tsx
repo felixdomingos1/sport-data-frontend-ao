@@ -284,18 +284,30 @@ const Register: React.FC = () => {
 
       apiClient.get<{ data: Federacao }>(`/federations/${formData.federacao}`)
         .then((federacao: any) => {
+          console.log('[Register] Federacao recebida:', federacao);
+          console.log('[Register] configuracao:', federacao.configuracao);
           const fedModelo = (federacao.configuracao as any)?.modelo || 'ambos';
+          console.log('[Register] modelo:', fedModelo);
           setModelo(fedModelo);
 
           if (fedModelo === 'academias') {
             return apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`)
-              .then((res: any) => setAcademias(res.data ?? []));
+              .then((res: any) => {
+                console.log('[Register] Academias recebidas:', res);
+                setAcademias(res.data ?? []);
+              });
           } else {
             return clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
-              .then((res) => setClubes(res));
+              .then((res) => {
+                console.log('[Register] Clubes recebidos:', res);
+                setClubes(res);
+              });
           }
         })
-        .catch(() => toast.error('Erro ao carregar entidades'))
+        .catch((err) => {
+          console.error('[Register] Erro ao carregar entidades:', err);
+          toast.error('Erro ao carregar entidades');
+        })
         .finally(() => setLoadingEntidade(false));
     } else {
       setAcademias([]);

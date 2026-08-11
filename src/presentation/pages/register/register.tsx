@@ -56,6 +56,7 @@ const Register: React.FC = () => {
   const [federacoes, setFederacoes] = useState<Federacao[]>([]);
   const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
   const [clubes, setClubes] = useState<{ id: string; nome: string }[]>([]);
+  const todasEntidades = modelo === 'ambos' ? [...academias, ...clubes] : modelo === 'equipas' ? clubes : academias;
   const [modelo, setModelo] = useState<string>('ambos');
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
   const [loadingEntidade, setLoadingEntidade] = useState(false);
@@ -127,7 +128,7 @@ const Register: React.FC = () => {
   const validateStep3 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.federacao) newErrors.federacao = 'Seleccione a federação';
-    if (!formData.academia) newErrors.academia = modelo === 'equipas' ? 'Seleccione o clube' : 'Seleccione a academia';
+    if (!formData.academia) newErrors.academia = modelo === 'ambos' ? 'Seleccione a academia ou clube' : modelo === 'equipas' ? 'Seleccione o clube' : 'Seleccione a academia';
     setErrors(newErrors);
     setTouched({ federacao: true, academia: true });
     return Object.keys(newErrors).length === 0;
@@ -284,22 +285,31 @@ const Register: React.FC = () => {
 
       apiClient.get<{ data: Federacao }>(`/federations/${formData.federacao}`)
         .then((federacao: any) => {
-          console.log('[Register] Federacao recebida:', federacao);
-          console.log('[Register] configuracao:', federacao.configuracao);
           const fedModelo = (federacao.configuracao as any)?.modelo || 'ambos';
           console.log('[Register] modelo:', fedModelo);
           setModelo(fedModelo);
 
-          if (fedModelo === 'academias') {
+          if (fedModelo === 'ambos') {
+            return Promise.all([
+              apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`),
+              clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }),
+            ]).then(([acadRes, clubesArr]: any) => {
+              const acads = acadRes.data ?? [];
+              const clubs = clubesArr;
+              console.log('[Register] Academias:', acads.length, 'Clubes:', clubs.length);
+              setAcademias(acads);
+              setClubes(clubs);
+            });
+          } else if (fedModelo === 'academias') {
             return apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`)
               .then((res: any) => {
-                console.log('[Register] Academias recebidas:', res);
+                console.log('[Register] Academias:', res.data?.length);
                 setAcademias(res.data ?? []);
               });
           } else {
             return clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
               .then((res) => {
-                console.log('[Register] Clubes recebidos:', res);
+                console.log('[Register] Clubes:', res.length);
                 setClubes(res);
               });
           }
@@ -623,18 +633,16 @@ const Register: React.FC = () => {
                   </div>
                   <div>
                     <StyledSelect
-                      label={modelo === 'equipas' ? 'Clube' : 'Academia'}
+                      label={modelo === 'ambos' ? 'Academia / Clube' : modelo === 'equipas' ? 'Clube' : 'Academia'}
                       value={formData.academia}
                       onChange={(v) => { updateField('academia', v); handleBlur('academia'); }}
                       options={!formData.federacao
                         ? [{ label: 'Seleccione primeiro uma federação', value: '' }]
                         : loadingEntidade
                           ? [{ label: 'A carregar...', value: '' }]
-                          : modelo === 'equipas'
-                            ? [{ label: 'Seleccionar clube', value: '' }, ...clubes.map((c) => ({ label: c.nome, value: c.id }))]
-                            : [{ label: 'Seleccionar academia', value: '' }, ...academias.map((a) => ({ label: a.nome, value: a.id }))]
+                          : [{ label: modelo === 'ambos' ? 'Seleccionar academia ou clube' : modelo === 'equipas' ? 'Seleccionar clube' : 'Seleccionar academia', value: '' }, ...todasEntidades.map((e) => ({ label: e.nome, value: e.id }))]
                       }
-                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingEntidade ? 'A carregar...' : modelo === 'equipas' ? 'Seleccionar clube' : 'Seleccionar academia'}
+                      placeholder={!formData.federacao ? 'Seleccione primeiro uma federação' : loadingEntidade ? 'A carregar...' : modelo === 'ambos' ? 'Seleccionar academia ou clube' : modelo === 'equipas' ? 'Seleccionar clube' : 'Seleccionar academia'}
                       disabled={!formData.federacao || loadingEntidade}
                     />
                   </div>

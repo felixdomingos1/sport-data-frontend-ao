@@ -56,8 +56,8 @@ const Register: React.FC = () => {
   const [federacoes, setFederacoes] = useState<Federacao[]>([]);
   const [academias, setAcademias] = useState<{ id: string; nome: string }[]>([]);
   const [clubes, setClubes] = useState<{ id: string; nome: string }[]>([]);
-  const todasEntidades = modelo === 'ambos' ? [...academias, ...clubes] : modelo === 'equipas' ? clubes : academias;
   const [modelo, setModelo] = useState<string>('ambos');
+  const todasEntidades = modelo === 'ambos' ? [...academias, ...clubes] : modelo === 'equipas' ? clubes : academias;
   const [loadingFederacoes, setLoadingFederacoes] = useState(false);
   const [loadingEntidade, setLoadingEntidade] = useState(false);
 

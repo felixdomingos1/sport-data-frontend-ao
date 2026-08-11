@@ -281,14 +281,18 @@ const Register: React.FC = () => {
       setClubes([]);
       setFormData((prev) => ({ ...prev, academia: '' }));
 
-      clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
-        .then((res) => {
-          const arr = Array.isArray(res) ? res : [];
-          console.log('[Register] Clubes:', arr.length);
-          setClubes(arr);
+      Promise.all([
+        clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }).catch(() => []),
+        apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`).catch(() => ({ data: [] })),
+      ])
+        .then(([clubesArr, acadRes]: any) => {
+          const clubs = Array.isArray(clubesArr) ? clubesArr : [];
+          const acads = (acadRes?.data ?? []);
+          const todos = [...clubs, ...acads];
+          console.log('[Register] Clubes:', clubs.length, 'Academias:', acads.length, 'Total:', todos.length);
+          setClubes(todos);
         })
-        .catch((err) => {
-          console.error('[Register] Erro ao carregar clubes:', err);
+        .catch(() => {
           setClubes([]);
           toast.error('Erro ao carregar clubes');
         })

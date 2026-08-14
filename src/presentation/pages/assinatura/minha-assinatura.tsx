@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { CreditCard, Calendar, CheckCircle, XCircle, ShieldCheck, Clock } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { CreditCard, Calendar, CheckCircle, XCircle, ShieldCheck, Clock, X, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { assinaturaService, type Assinatura } from '@/infrastructure/services/assinatura.service';
 import { planoService } from '@/infrastructure/services/plano.service';
 import { invalidateSubscriptionCache } from '@/presentation/hooks/use-subscription-guard';
@@ -44,13 +43,26 @@ function diasRestantes(dataFim?: string) {
 }
 
 const MinhaAssinatura: React.FC = () => {
-  const navigate = useNavigate();
   const [assinaturas, setAssinaturas] = useState<Assinatura[]>([]);
   const [ativa, setAtiva] = useState<Assinatura | null>(null);
+  const [pendente, setPendente] = useState<Assinatura | null>(null);
   const [planos, setPlanos] = useState<Plano[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [selecionado, setSelecionado] = useState<Plano | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [emisFrameUrl, setEmisFrameUrl] = useState<string | null>(null);
+  const [emisReference, setEmisReference] = useState<string | null>(null);
+  const [paymentPolling, setPaymentPolling] = useState(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+    setPaymentPolling(false);
+  };
 
   const load = async () => {
     setLoading(true);
@@ -59,12 +71,15 @@ const MinhaAssinatura: React.FC = () => {
         assinaturaService.minhasAssinaturas(),
         planoService.getAll({ ativo: true, limit: 100 }),
       ]);
-      setAssinaturas(sub.assinaturas ?? []);
+      const lista = sub.assinaturas ?? [];
+      setAssinaturas(lista);
       setAtiva(sub.ativa ?? null);
-      setPlanos((plans.data ?? []).filter((p) => p.ativo));
+      setPendente(lista.find((a) => a.status === 'AGUARDANDO_PAGAMENTO') ?? null);
+      setPlanos((plans.data ?? []).filter((p) => p.ativo && p.tipo === 'ATLETA'));
     } catch {
       setAssinaturas([]);
       setAtiva(null);
+      setPendente(null);
     } finally {
       setLoading(false);
     }
@@ -72,23 +87,85 @@ const MinhaAssinatura: React.FC = () => {
 
   useEffect(() => {
     load();
+    return () => stopPolling();
   }, []);
+
+  const startPaymentPolling = (reference: string) => {
+    stopPolling();
+    setPaymentPolling(true);
+
+    const poll = async () => {
+      try {
+        const result = await assinaturaService.checkPaymentStatus(reference);
+
+        if (result.status === 'SUCCESS') {
+          stopPolling();
+          setShowPaymentModal(false);
+          setEmisFrameUrl(null);
+          setEmisReference(null);
+          toast.success('Pagamento confirmado! Assinatura activada.');
+          invalidateSubscriptionCache();
+          await load();
+          return;
+        }
+
+        if (result.status === 'CANCELLED' || result.status === 'EXPIRED' || result.status === 'ERROR') {
+          stopPolling();
+          toast.error(result.message ?? 'Pagamento não concluído.');
+          return;
+        }
+
+        if (!result.shouldContinuePolling) {
+          stopPolling();
+        }
+      } catch {
+        // continua polling em caso de erro de rede
+      }
+    };
+
+    poll();
+    pollingRef.current = setInterval(poll, 3000);
+  };
+
+  const iniciarPagamentoEmis = async (assinaturaId: string) => {
+    const checkout = await assinaturaService.checkoutEmis(assinaturaId);
+    setEmisFrameUrl(checkout.frameUrl);
+    setEmisReference(checkout.reference);
+    setShowPaymentModal(true);
+    startPaymentPolling(checkout.reference);
+  };
 
   const assinar = async (plano: Plano) => {
     setSubmitting(true);
     setSelecionado(plano);
     try {
       const { assinatura } = await assinaturaService.assinar(plano.id);
-      await assinaturaService.confirmarPagamento(assinatura.id, { metodo: 'BANCO' });
-      toast.success('Assinatura ativada com sucesso!');
-      invalidateSubscriptionCache();
-      await load();
+      await iniciarPagamentoEmis(assinatura.id);
     } catch (err: any) {
-      toast.error(err?.message ?? 'Erro ao assinar o plano');
+      toast.error(err?.message ?? 'Erro ao iniciar pagamento');
     } finally {
       setSubmitting(false);
       setSelecionado(null);
     }
+  };
+
+  const continuarPagamento = async () => {
+    if (!pendente) return;
+    setSubmitting(true);
+    try {
+      await iniciarPagamentoEmis(pendente.id);
+    } catch (err: any) {
+      toast.error(err?.message ?? 'Erro ao retomar pagamento');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const fecharModal = () => {
+    stopPolling();
+    setShowPaymentModal(false);
+    setEmisFrameUrl(null);
+    setEmisReference(null);
   };
 
   if (loading) return <SportLoadingScreen />;
@@ -126,6 +203,27 @@ const MinhaAssinatura: React.FC = () => {
         </div>
       )}
 
+      {!ativa && pendente && (
+        <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-gray-900 dark:text-white">
+              Pagamento pendente — {pendente.plano?.nome}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-white/40 mt-1">
+              Complete o pagamento via Multicaixa Express para activar a assinatura.
+            </p>
+          </div>
+          <button
+            onClick={continuarPagamento}
+            disabled={submitting}
+            className="flex items-center justify-center gap-2 bg-brand text-white font-bold text-xs px-4 py-2.5 rounded-lg hover:opacity-90 transition disabled:opacity-40"
+          >
+            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+            Continuar pagamento
+          </button>
+        </div>
+      )}
+
       <div>
         <h2 className="text-sm font-bold text-gray-600 dark:text-white/70 uppercase tracking-widest mb-4">Planos disponíveis</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -135,7 +233,11 @@ const MinhaAssinatura: React.FC = () => {
             planos.map((plano) => (
               <div
                 key={plano.id}
-                className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-5 flex flex-col gap-4"
+                className={`bg-white dark:bg-white/[0.03] border rounded-xl p-5 flex flex-col gap-4 ${
+                  plano.nome === 'Plano Teste EMIS'
+                    ? 'border-amber-500/40 ring-1 ring-amber-500/20'
+                    : 'border-gray-200 dark:border-white/10'
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-white/40 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-md">
@@ -170,7 +272,7 @@ const MinhaAssinatura: React.FC = () => {
                   ) : (
                     <CreditCard className="w-4 h-4" />
                   )}
-                  {ativa ? 'Já possui plano ativo' : 'Assinar agora'}
+                  {ativa ? 'Já possui plano ativo' : 'Pagar com Multicaixa Express'}
                 </button>
               </div>
             ))
@@ -211,11 +313,45 @@ const MinhaAssinatura: React.FC = () => {
         </div>
       )}
 
-      {!ativa && assinaturas.some((a) => a.status === 'AGUARDANDO_PAGAMENTO') && (
+      {!ativa && !pendente && assinaturas.some((a) => a.status === 'AGUARDANDO_PAGAMENTO') && (
         <p className="text-xs text-gray-500 dark:text-white/40 flex items-center gap-2">
           <XCircle className="w-4 h-4" />
-          Tens uma assinatura aguardando pagamento. Para testar, confirma o pagamento na simulação.
+          Tens uma assinatura aguardando pagamento.
         </p>
+      )}
+
+      {showPaymentModal && emisFrameUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/10">
+              <div>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">Pagamento Multicaixa Express</p>
+                {emisReference && (
+                  <p className="text-[10px] text-gray-500 dark:text-white/40">Ref: {emisReference}</p>
+                )}
+              </div>
+              <button
+                onClick={fecharModal}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                aria-label="Fechar"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+            <div className="relative bg-gray-50 dark:bg-black/20">
+              <iframe
+                src={emisFrameUrl}
+                title="Pagamento EMIS"
+                className="w-full h-[480px] border-0"
+                allow="payment"
+              />
+            </div>
+            <div className="px-4 py-3 border-t border-gray-200 dark:border-white/10 flex items-center gap-2 text-xs text-gray-500 dark:text-white/40">
+              {paymentPolling && <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" />}
+              Aguardando confirmação do pagamento...
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

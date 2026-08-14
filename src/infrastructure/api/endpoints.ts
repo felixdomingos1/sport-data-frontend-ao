@@ -47,6 +47,8 @@ export const API_ENDPOINTS = {
     MINHAS: '/assinaturas/minhas',
     CONFIRMAR: (id: string) => `/assinaturas/${id}/confirmar`,
     CANCELAR: (id: string) => `/assinaturas/${id}/cancelar`,
+    CHECKOUT_EMIS: (id: string) => `/assinaturas/${id}/checkout-emis`,
+    PAYMENT_STATUS: (reference: string) => `/assinaturas/pagamento/status/${reference}`,
   },
   CAMPEONATOS: {
     BASE: '/campeonatos',

@@ -55,6 +55,34 @@ class AssinaturaService {
     );
     return res as any;
   }
+
+  async checkoutEmis(assinaturaId: string): Promise<{
+    success: boolean;
+    reference: string;
+    frameUrl: string;
+    valorTotal: number;
+    assinaturaId: string;
+    message: string;
+  }> {
+    const res = await apiClient.post(
+      API_ENDPOINTS.ASSINATURAS.CHECKOUT_EMIS(assinaturaId)
+    );
+    return res as any;
+  }
+
+  async checkPaymentStatus(reference: string): Promise<{
+    found: boolean;
+    status?: 'PENDING' | 'SUCCESS' | 'CANCELLED' | 'EXPIRED' | 'ERROR';
+    message: string;
+    shouldRedirect?: boolean;
+    shouldContinuePolling?: boolean;
+    shouldShowAlert?: boolean;
+  }> {
+    const res = await apiClient.get(
+      API_ENDPOINTS.ASSINATURAS.PAYMENT_STATUS(reference)
+    );
+    return res as any;
+  }
 }
 
 export const assinaturaService = new AssinaturaService();

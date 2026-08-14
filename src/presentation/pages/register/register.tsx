@@ -282,12 +282,12 @@ const Register: React.FC = () => {
       setFormData((prev) => ({ ...prev, academia: '' }));
 
       Promise.all([
-        clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }).catch(() => []),
-        apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`).catch(() => ({ data: [] })),
+        clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }).catch(() => ({ data: [] })),
+        apiClient.get<{ data: { id: string; nome: string }[]; pagination?: unknown }>(`/academias?federacaoId=${formData.federacao}&limit=100`).catch(() => ({ data: [] })),
       ])
-        .then(([clubesArr, acadRes]: any) => {
-          const clubs = Array.isArray(clubesArr) ? clubesArr : [];
-          const acads = (acadRes?.data ?? []);
+        .then(([clubesRes, acadRes]: any) => {
+          const clubs = Array.isArray(clubesRes?.data) ? clubesRes.data : [];
+          const acads = Array.isArray(acadRes?.data) ? acadRes.data : [];
           const todos = [...clubs, ...acads];
           console.log('[Register] Clubes:', clubs.length, 'Academias:', acads.length, 'Total:', todos.length);
           setClubes(todos);

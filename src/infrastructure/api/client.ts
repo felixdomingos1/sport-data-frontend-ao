@@ -7,7 +7,19 @@ import axios, {
 } from 'axios';
 import { ApiResponse } from '@core/types/api.types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+
+export function getSocketBaseUrl(): string {
+  if (import.meta.env.VITE_SOCKET_URL) {
+    return import.meta.env.VITE_SOCKET_URL;
+  }
+
+  if (API_BASE_URL.startsWith('http')) {
+    return API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  }
+
+  return 'http://localhost:3001';
+}
 
 const TOKEN_COOKIE = 'sport_token';
 const REFRESH_TOKEN_COOKIE = 'sport_refresh';

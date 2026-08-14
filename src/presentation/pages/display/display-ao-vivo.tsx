@@ -9,7 +9,7 @@ import type { Campeonato } from '../../../core/types/api.types';
 import type { BracketDto, BracketSummary, BracketMatch } from '../../../core/types/bracket.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 const WS = API.replace(/\/api\/v1\/?$/, '');
 
 function np(id?: string | null, p?: BracketDto['participantes']): string { if (!id) return 'TBD'; return p?.find(x => x.id === id)?.nome ?? id }

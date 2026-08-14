@@ -8,7 +8,13 @@ import { useLoadingStore } from '@/store/loading.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useTheme } from '../ui/theme-provider';
-import { connectSocket, disconnectSocket, onNovaNotificacao } from '@/infrastructure/services/socket.service';
+import {
+  connectSocket,
+  disconnectSocket,
+  onAssinaturaAtivada,
+  onNovaNotificacao,
+} from '@/infrastructure/services/socket.service';
+import { notifySubscriptionActivated } from '@/presentation/hooks/use-subscription-guard';
 import toast from 'react-hot-toast';
 
 const DashboardLayout: React.FC = () => {
@@ -36,7 +42,7 @@ const DashboardLayout: React.FC = () => {
     const socket = connectSocket();
     if (!socket) return;
 
-    const unsubscribe = onNovaNotificacao((payload) => {
+    const unsubscribeNotificacao = onNovaNotificacao((payload) => {
       useAtletaMeStore.setState((state) => ({
         notificacoes: [payload as any, ...state.notificacoes],
         notificacoesNaoLidas: state.notificacoesNaoLidas + 1,
@@ -47,8 +53,13 @@ const DashboardLayout: React.FC = () => {
       });
     });
 
+    const unsubscribeAssinatura = onAssinaturaAtivada(() => {
+      notifySubscriptionActivated();
+    });
+
     return () => {
-      unsubscribe();
+      unsubscribeNotificacao();
+      unsubscribeAssinatura();
       disconnectSocket();
     };
   }, [isAuthenticated]);

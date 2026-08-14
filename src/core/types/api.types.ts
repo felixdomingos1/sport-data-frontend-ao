@@ -27,18 +27,32 @@ export interface PaginatedResponse<T> {
 }
 
 export function toPaginatedResponse<T>(
-  response: ApiPaginatedResponse<T>
+  response: ApiPaginatedResponse<T> | { data?: T[] | { data?: T[]; pagination?: ApiPaginatedResponse<T>["pagination"] }; pagination?: ApiPaginatedResponse<T>["pagination"] }
 ): PaginatedResponse<T> {
-  const { page, limit, total } = response.pagination;
-  const totalPages = Math.ceil(total / limit);
+  const nested = response.data;
+  const items = Array.isArray(nested)
+    ? nested
+    : Array.isArray(nested?.data)
+      ? nested.data
+      : [];
+
+  const pagination = response.pagination ?? (Array.isArray(nested) ? undefined : nested?.pagination) ?? {
+    page: 1,
+    limit: items.length || 10,
+    total: items.length,
+  };
+
+  const { page, limit, total } = pagination;
+  const totalPages = limit > 0 ? Math.ceil(total / limit) : 1;
+
   return {
-    data: response.data,
+    data: items,
     pagination: {
       page,
       limit,
       total,
-      totalPages
-    }
+      totalPages,
+    },
   };
 }
 

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CreditCard, Calendar, CheckCircle, XCircle, ShieldCheck, Clock, X, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { assinaturaService, type Assinatura } from '@/infrastructure/services/assinatura.service';
 import { planoService } from '@/infrastructure/services/plano.service';
-import { invalidateSubscriptionCache } from '@/presentation/hooks/use-subscription-guard';
+import { notifySubscriptionActivated } from '@/presentation/hooks/use-subscription-guard';
 import type { Plano } from '@/core/types/api.types';
 import SportLoadingScreen from '@/presentation/components/ui/sport-loading-screen';
 
@@ -43,6 +44,7 @@ function diasRestantes(dataFim?: string) {
 }
 
 const MinhaAssinatura: React.FC = () => {
+  const navigate = useNavigate();
   const [assinaturas, setAssinaturas] = useState<Assinatura[]>([]);
   const [ativa, setAtiva] = useState<Assinatura | null>(null);
   const [pendente, setPendente] = useState<Assinatura | null>(null);
@@ -103,9 +105,10 @@ const MinhaAssinatura: React.FC = () => {
           setShowPaymentModal(false);
           setEmisFrameUrl(null);
           setEmisReference(null);
+          notifySubscriptionActivated();
           toast.success('Pagamento confirmado! Assinatura activada.');
-          invalidateSubscriptionCache();
           await load();
+          navigate('/dashboard');
           return;
         }
 
@@ -124,7 +127,7 @@ const MinhaAssinatura: React.FC = () => {
     };
 
     poll();
-    pollingRef.current = setInterval(poll, 3000);
+    pollingRef.current = setInterval(poll, 2000);
   };
 
   const iniciarPagamentoEmis = async (assinaturaId: string) => {

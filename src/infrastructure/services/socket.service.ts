@@ -1,8 +1,8 @@
 import { io, Socket } from 'socket.io-client';
 import type { BracketStatistics, BracketState } from '../../core/types/bracket.types';
+import { getSocketBaseUrl } from '../api/client';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
-const SOCKET_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+const SOCKET_URL = getSocketBaseUrl();
 
 let socket: Socket | null = null;
 const joinedRooms = new Set<string>();
@@ -138,5 +138,19 @@ export function onNovaNotificacao(cb: (payload: NotificacaoSocketPayload) => voi
   s.on('new_notification', cb);
   return () => {
     s.off('new_notification', cb);
+  };
+}
+
+export interface AssinaturaAtivadaPayload {
+  assinaturaId: string;
+  referencia: string;
+}
+
+export function onAssinaturaAtivada(cb: (payload: AssinaturaAtivadaPayload) => void): () => void {
+  const s = connectSocket();
+  if (!s) return () => undefined;
+  s.on('assinatura:ativada', cb);
+  return () => {
+    s.off('assinatura:ativada', cb);
   };
 }

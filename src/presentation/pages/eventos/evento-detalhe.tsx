@@ -84,7 +84,7 @@ const EventoDetalhe: React.FC = () => {
         description={evento.descricao ?? `Evento desportivo: ${evento.titulo}`}
         startDate={evento.dataInicio}
         endDate={evento.dataFim ?? undefined}
-        location={evento.local ?? evento.cidade}
+        location={evento.local ?? evento.endereco}
         image={evento.imagemUrl ?? undefined}
         url={`/eventos/${evento.id}`}
         status={evento.status === 'EM_ANDAMENTO' ? 'Scheduled' : evento.status === 'FINALIZADO' ? 'Completed' : evento.status === 'CANCELADO' ? 'Cancelled' : 'Scheduled'}
@@ -206,7 +206,7 @@ const EventoDetalhe: React.FC = () => {
           </motion.div>
         )}
 
-        {(evento.federacao || evento.academia || evento.associacao) && (
+        {(evento.federacao || evento.associacao) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,7 +220,7 @@ const EventoDetalhe: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-bold text-gray-900 dark:text-white">
-                  {evento.federacao?.nome ?? evento.academia?.nome ?? "Entidade Desportiva"}
+                  {evento.federacao?.nome ?? evento.associacao?.nome ?? "Entidade Desportiva"}
                 </p>
               </div>
             </div>

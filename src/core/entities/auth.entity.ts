@@ -16,7 +16,6 @@ export interface RegisterData {
   modalidade?: string;
   federacaoId?: string;
   clubeId?: string;
-  academiaId?: string;
   biUrl?: string;
   fotoUrl?: string;
 }

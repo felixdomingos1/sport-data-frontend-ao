@@ -80,7 +80,7 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     federacao: '',
-    academia: '',
+    clube: '',
   });
 
   const updateField = (field: string, value: string | boolean) => {
@@ -127,9 +127,9 @@ const Register: React.FC = () => {
   const validateStep3 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.federacao) newErrors.federacao = 'Seleccione a federação';
-    if (!formData.academia) newErrors.academia = 'Seleccione o clube';
+    if (!formData.clube) newErrors.clube = 'Seleccione o clube';
     setErrors(newErrors);
-    setTouched({ federacao: true, academia: true });
+    setTouched({ federacao: true, clube: true });
     return Object.keys(newErrors).length === 0;
   };
 
@@ -154,7 +154,7 @@ const Register: React.FC = () => {
       return formData.email.trim() && formData.password && formData.confirmPassword && formData.password === formData.confirmPassword && formData.password.length >= 6;
     }
     if (currentStep === 3) {
-      return !!formData.federacao && !!formData.academia;
+      return !!formData.federacao && !!formData.clube;
     }
     return true;
   };
@@ -279,19 +279,10 @@ const Register: React.FC = () => {
     if (formData.federacao) {
       setLoadingEntidade(true);
       setClubes([]);
-      setFormData((prev) => ({ ...prev, academia: '' }));
+      setFormData((prev) => ({ ...prev, clube: '' }));
 
-      Promise.all([
-        clubeService.getAll({ federacaoId: formData.federacao, limit: 100 }).catch(() => []),
-        apiClient.get<{ data: { id: string; nome: string }[] }>(`/academias?federacaoId=${formData.federacao}&limit=100`).catch(() => ({ data: [] })),
-      ])
-        .then(([clubesArr, acadRes]: any) => {
-          const clubs = Array.isArray(clubesArr) ? clubesArr : [];
-          const acads = (acadRes?.data ?? []);
-          const todos = [...clubs, ...acads];
-          console.log('[Register] Clubes:', clubs.length, 'Academias:', acads.length, 'Total:', todos.length);
-          setClubes(todos);
-        })
+      clubeService.getAll({ federacaoId: formData.federacao, limit: 100 })
+        .then((res) => setClubes(res.data))
         .catch(() => {
           setClubes([]);
           toast.error('Erro ao carregar clubes');
@@ -323,7 +314,7 @@ const Register: React.FC = () => {
         provincia: formData.provincia,
         modalidade: formData.modalidade,
         federacaoId: formData.federacao || undefined,
-        clubeId: formData.academia || undefined,
+        clubeId: formData.clube || undefined,
         biUrl: biUrl || undefined,
         fotoUrl: fotoUrl || undefined,
       });
@@ -608,8 +599,8 @@ const Register: React.FC = () => {
                   <div>
                     <StyledSelect
                       label="Clube"
-                      value={formData.academia}
-                      onChange={(v) => { updateField('academia', v); handleBlur('academia'); }}
+                      value={formData.clube}
+                      onChange={(v) => { updateField('clube', v); handleBlur('clube'); }}
                       options={!formData.federacao
                         ? [{ label: 'Seleccione primeiro uma federação', value: '' }]
                         : loadingEntidade

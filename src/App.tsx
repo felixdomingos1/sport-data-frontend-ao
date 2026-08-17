@@ -15,7 +15,6 @@ import Layout from './presentation/components/layout';
 import Home from './presentation/pages/home/home';
 import Federacoes from './presentation/pages/federacoes/federacoes';
 import Clubes from './presentation/pages/clubes/clubes';
-import Academias from './presentation/pages/academias/academias';
 import Atletas from './presentation/pages/atletas/atletas';
 import AtletaDetalhe from './presentation/pages/atletas/atleta-detalhe';
 import ClubeDetalhe from './presentation/pages/clubes/clube-detalhe';
@@ -101,7 +100,6 @@ function App() {
             <Route path="/federacoes" element={<Federacoes />} />
             <Route path="/federacoes/:id" element={<FederacaoDetalhe />} />
             <Route path="/clubes" element={<Clubes />} />
-            <Route path="/academias" element={<Academias />} />
             <Route path="/clubes/:id" element={<ClubeDetalhe />} />
             <Route path="/atletas" element={<Atletas />} />
             <Route path="/atletas/:id" element={<AtletaDetalhe />} />

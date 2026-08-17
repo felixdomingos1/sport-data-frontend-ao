@@ -147,7 +147,6 @@ export interface InscricaoAtletaData {
   atletaId: string;
   federacaoId: string;
   clubeId?: string;
-  academiaId?: string;
   planoId: string;
 }
 

@@ -80,7 +80,7 @@ const PoliticaPrivacidade: React.FC = () => {
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Modalidade desportiva principal</li>
                   <li>Federação de filiação</li>
-                  <li>Academia ou clube de filiação</li>
+                  <li>Clube de filiação</li>
                   <li>Peso e altura</li>
                   <li>Histórico de inscrições em campeonatos</li>
                   <li>Resultados, classificações e rankings</li>
@@ -105,7 +105,7 @@ const PoliticaPrivacidade: React.FC = () => {
             <p className="mb-3">Os dados pessoais são recolhidos e tratados para as seguintes finalidades:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li><strong>Gestão de conta:</strong> criar e gerir a conta do Utilizador na Plataforma;</li>
-              <li><strong>Filiação desportiva:</strong> registar o atleta junto de federações, associações e academias;</li>
+              <li><strong>Filiação desportiva:</strong> registar o atleta junto de federações, associações e clubes;</li>
               <li><strong>Inscrição em campeonatos:</strong> processar inscrições e participações em competições desportivas;</li>
               <li><strong>Emissão de licenças:</strong> emitir licenças desportivas digitais;</li>
               <li><strong>Comunicação:</strong> enviar notificações sobre campeonatos, eventos, prazos e alterações relevantes;</li>
@@ -137,7 +137,7 @@ const PoliticaPrivacidade: React.FC = () => {
               entidades, exclusivamente para as finalidades descritas nesta Política:
             </p>
             <ul className="list-disc pl-6 space-y-1">
-              <li><strong>Federações, Associações e Academias:</strong> para efeitos de filiação, validação de documentos, inscrições e participação em competições;</li>
+              <li><strong>Federações, Associações e Clubes:</strong> para efeitos de filiação, validação de documentos, inscrições e participação em competições;</li>
               <li><strong>Prestadores de serviços:</strong> processadores de pagamento, serviços de armazenamento em nuvem (Cloudinary), serviços de e-mail;</li>
               <li><strong>Autoridades competentes:</strong> quando exigido por lei, ordem judicial ou determinação de autoridade administrativa.</li>
             </ul>

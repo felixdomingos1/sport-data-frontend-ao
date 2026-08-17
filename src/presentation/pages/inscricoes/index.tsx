@@ -207,8 +207,8 @@ const Inscricoes: React.FC = () => {
               >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[#E60000]/10 flex items-center justify-center shrink-0 overflow-hidden">
-                    {fed.logoUrl ? (
-                      <img src={fed.logoUrl} alt={fed.nome} className="w-full h-full object-cover" />
+                    {fed.logo ? (
+                      <img src={fed.logo} alt={fed.nome} className="w-full h-full object-cover" />
                     ) : (
                       <Shield className="w-6 h-6 text-[#E60000]" />
                     )}
@@ -219,25 +219,8 @@ const Inscricoes: React.FC = () => {
                     </p>
                     <p className="text-xs text-[var(--text-muted)] mt-1 flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
-                      {fed.provincia ?? fed.endereco ?? 'Angola'}
+                      {fed.endereco ?? 'Angola'}
                     </p>
-                    {fed.modalidades && fed.modalidades.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {fed.modalidades.slice(0, 3).map((m) => (
-                          <span
-                            key={m}
-                            className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--hover-bg)] text-[var(--text-muted)]"
-                          >
-                            {m}
-                          </span>
-                        ))}
-                        {fed.modalidades.length > 3 && (
-                          <span className="text-[10px] text-[var(--text-muted)]">
-                            +{fed.modalidades.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
                   </div>
                   <ChevronRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[#E60000] transition shrink-0 mt-1" />
                 </div>

@@ -171,7 +171,7 @@ const Login: React.FC = () => {
             </div>
             <div className="flex items-center gap-3 text-white/80">
               <Building2 className="w-4 h-4 text-[#E60000] shrink-0" />
-              <span className="text-sm">18 associações e 43 academias</span>
+              <span className="text-sm">18 associações e 43 clubes</span>
             </div>
             <div className="flex items-center gap-3 text-white/80">
               <Trophy className="w-4 h-4 text-[#E60000] shrink-0" />

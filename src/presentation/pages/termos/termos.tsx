@@ -48,7 +48,7 @@ const TermosServico: React.FC = () => {
               A Sport Data Angola é uma plataforma digital de gestão desportiva que permite:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>O registo e gestão de atletas, clubes, academias, associações e federações desportivas;</li>
+              <li>O registo e gestão de atletas, clubes, associações e federações desportivas;</li>
               <li>A organização e gestão de campeonatos, competições e eventos desportivos;</li>
               <li>A emissão de licenças desportivas digitais e gestão de documentos;</li>
               <li>A consulta de rankings, estatísticas e calendários desportivos;</li>

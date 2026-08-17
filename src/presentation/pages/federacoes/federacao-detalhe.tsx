@@ -394,7 +394,7 @@ const FederacaoDetalhe: React.FC = () => {
               {federacaoAtual.atletas && federacaoAtual.atletas.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {federacaoAtual.atletas.map((inscricao) => {
-                    const atletaData = 'atleta' in inscricao ? (inscricao as Record<string, unknown>).atleta : null;
+                    const atletaData = inscricao.atleta ?? null;
                     const atletaNome = atletaData?.nomeCompleto || 'Atleta';
                     const atletaImg = atletaData?.imagemUrl;
 

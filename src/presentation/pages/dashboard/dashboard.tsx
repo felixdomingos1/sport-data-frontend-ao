@@ -158,7 +158,7 @@ const Dashboard: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[var(--text-primary)]">{inscricao.federacao?.nome ?? 'Federação'}</p>
                     <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                      {inscricao.academia?.nome ?? inscricao.clube?.nome ?? 'Sem academia'} · {getStatusInscricaoLabel(status)}
+                      {inscricao.clube?.nome ?? 'Sem clube'} · {getStatusInscricaoLabel(status)}
                     </p>
                   </div>
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${

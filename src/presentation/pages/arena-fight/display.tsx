@@ -78,7 +78,7 @@ const IpponBox = ({ filled, color }: { filled: boolean; color: 'red' | 'blue' })
 function ArenaFightDisplay() {
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(120);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [scoreA, setScoreA] = useState(0);
   const [scoreB, setScoreB] = useState(0);
@@ -94,7 +94,7 @@ function ArenaFightDisplay() {
   const [osaeKomiSeconds, setOsaeKomiSeconds] = useState(0);
   const [osaeAlert, setOsaeAlert] = useState<{ side: 'red' | 'blue'; label: string } | null>(null);
   const osaeAutoIppon = useRef(false);
-  const osaeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const osaeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const penA = penaltyName(shidosA);
   const penB = penaltyName(shidosB);
@@ -159,6 +159,7 @@ function ArenaFightDisplay() {
           if (!isDQ_A) {
             const next = shidosA + 1;
             setShidosA(next);
+            setScoreB(v => v + 1);
             const info = penaltyName(next);
             setPenaltyAlert({ side: 'red', name: info.name });
             setTimeout(() => setPenaltyAlert(null), 3500);
@@ -168,6 +169,7 @@ function ArenaFightDisplay() {
           if (!isDQ_B) {
             const next = shidosB + 1;
             setShidosB(next);
+            setScoreA(v => v + 1);
             const info = penaltyName(next);
             setPenaltyAlert({ side: 'blue', name: info.name });
             setTimeout(() => setPenaltyAlert(null), 3500);

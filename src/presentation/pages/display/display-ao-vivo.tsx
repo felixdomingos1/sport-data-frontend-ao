@@ -41,7 +41,7 @@ const DisplayAoVivo: React.FC = () => {
     const s = io(WS, { transports: ['websocket', 'polling'], reconnection: true, reconnectionAttempts: 50, reconnectionDelay: 500 }); socketRef.current = s;
     s.on('connect', () => { setConnected(true); if (id) s.emit('join_campeonato', { campeonatoId: id }); if (sBidRef.current) s.emit('join_bracket', { bracketId: sBidRef.current }) });
     s.on('disconnect', () => setConnected(false));
-    s.on('bracket:atualizado', (p: any) => { if (p.campeonatoId !== id) return; setBracket(prev => prev?.id === p.bracketId ? { ...prev, state: p.state, statistics: p.statistics, status: p.state.status } : prev) });
+    s.on('bracket:atualizado', (p: any) => { if (p.campeonatoId !== id) return; setBracket(prev => { if (!prev || prev.id !== p.bracketId) return prev; return { ...prev, state: p.state, statistics: p.statistics, status: p.state.status } }) });
     s.on('fight:update', (p: any) => {
       setLiveScores(prev => ({ ...prev, [p.matchId]: p }));
       if (p.actionAlert) { setCenterAlert({ text: p.actionAlert.text, color: p.actionAlert.color, side: p.actionAlert.side }); setTimeout(() => setCenterAlert(null), 4000) }
@@ -52,7 +52,7 @@ const DisplayAoVivo: React.FC = () => {
   useEffect(() => { const i = setInterval(() => setClock(new Date()), 1000); return () => clearInterval(i) }, []);
   useEffect(() => { if (!id) return; setLoading(true); Promise.all([competicaoService.getCampeonatoById(id).catch(() => null as any), bracketService.listarPorCampeonato(id).catch(() => [] as BracketSummary[])]).then(([c, brs]) => { setCampeonato(c); setBrackets(brs); if (brs.length > 0) setSBid(brs[0].id) }).finally(() => setLoading(false)) }, [id]);
   useEffect(() => { if (sBid) bracketService.obter(sBid).then(setBracket).catch(() => {}) }, [sBid]);
-  const toggleFS = () => { if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.catch(() => {}); setFullscreen(true) } else { document.exitFullscreen?.catch(() => {}); setFullscreen(false) } };
+  const toggleFS = () => { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); setFullscreen(true) } else { document.exitFullscreen().catch(() => {}); setFullscreen(false) } };
   useEffect(() => { const h = () => { if (!document.fullscreenElement) setFullscreen(false) }; document.addEventListener('fullscreenchange', h); return () => document.removeEventListener('fullscreenchange', h) }, []);
 
   const currentMatch = useMemo(() => { if (!bracket) return null; if (selectedMatchId) return bracket.state.matches.find(m => m.id === selectedMatchId) ?? null; const first = bracket.state.matches.find(m => m.status !== 'FINALIZADA' && m.status !== 'WO' && m.status !== 'DESCLASSIFICADA' && m.status !== 'BYE' && m.participantA && m.participantB); if (first) return first; return [...bracket.state.matches].filter(m => m.status === 'FINALIZADA').pop() ?? bracket.state.matches[0] ?? null }, [bracket, selectedMatchId]);

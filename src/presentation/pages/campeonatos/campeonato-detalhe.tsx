@@ -524,7 +524,7 @@ const CampeonatoDetalhe: React.FC = () => {
                           <div className="min-w-0 flex-1">
                           <p className="text-gray-900 dark:text-white text-xs font-semibold truncate">{nome}</p>
                           <p className="text-gray-500 dark:text-white/40 text-[11px] truncate">
-                              {p.inscricao?.clube?.nome ?? p.inscricao?.academia?.nome ?? '—'}
+                              {p.inscricao?.clube?.nome ?? '—'}
                             </p>
                           </div>
                           {categoria && (

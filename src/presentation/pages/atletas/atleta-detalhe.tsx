@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, MapPin, Calendar, User, Flag, Award, Shield } from 'lucide-react';
+import { ArrowLeft, Mail, Calendar, User, Flag, Award, Shield } from 'lucide-react';
 import { useAtletaStore } from '../../../store/atleta.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import { SEO } from '../../components/seo/seo';
@@ -41,8 +41,7 @@ const AtletaDetalhe: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {a.bi && <InfoCard icon={Shield} label="BI" value={a.bi} />}
             {a.passaporte && <InfoCard icon={Shield} label="Passaporte" value={a.passaporte} />}
-            {a.email && <InfoCard icon={Mail} label="Email" value={a.email} />}
-            {a.morada && <InfoCard icon={MapPin} label="Morada" value={a.morada} />}
+            {a.usuario?.email && <InfoCard icon={Mail} label="Email" value={a.usuario.email} />}
             {a.peso != null && <InfoCard icon={Award} label="Peso" value={`${a.peso} kg`} />}
           </div>
         </motion.div>

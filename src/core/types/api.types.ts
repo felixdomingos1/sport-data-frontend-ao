@@ -63,6 +63,9 @@ export interface Atleta {
   genero: 'M' | 'F';
   nacionalidade: string;
   imagemUrl?: string;
+  bannerUrl?: string;
+  peso?: number;
+  altura?: number;
   usuario?: User;
   inscricoes?: InscricaoAtleta[];
 }
@@ -154,7 +157,9 @@ export interface Clube {
   nome: string;
   slug: string;
   federacaoId: string;
+  associacaoId: string;
   logo?: string;
+  bannerUrl?: string;
   cidade?: string;
   endereco?: string;
   telefone?: string;
@@ -166,6 +171,7 @@ export interface Clube {
   createdAt: string;
   updatedAt: string;
   federacao?: Federacao;
+  associacao?: unknown;
   atletas?: InscricaoAtleta[];
   planoAtivo?: PlanoClube;
   pagamentos?: PagamentoClube[];
@@ -173,27 +179,6 @@ export interface Clube {
     atletas: number;
     pagamentos: number;
   };
-}
-
-export interface Academia {
-  id: string;
-  federacaoId: string;
-  associacaoId?: string;
-  gestorId?: string;
-  nome: string;
-  slug: string;
-  descricao?: string;
-  logo?: string;
-  email?: string;
-  telefone?: string;
-  endereco?: string;
-  website?: string;
-  status: 'PENDENTE' | 'ATIVO' | 'REJEITADO' | 'SUSPENSO';
-  createdAt: string;
-  updatedAt: string;
-  federacao?: Federacao;
-  associacao?: unknown;
-  gestor?: { id: string; nome: string; email: string };
 }
 
 export interface Campeonato {
@@ -275,7 +260,6 @@ export interface InscricaoAtleta {
   atletaId: string;
   federacaoId: string;
   clubeId?: string;
-  academiaId?: string;
   status: 'DRAFT' | 'AGUARDANDO_PAGAMENTO' | 'EM_ANALISE' | 'ATIVO' | 'SUSPENSO' | 'EXPIRADO' | 'CANCELADO';
   numeroRegistro?: string;
   planoId: string;
@@ -288,7 +272,6 @@ export interface InscricaoAtleta {
   atleta?: Atleta;
   federacao?: Federacao;
   clube?: Clube;
-  academia?: Academia;
   plano?: Plano;
   pagamentos?: Pagamento[];
   participacoes?: ParticipacaoCampeonato[];
@@ -299,7 +282,7 @@ export interface Plano {
   federacaoId: string;
   nome: string;
   descricao?: string;
-  tipo: 'ATLETA' | 'CLUBE' | 'ACADEMIA';
+  tipo: 'ATLETA' | 'CLUBE';
   duracao: 'MENSAL' | 'TRIMESTRAL' | 'SEMESTRAL' | 'ANUAL';
   preco: number;
   moeda: string;
@@ -515,13 +498,11 @@ export interface Evento {
   bannerUrl?: string;
   status: 'RASCUNHO' | 'PUBLICADO' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO';
   federacaoId?: string;
-  academiaId?: string;
   associacaoId?: string;
   createdAt: string;
   updatedAt: string;
   federacao?: Federacao;
-  academia?: Academia;
-  associacao?: unknown;
+  associacao?: { id: string; nome: string; slug: string; logo?: string };
 }
 
 export interface Notificacao {

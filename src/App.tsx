@@ -39,6 +39,8 @@ import DisplayAoVivo from './presentation/pages/display/display-ao-vivo';
 import ArenaFightDisplay from './presentation/pages/arena-fight/display';
 import Campeonatos from './presentation/pages/campeonatos/campeonatos';
 import CampeonatoDetalhe from './presentation/pages/campeonatos/campeonato-detalhe';
+import Arbitros from './presentation/pages/arbitros/arbitros';
+import ArbitroDetalhe from './presentation/pages/arbitros/arbitro-detalhe';
 import Inscricoes from './presentation/pages/inscricoes';
 import TermosServico from './presentation/pages/termos/termos';
 import PoliticaPrivacidade from './presentation/pages/privacidade/privacidade';
@@ -103,6 +105,8 @@ function App() {
             <Route path="/clubes/:id" element={<ClubeDetalhe />} />
             <Route path="/atletas" element={<Atletas />} />
             <Route path="/atletas/:id" element={<AtletaDetalhe />} />
+            <Route path="/arbitros" element={<Arbitros />} />
+            <Route path="/arbitros/:id" element={<ArbitroDetalhe />} />
             <Route path="/eventos" element={<Eventos />} />
             <Route path="/eventos/:id" element={<EventoDetalhe />} />
             <Route path="/rankings" element={<Rankings />} />

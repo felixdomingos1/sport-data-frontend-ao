@@ -23,7 +23,7 @@ function motivoLabel(motivo?: string | null): string | null {
   if (!motivo || motivo === 'PONTOS') return null;
   const map: Record<string, string> = {
     FUSEN_GACHI: 'Fusen-Gachi', KIKEN_GACHI: 'Kiken-Gachi',
-    HANSOKU_MAKE: 'Hansoku-Make', OSAE_KOMI: 'Osae-Komi',
+    HANSOKU_MAKE: 'Hansoku-Make', OSAE_KOMI: 'Osae-Komi', FULL_IPPON: 'Full Ippon',
     WO: 'W.O.', DESCLASSIFICACAO: 'Desclassificação',
   };
   return map[motivo] ?? motivo;

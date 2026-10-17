@@ -29,6 +29,7 @@ const Footer: React.FC = () => {
               <li><Link to="/federacoes" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Federações</Link></li>
               <li><Link to="/clubes" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Clubes</Link></li>
               <li><Link to="/atletas" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Atletas</Link></li>
+              <li><Link to="/arbitros" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Árbitros</Link></li>
               <li><Link to="/rankings" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Rankings</Link></li>
               <li><Link to="/eventos" className="text-sm text-gray-600 dark:text-gray-500 dark:hover:text-white hover:text-gray-900 transition">Eventos</Link></li>
             </ul>

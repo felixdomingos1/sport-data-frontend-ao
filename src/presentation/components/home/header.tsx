@@ -11,6 +11,7 @@ const navItems = [
   { name: 'Federações', path: '/federacoes' },
   { name: 'Clubes', path: '/clubes' },
   { name: 'Atletas', path: '/atletas' },
+  { name: 'Árbitros', path: '/arbitros' },
   { name: 'Rankings', path: '/rankings' },
   { name: 'Eventos', path: '/eventos' },
   { name: 'Display', path: '/display' },

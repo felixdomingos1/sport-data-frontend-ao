@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Trophy, Medal, Search,
-  ChevronUp, ChevronDown, Award, Star, Flame, Target
+  Trophy, Search
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { SEO } from '../../components/seo/seo';
 import Pagination from '../../components/ui/pagination';
 import { apiClient } from '../../../infrastructure/api/client';
 import { API_ENDPOINTS } from '../../../infrastructure/api/endpoints';
+import { federacaoService } from '../../../infrastructure/services/federacao.service';
 
 interface RankingAtleta {
   id: string;
@@ -32,30 +31,40 @@ interface RankingAtleta {
 interface RankingResponse {
   ranking: RankingAtleta[];
   total: number;
+  categorias?: string[];
   filters: {
     federacaoId?: string;
     modalidade?: string;
+    genero?: string;
   };
 }
 
-const federacoesNomes: Record<string, string> = {
-  fab: 'Basquetebol', faf: 'Futebol', fav: 'Voleibol', faa: 'Atletismo',
-  fand: 'Andebol', fan: 'Natação', faj: 'Judo', fak: 'Karaté',
-  fat: 'Taekwondo', faboxe: 'Boxe', fac: 'Ciclismo', fatenis: 'Ténis',
-  fajj: 'Jujitsu',
-};
-
 const modalidades = ['Todas', 'Judo', 'Karaté', 'Jujitsu', 'Boxe', 'Taekwondo', 'Natação', 'Atletismo', 'Basquetebol', 'Futebol', 'Andebol', 'Voleibol'];
+
+const generos = [
+  { value: 'M', label: 'Masculino' },
+  { value: 'F', label: 'Feminino' },
+];
 
 const Rankings: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedModalidade, setSelectedModalidade] = useState('Todas');
   const [selectedCategoria, setSelectedCategoria] = useState('');
+  const [selectedFederacao, setSelectedFederacao] = useState('');
+  const [genero, setGenero] = useState<'M' | 'F'>('M');
   const [ranking, setRanking] = useState<RankingAtleta[]>([]);
+  const [categorias, setCategorias] = useState<string[]>([]);
+  const [federacoes, setFederacoes] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 15;
+
+  useEffect(() => {
+    federacaoService.getAll({ limit: 100 }).then((res) => {
+      setFederacoes(res.data.map((f) => ({ id: f.id, nome: f.nome })));
+    }).catch(() => {});
+  }, []);
 
   const fetchRanking = useCallback(async () => {
     setLoading(true);
@@ -64,24 +73,50 @@ const Rankings: React.FC = () => {
         params: {
           page,
           limit,
+          genero,
+          federacaoId: selectedFederacao || undefined,
           modalidade: selectedModalidade !== 'Todas' ? selectedModalidade : undefined,
           categoria: selectedCategoria || undefined,
         },
       });
       setRanking(res?.ranking ?? []);
       setTotal(res?.total ?? 0);
+      setCategorias(res?.categorias ?? []);
     } catch {
       setRanking([]);
     } finally {
       setLoading(false);
     }
-  }, [selectedModalidade, selectedCategoria, page]);
+  }, [selectedModalidade, selectedCategoria, selectedFederacao, genero, page]);
 
   useEffect(() => {
     fetchRanking();
     const interval = setInterval(fetchRanking, 5 * 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchRanking]);
+
+  const changeGenero = (g: 'M' | 'F') => {
+    setPage(1);
+    setGenero(g);
+    setSelectedCategoria('');
+  };
+
+  const changeModalidade = (m: string) => {
+    setPage(1);
+    setSelectedModalidade(m);
+    setSelectedCategoria('');
+  };
+
+  const changeFederacao = (f: string) => {
+    setPage(1);
+    setSelectedFederacao(f);
+    setSelectedCategoria('');
+  };
+
+  const changeCategoria = (c: string) => {
+    setPage(1);
+    setSelectedCategoria(c);
+  };
 
   const filtered = ranking.filter((r) => {
     const nome = r.atleta?.usuario?.nome ?? '';
@@ -91,7 +126,6 @@ const Rankings: React.FC = () => {
 
   const getAtletaNome = (r: RankingAtleta) => r.atleta?.usuario?.nome ?? 'Desconhecido';
   const getFederacaoNome = (r: RankingAtleta) => r.federacao?.nome ?? '';
-  const getFederacaoSlug = (r: RankingAtleta) => r.federacao?.slug ?? '';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -112,7 +146,7 @@ const Rankings: React.FC = () => {
           </div>
         </motion.div>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -123,22 +157,54 @@ const Rankings: React.FC = () => {
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand transition"
             />
           </div>
-          <select
-            value={selectedModalidade}
-            onChange={(e) => setSelectedModalidade(e.target.value)}
-            className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand transition"
-          >
-            {modalidades.map((m) => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Categoria (ex: -73 kg)"
-            value={selectedCategoria}
-            onChange={(e) => setSelectedCategoria(e.target.value)}
-            className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand transition w-48"
-          />
+          <div className="flex flex-wrap gap-3">
+            <select
+              value={selectedFederacao}
+              onChange={(e) => changeFederacao(e.target.value)}
+              className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand transition"
+            >
+              <option value="">Todas as federações</option>
+              {federacoes.map((f) => (
+                <option key={f.id} value={f.id}>{f.nome}</option>
+              ))}
+            </select>
+            <select
+              value={selectedModalidade}
+              onChange={(e) => changeModalidade(e.target.value)}
+              className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand transition"
+            >
+              {modalidades.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+            <select
+              value={selectedCategoria}
+              onChange={(e) => changeCategoria(e.target.value)}
+              disabled={categorias.length === 0}
+              className="px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand transition disabled:opacity-50"
+            >
+              <option value="">Todas as categorias</option>
+              {categorias.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="inline-flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1 mb-6">
+          {generos.map((g) => (
+            <button
+              key={g.value}
+              onClick={() => changeGenero(g.value as 'M' | 'F')}
+              className={`px-6 py-2 rounded-lg text-sm font-bold transition ${
+                genero === g.value
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              }`}
+            >
+              {g.label}
+            </button>
+          ))}
         </div>
 
         {loading ? (
@@ -156,7 +222,6 @@ const Rankings: React.FC = () => {
               </div>
             ) : (
               <>
-                {/* Top 3 podium */}
                 {filtered.slice(0, 3).length >= 3 && (
                   <div className="grid grid-cols-3 gap-3 mb-6">
                     {[1, 0, 2].map((idx) => {
@@ -186,7 +251,6 @@ const Rankings: React.FC = () => {
                   </div>
                 )}
 
-                {/* Table */}
                 <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                   <table className="w-full text-sm">
                     <thead className="bg-gray-50 dark:bg-gray-900 text-left">

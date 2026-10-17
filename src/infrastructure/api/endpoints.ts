@@ -79,6 +79,10 @@ export const API_ENDPOINTS = {
     BASE: '/eventos',
     BY_ID: (id: string) => `/eventos/${id}`,
   },
+  ARBITROS: {
+    BASE: '/arbitros',
+    BY_ID: (id: string) => `/arbitros/${id}`,
+  },
   BRACKETS: {
     BASE: '/brackets',
     BY_ID: (id: string) => `/brackets/${id}`,

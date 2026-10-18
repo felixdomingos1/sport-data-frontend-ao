@@ -140,3 +140,18 @@ export function onNovaNotificacao(cb: (payload: NotificacaoSocketPayload) => voi
     s.off('new_notification', cb);
   };
 }
+
+export interface DuoDisplaySocketPayload {
+  confrontoId: string;
+  area: number | null;
+}
+
+/** Aviso de que o placar Duo mudou (o display volta a pedir os dados). */
+export function onDuoDisplay(cb: (payload: DuoDisplaySocketPayload) => void): () => void {
+  const s = connectSocket();
+  if (!s) return () => undefined;
+  s.on('duo:display', cb);
+  return () => {
+    s.off('duo:display', cb);
+  };
+}

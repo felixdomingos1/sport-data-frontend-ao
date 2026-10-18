@@ -35,7 +35,8 @@ import FederacaoDetalhe from './presentation/pages/federacoes/federacao-detalhe'
 import ChaveamentoLista from './presentation/pages/chaveamento/chaveamento-lista';
 import ChaveamentoDetalhe from './presentation/pages/chaveamento/chaveamento-detalhe';
 import DisplayLista from './presentation/pages/display/display-lista';
-import DisplayAoVivo from './presentation/pages/display/display-ao-vivo';
+import DisplayDuo from './presentation/pages/display/display-duo';
+import DisplayCampeonato from './presentation/pages/display/display-campeonato';
 import ArenaFightDisplay from './presentation/pages/arena-fight/display';
 import Campeonatos from './presentation/pages/campeonatos/campeonatos';
 import CampeonatoDetalhe from './presentation/pages/campeonatos/campeonato-detalhe';
@@ -119,7 +120,9 @@ function App() {
           </Route>
 
           <Route path="/display" element={<DisplayLista />} />
-          <Route path="/display/:id" element={<DisplayAoVivo />} />
+          <Route path="/display/duo/:campeonatoId" element={<DisplayDuo />} />
+          <Route path="/display/duo/:campeonatoId/:confrontoId" element={<DisplayDuo />} />
+          <Route path="/display/:id" element={<DisplayCampeonato />} />
           <Route path="/arena-fight/display" element={<ArenaFightDisplay />} />
 
           <Route element={<PrivateRoute />}>

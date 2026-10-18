@@ -85,6 +85,8 @@ export const API_ENDPOINTS = {
   },
   JIU_JITSU_DUO: {
     PUBLICO_CAMPEONATO: (campeonatoId: string) => `/jujitsu-duo/publico/campeonatos/${campeonatoId}`,
+    DISPLAY: (campeonatoId: string) => `/jujitsu-duo/publico/display/campeonatos/${campeonatoId}`,
+    BATALHAS: (campeonatoId: string) => `/jujitsu-duo/publico/display/campeonatos/${campeonatoId}/batalhas`,
   },
   BRACKETS: {
     BASE: '/brackets',

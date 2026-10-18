@@ -19,7 +19,7 @@ function ConfrontoCard({ c, ataques }: { c: ConfrontoPublico; ataques: string[] 
   return (
     <article className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl p-4 space-y-3">
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{c.serie ? `Série ${c.serie}` : `Confronto ${c.numero}`}</h4>
+        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{c.serie ? `Série ${c.serie}` : `Tapete ${c.numero}`}</h4>
         <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-white/40">
           {c.area ? <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />Área {c.area}</span> : null}
           {c.agendadoPara ? (
@@ -97,11 +97,21 @@ export const DuoResultados: React.FC<{ campeonatoId: string }> = ({ campeonatoId
   const categoria = dados.categorias.find((c) => c.id === categoriaId);
 
   return (
-    <section aria-label="Ju-Jitsu Duo — confrontos e resultados" className="space-y-4">
+    <section aria-label="Ju-Jitsu Duo — tapetes e resultados" className="space-y-4">
       <div className="flex items-center gap-2.5">
         <Swords className="w-4 h-4 text-brand" />
-        <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Ju-Jitsu Duo — Confrontos e resultados</h2>
+        <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Ju-Jitsu Duo — Tapetes e resultados</h2>
       </div>
+      {['EM_CURSO', 'PRONTA_PARA_COMPETIR'].includes(dados.competicao.estado) && (
+        <a
+          href={`/display/duo/${campeonatoId}`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-brand text-white text-xs font-bold"
+        >
+          <Swords className="w-3.5 h-3.5" /> Abrir display ao vivo
+        </a>
+      )}
       {dados.competicao.regulamento && dados.competicao.regulamento.estado !== 'OFICIAL' && (
         <p className="text-xs text-amber-600 dark:text-amber-400">Regulamento provisório: os resultados publicados ainda não estão homologados.</p>
       )}
@@ -130,7 +140,7 @@ export const DuoResultados: React.FC<{ campeonatoId: string }> = ({ campeonatoId
           {categoria && (
             <div role="tabpanel" className="space-y-5">
               <p className="text-xs text-gray-500 dark:text-white/40">
-                {categoria.formato === 'SERIE' ? 'Avaliação em séries' : 'Confrontos Vermelha × Azul'} · {categoria.duplasConfirmadas} duplas confirmadas
+                {categoria.formato === 'SERIE' ? 'Avaliação em séries' : 'Tapetes Vermelha × Azul'} · {categoria.duplasConfirmadas} duplas confirmadas
                 {categoria.grupo ? ` · Grupo ${categoria.grupo}` : ''}
               </p>
 

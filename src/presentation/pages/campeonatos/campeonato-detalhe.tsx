@@ -22,6 +22,7 @@ import {
 import { competicaoService } from '@/infrastructure/services/competicao.service';
 import { campeonatoService } from '@/infrastructure/services/campeonato.service';
 import { bracketService } from '@/infrastructure/services/bracket.service';
+import { DuoResultados } from '@/presentation/components/jujitsu-duo/duo-resultados';
 import { useAuthStore } from '@/store/auth.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import type { Campeonato, CategoriaCampeonato } from '@/core/types/api.types';
@@ -53,6 +54,7 @@ const MODALIDADE_META: Record<string, { label: string; emoji: string; hero: stri
   JIU_JITSU: { label: 'Jiu-Jitsu', emoji: '🥋', hero: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1920&h=600&fit=crop' },
   KARATE: { label: 'Karaté', emoji: '🥋', hero: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=1920&h=600&fit=crop' },
   JUDO: { label: 'Judo', emoji: '🥋', hero: 'https://images.unsplash.com/photo-1548857562-6b4f5f9a4d2b?w=1920&h=600&fit=crop' },
+  JIU_JITSU_DUO: { label: 'Ju-Jitsu Duo', emoji: '🥋', hero: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=1920&h=600&fit=crop' },
 };
 
 function formatDate(iso?: string) {
@@ -192,6 +194,8 @@ const CampeonatoDetalhe: React.FC = () => {
   const totalParticipantes = campeonato._count?.participacoes ?? campeonato.inscricoes?.length ?? 0;
   const totalCategorias = campeonato.categorias?.length ?? 0;
   const totalBrackets = brackets.length;
+  // No Duo, as inscrições são de duplas e feitas pelo clube/federação (não individualmente pelo atleta)
+  const isDuo = campeonato.modalidade === 'JIU_JITSU_DUO';
 
   const getBracketForCategoria = (categoriaId: string) =>
     brackets.find((b) => b.categoriaId === categoriaId);
@@ -412,6 +416,11 @@ const CampeonatoDetalhe: React.FC = () => {
               </motion.div>
             )}
 
+            {isDuo ? (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <DuoResultados campeonatoId={campeonato.id} />
+              </motion.div>
+            ) : (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
@@ -493,6 +502,7 @@ const CampeonatoDetalhe: React.FC = () => {
                 </div>
               )}
             </motion.div>
+            )}
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
               <div className="flex items-center gap-2.5 mb-4">
@@ -552,7 +562,13 @@ const CampeonatoDetalhe: React.FC = () => {
                 <UserPlus className="w-4 h-4 text-brand" />
                 <h2 className="text-sm font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">Inscrição</h2>
               </div>
-              {renderRegistrationPanel()}
+              {isDuo ? (
+                <p className="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
+                  As duplas de Ju-Jitsu Duo são inscritas pelo clube ou pela federação. Contacte o seu clube para participar.
+                </p>
+              ) : (
+                renderRegistrationPanel()
+              )}
             </motion.div>
 
             <motion.div

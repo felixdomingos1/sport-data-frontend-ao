@@ -83,6 +83,9 @@ export const API_ENDPOINTS = {
     BASE: '/arbitros',
     BY_ID: (id: string) => `/arbitros/${id}`,
   },
+  JIU_JITSU_DUO: {
+    PUBLICO_CAMPEONATO: (campeonatoId: string) => `/jujitsu-duo/publico/campeonatos/${campeonatoId}`,
+  },
   BRACKETS: {
     BASE: '/brackets',
     BY_ID: (id: string) => `/brackets/${id}`,

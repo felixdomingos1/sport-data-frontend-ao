@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Swords, MapPin, Clock } from 'lucide-react';
-import { jujitsuDuoService, type ConfrontoPublico, type DuoPublico, type DuplaPublica } from '@/infrastructure/services/jujitsu-duo.service';
+import { jujitsuDuoService, type ConfrontoPublico, type DuoPublico } from '@/infrastructure/services/jujitsu-duo.service';
+import { atletasEquipa, nomeEquipa } from './equipa';
 
 const COR = {
   VERMELHO: { nome: 'Vermelha', borda: 'border-l-red-600', texto: 'text-red-500', fundo: 'bg-red-600/[0.06]' },
   AZUL: { nome: 'Azul', borda: 'border-l-blue-600', texto: 'text-blue-500', fundo: 'bg-blue-600/[0.06]' },
 } as const;
-
-function nomeDupla(d: DuplaPublica) {
-  return d.dupla.designacao || `${d.atleta1.nomeCompleto} & ${d.atleta2.nomeCompleto}`;
-}
 
 function ConfrontoCard({ c, ataques }: { c: ConfrontoPublico; ataques: string[] }) {
   const resultado = new Map(c.resultados.map((r) => [r.inscricaoId, r]));
@@ -39,7 +36,7 @@ function ConfrontoCard({ c, ataques }: { c: ConfrontoPublico; ataques: string[] 
             <thead>
               <tr className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-white/30 text-left">
                 <th className="py-1 pr-2">Pos.</th>
-                <th className="py-1 pr-2">Dupla</th>
+                <th className="py-1 pr-2">Equipa</th>
                 {ataques.map((a) => <th key={a} className="py-1 px-1 text-center font-mono">{a}</th>)}
                 <th className="py-1 pl-2 text-right">Total</th>
               </tr>
@@ -54,9 +51,9 @@ function ConfrontoCard({ c, ataques }: { c: ConfrontoPublico; ataques: string[] 
                   {temResultado && <td className="py-2 px-2 font-black text-gray-900 dark:text-white">{r?.posicao ?? '—'}</td>}
                   <td className="py-2 px-2">
                     {cor && <span className={`text-[10px] font-black uppercase tracking-widest mr-2 ${cor.texto}`}>{cor.nome}</span>}
-                    <span className="text-gray-900 dark:text-white font-semibold">{nomeDupla(p.inscricao)}</span>
+                    <span className="text-gray-900 dark:text-white font-semibold">{nomeEquipa(p.inscricao)}</span>
                     {r?.vencedor && <Trophy className="inline w-3.5 h-3.5 ml-1.5 text-amber-500" aria-label="Vencedor" />}
-                    <span className="block text-xs text-gray-500 dark:text-white/40">{[p.inscricao.clube?.nome, p.inscricao.provincia?.nome].filter(Boolean).join(' · ')}</span>
+                    <span className="block text-xs text-gray-500 dark:text-white/40">{[atletasEquipa(p.inscricao), p.inscricao.provincia?.nome].filter(Boolean).join(' · ')}</span>
                   </td>
                   {temResultado && ataques.map((a) => <td key={a} className="py-2 px-1 text-center tabular-nums text-gray-700 dark:text-white/70">{r?.ataques.find((x) => x.codigo === a)?.subtotal ?? '—'}</td>)}
                   {temResultado && <td className="py-2 pl-2 pr-2 text-right font-black text-lg tabular-nums text-gray-900 dark:text-white">{r ? r.total.toLocaleString('pt-PT') : '—'}</td>}
@@ -154,7 +151,7 @@ export const DuoResultados: React.FC<{ campeonatoId: string }> = ({ campeonatoId
                     {categoria.classificacao.posicoes.map((p, k) => (
                       <li key={k} className="flex items-center gap-3 text-sm">
                         <span className="w-8 text-center font-black text-gray-900 dark:text-white">{p.posicao ?? '—'}</span>
-                        <span className="flex-1 text-gray-800 dark:text-white/80">{p.inscricao ? nomeDupla(p.inscricao) : '—'}</span>
+                        <span className="flex-1 text-gray-800 dark:text-white/80">{p.inscricao ? nomeEquipa(p.inscricao) : '—'}</span>
                         <span className="text-xs text-gray-500 dark:text-white/40">{p.inscricao?.provincia?.nome ?? p.inscricao?.clube?.nome ?? ''}</span>
                       </li>
                     ))}

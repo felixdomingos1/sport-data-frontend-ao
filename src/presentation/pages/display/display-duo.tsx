@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { jujitsuDuoService, type DisplayDuo, type DuplaPublica } from '@/infrastructure/services/jujitsu-duo.service';
+import { jujitsuDuoService, type DisplayDuo } from '@/infrastructure/services/jujitsu-duo.service';
+import { atletasEquipa, nomeEquipa } from '@/presentation/components/jujitsu-duo/equipa';
 import { joinCampeonato, leaveCampeonato, onDuoDisplay } from '@/infrastructure/services/socket.service';
 
 /**
@@ -41,10 +42,6 @@ function BandeiraAngola({ className = '' }: { className?: string }) {
   );
 }
 
-function nomes(d: DuplaPublica) {
-  return [d.atleta1.nomeCompleto, d.atleta2.nomeCompleto];
-}
-
 function numero(v: number) {
   return Number.isInteger(v) ? v.toFixed(1) : String(v);
 }
@@ -64,7 +61,7 @@ function PainelDupla({ conf, p, ativa }: { conf: Confronto; p: Participante; ati
   const colunasExtra = Math.max(0, 6 - conf.ataques.length);
   return (
     <section
-      aria-label={p.cor === 'VERMELHO' ? 'Equipa vermelha' : p.cor === 'AZUL' ? 'Equipa azul' : nomes(p.inscricao).join(' & ')}
+      aria-label={p.cor === 'VERMELHO' ? 'Equipa vermelha' : p.cor === 'AZUL' ? 'Equipa azul' : nomeEquipa(p.inscricao)}
       className={`flex flex-col gap-2 lg:gap-[1vh] p-2 lg:p-[0.8vh] border-2 lg:flex-1 ${ativa ? 'border-white/80' : 'border-transparent'}`}
     >
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-stretch lg:flex-1">
@@ -76,12 +73,11 @@ function PainelDupla({ conf, p, ativa }: { conf: Confronto; p: Participante; ati
           </p>
         </div>
         <div className="flex flex-col justify-center gap-0.5 px-4 py-2 sm:pl-6">
-          {nomes(p.inscricao).map((n) => (
-            <p key={n} className="text-lg sm:text-3xl lg:text-[3.6vh] lg:leading-[1.2] font-black uppercase truncate">{n}</p>
-          ))}
+          <p className="text-xl sm:text-3xl lg:text-[3.8vh] leading-tight lg:leading-[1.1] font-black uppercase line-clamp-2 break-words">{nomeEquipa(p.inscricao)}</p>
+          <p className="text-sm sm:text-xl lg:text-[2.6vh] font-bold opacity-85 truncate">{atletasEquipa(p.inscricao)}</p>
           <p className="flex items-center gap-3 text-base sm:text-2xl lg:text-[3vh] font-black uppercase">
             <BandeiraAngola className="w-10 h-7 sm:w-16 sm:h-10 lg:w-[6.5vh] lg:h-[4.3vh] border border-white/40 shrink-0" />
-            <span className="truncate">{p.inscricao.provincia?.nome ?? p.inscricao.clube?.nome ?? 'Angola'}</span>
+            <span className="truncate">{p.inscricao.provincia?.nome ?? 'Angola'}</span>
           </p>
         </div>
       </div>

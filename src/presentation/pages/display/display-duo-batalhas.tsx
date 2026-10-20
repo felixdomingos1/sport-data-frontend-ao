@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { jujitsuDuoService, type BatalhaDuo, type BatalhasDuo } from '@/infrastructure/services/jujitsu-duo.service';
+import { atletasEquipa, nomeEquipa } from '@/presentation/components/jujitsu-duo/equipa';
 import { joinCampeonato, leaveCampeonato, onDuoDisplay } from '@/infrastructure/services/socket.service';
 
 /**
@@ -20,11 +21,6 @@ const ESTADO: Record<string, { label: string; cor: string }> = {
   VALIDADO: { label: 'Validada', cor: '#22c55e' },
   HOMOLOGADO: { label: 'Homologada', cor: '#22c55e' },
 };
-
-function nomeDupla(p: BatalhaDuo['participantes'][number]) {
-  const i = p.inscricao;
-  return i.dupla.designacao || `${i.atleta1.nomeCompleto} & ${i.atleta2.nomeCompleto}`;
-}
 
 function CartaoBatalha({ campeonatoId, b }: { campeonatoId: string; b: BatalhaDuo }) {
   const estado = ESTADO[b.estado] ?? { label: b.estado.replace(/_/g, ' ').toLowerCase(), cor: '#8798ad' };
@@ -48,10 +44,10 @@ function CartaoBatalha({ campeonatoId, b }: { campeonatoId: string; b: BatalhaDu
             <li key={p.inscricao.id} className="flex items-center gap-2 bg-[#2f3640]">
               <span className="w-2.5 self-stretch" style={{ background: p.cor ? COR[p.cor] : COR.SERIE }} aria-hidden="true" />
               <span className="flex-1 min-w-0 py-1.5">
-                <span className="block truncate font-bold uppercase">{nomeDupla(p)}</span>
+                <span className="block font-bold uppercase leading-tight line-clamp-2 break-words">{nomeEquipa(p.inscricao)}</span>
                 <span className="block truncate text-xs opacity-70">
                   {p.cor ? (p.cor === 'VERMELHO' ? 'Vermelha · ' : 'Azul · ') : ''}
-                  {p.inscricao.provincia?.nome ?? p.inscricao.clube?.nome ?? 'Angola'}
+                  {atletasEquipa(p.inscricao)}
                 </span>
               </span>
               <span className="px-3 text-2xl font-black tabular-nums">
@@ -60,7 +56,7 @@ function CartaoBatalha({ campeonatoId, b }: { campeonatoId: string; b: BatalhaDu
               </span>
             </li>
           ))}
-          {b.participantes.length === 0 && <li className="text-sm opacity-70 px-2 py-1.5">Duplas por sortear</li>}
+          {b.participantes.length === 0 && <li className="text-sm opacity-70 px-2 py-1.5">Equipas por sortear</li>}
         </ul>
       </Link>
     </li>

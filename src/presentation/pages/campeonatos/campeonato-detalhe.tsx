@@ -564,7 +564,7 @@ const CampeonatoDetalhe: React.FC = () => {
               </div>
               {isDuo ? (
                 <p className="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
-                  As duplas de Ju-Jitsu Duo são inscritas pelo clube ou pela federação. Contacte o seu clube para participar.
+                  As equipas de Ju-Jitsu Duo são inscritas pelo clube ou pela federação. Contacte o seu clube para participar.
                 </p>
               ) : (
                 renderRegistrationPanel()

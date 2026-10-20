@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../store/auth.store';
 import { useAtletaMeStore } from '@/store/atleta-me.store';
 import { useTheme } from '../ui/theme-provider';
+import FaixaAngola from '../ui/faixa-angola';
 
 interface DashboardHeaderProps {
   setIsMobileSidebarOpen: (value: boolean) => void;
@@ -124,6 +125,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setIsMobileSidebarOpe
           </Link>
         </div>
       </div>
+      <FaixaAngola />
     </header>
   );
 };

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Shield } from 'lucide-react';
+import FaixaAngola from '../ui/faixa-angola';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white dark:bg-[#0f0f0f] border-t border-gray-200 dark:border-[#1a1a1a] text-gray-900 dark:text-white">
+    <footer className="bg-white dark:bg-[#0f0f0f] text-gray-900 dark:text-white">
+      <FaixaAngola />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">

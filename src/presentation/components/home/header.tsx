@@ -4,6 +4,7 @@ import { Menu, X, Shield, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../../../store/auth.store';
 import { useTheme } from '../ui/theme-provider';
 import clsx from 'clsx';
+import FaixaAngola from '../ui/faixa-angola';
 
 const navItems = [
   { name: 'Início', path: '/' },
@@ -24,7 +25,7 @@ const Header: React.FC = () => {
   const { resolved, setTheme } = useTheme();
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${resolved === 'dark' ? 'bg-[#0f0f0f]/95 border-[#1a1a1a]' : 'bg-white/95 border-gray-200'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md ${resolved === 'dark' ? 'bg-[#0f0f0f]/95' : 'bg-white/95'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-[72px]">
           <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -132,6 +133,7 @@ const Header: React.FC = () => {
           </div>
         )}
       </div>
+      <FaixaAngola />
     </header>
   );
 };

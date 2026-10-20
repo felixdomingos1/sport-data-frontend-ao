@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
   return (
     <div className={`min-h-screen ${resolved === 'dark' ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
       <Header />
-      <main className="pt-16 lg:pt-[72px]">
+      <main className="pt-[68px] lg:pt-[76px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={window.location.pathname}

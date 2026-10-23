@@ -6,6 +6,7 @@ import { useAtletaStore } from '../../../store/atleta.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 
 function getInitials(name: string): string {
   return name
@@ -21,17 +22,17 @@ const Atletas: React.FC = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const limit = 15;
+  const debouncedSearch = useDebouncedValue(search.trim());
 
   useEffect(() => {
-    fetchAll(page, limit);
-  }, [fetchAll, page]);
+    // Pesquisa no servidor: a lista é paginada, filtrar no cliente só cobriria a página atual
+    fetchAll(page, limit, undefined, debouncedSearch || undefined).catch(() => {
+      // erro já registado no store
+    });
+  }, [fetchAll, page, debouncedSearch]);
 
-  const filtered = search
-    ? atletas.filter(a =>
-        a.nomeCompleto.toLowerCase().includes(search.toLowerCase()) ||
-        a.bi.toLowerCase().includes(search.toLowerCase())
-      )
-    : atletas;
+  // Loader completo apenas no primeiro carregamento; depois mantém a lista visível
+  const isInitialLoading = isLoading && atletas.length === 0 && !pagination;
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
@@ -64,23 +65,32 @@ const Atletas: React.FC = () => {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Pesquisar atleta por nome ou BI..."
               className="w-full pl-12 pr-4 py-3.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand/50 transition text-sm"
             />
           </div>
         </div>
 
-        {isLoading ? (
+        {isInitialLoading ? (
           <SportLoadingScreen message="A carregar atletas..." fullscreen={false} size="md" />
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-400 dark:text-white/30">
+        ) : atletas.length === 0 ? (
+          <div
+            aria-busy={isLoading}
+            className={`text-center py-20 text-gray-400 dark:text-white/30 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
             <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg font-medium">Nenhum atleta encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filtered.map((atleta, index) => (
+          <div
+            aria-busy={isLoading}
+            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
+            {atletas.map((atleta, index) => (
               <Link to={`/atletas/${atleta.id}`} key={atleta.id}>
               <motion.div
                 initial={{ opacity: 0, y: 16 }}

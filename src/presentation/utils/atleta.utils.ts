@@ -53,7 +53,7 @@ export function getInscricaoAtiva(inscricoes?: InscricaoAtleta[]): InscricaoAtle
 
 export function getStatusInscricaoLabel(status?: string): string {
   const map: Record<string, string> = {
-    DRAFT: 'Rascunho',
+    DRAFT: 'Pendente',
     AGUARDANDO_PAGAMENTO: 'Aguardando pagamento',
     EM_ANALISE: 'Em análise',
     ATIVO: 'Ativo',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Monitor, Search, Trophy, ArrowRight, Swords } from 'lucide-react';
@@ -18,7 +18,11 @@ const DisplayLista: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      competicaoService.getCampeonatosPublicos({ limit: 100 }),
+      // Pedir explicitamente os estados exibidos (o default do serviço exclui INSCRICOES_FECHADAS)
+      competicaoService.getCampeonatosPublicos({
+        limit: 100,
+        status: 'EM_ANDAMENTO,FINALIZADO,INSCRICOES_FECHADAS',
+      }),
       bracketService.listar().catch(() => []),
     ]).then(([res, brackets]) => {
       setCampeonatos(res?.data ?? []);
@@ -33,22 +37,27 @@ const DisplayLista: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = campeonatos.filter(
-    (c) =>
-      (c.status === 'EM_ANDAMENTO' || c.status === 'FINALIZADO' || c.status === 'INSCRICOES_FECHADAS') &&
-      (!search || c.nome.toLowerCase().includes(search.toLowerCase())),
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return campeonatos.filter(
+      (c) =>
+        (c.status === 'EM_ANDAMENTO' || c.status === 'FINALIZADO' || c.status === 'INSCRICOES_FECHADAS') &&
+        (!q || c.nome.toLowerCase().includes(q)),
+    );
+  }, [campeonatos, search]);
+
+  const allCards = useMemo(
+    () => [
+      ...filtered.filter((c) => bracketsAtivos.has(c.id)),
+      ...filtered.filter((c) => !bracketsAtivos.has(c.id)),
+    ],
+    [filtered, bracketsAtivos],
   );
 
-  const aoVivo = filtered.filter((c) => bracketsAtivos.has(c.id));
-  const outros = filtered.filter((c) => !bracketsAtivos.has(c.id));
-
-  const totalPages = Math.ceil((aoVivo.length + outros.length) / perPage);
-  const allCards = [...aoVivo, ...outros];
+  const totalPages = Math.ceil(allCards.length / perPage);
   const paginated = allCards.slice((page - 1) * perPage, page * perPage);
   const paginatedLive = paginated.filter((c) => bracketsAtivos.has(c.id));
   const paginatedOutros = paginated.filter((c) => !bracketsAtivos.has(c.id));
-
-  if (loading) return <SportLoadingScreen />;
 
   const renderCard = (c: Campeonato, isLive: boolean) => (
     <Link
@@ -108,7 +117,10 @@ const DisplayLista: React.FC = () => {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Procurar campeonato..."
               className="w-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand transition-colors"
             />

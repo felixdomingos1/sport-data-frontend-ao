@@ -16,13 +16,16 @@ interface ClubeState {
   pagination: PaginatedResponse<Clube>['pagination'] | null;
   error: string | null;
 
-  fetchAll: (page?: number, limit?: number, federacaoId?: string) => Promise<void>;
+  fetchAll: (page?: number, limit?: number, federacaoId?: string, search?: string) => Promise<void>;
   fetchById: (id: string) => Promise<void>;
   create: (data: Partial<Clube>) => Promise<Clube>;
   associateAtleta: (data: AssociateAtletaData) => Promise<{ success: boolean; message: string }>;
   setSelected: (clube: Clube | null) => void;
   clearError: () => void;
 }
+
+// Identifica o pedido de listagem mais recente; respostas de pedidos anteriores são ignoradas
+let latestFetchAllId = 0;
 
 export const useClubeStore = create<ClubeState>((set) => ({
   clubes: [],
@@ -31,16 +34,19 @@ export const useClubeStore = create<ClubeState>((set) => ({
   pagination: null,
   error: null,
 
-  fetchAll: async (page = 1, limit = 10, federacaoId?: string) => {
+  fetchAll: async (page = 1, limit = 10, federacaoId?: string, search?: string) => {
+    const requestId = ++latestFetchAllId;
     set({ isLoading: true, error: null });
     try {
-      const response = await clubeService.getAll({ page, limit, federacaoId });
+      const response = await clubeService.getAll({ page, limit, federacaoId, search: search || undefined });
+      if (requestId !== latestFetchAllId) return;
       set({
         clubes: response.data,
         pagination: response.pagination,
         isLoading: false
       });
     } catch (error) {
+      if (requestId !== latestFetchAllId) return;
       const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar clubes';
       set({
         clubes: [],

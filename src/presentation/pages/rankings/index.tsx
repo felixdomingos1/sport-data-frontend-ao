@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy, Search
@@ -41,6 +41,10 @@ interface RankingResponse {
 
 const modalidades = ['Todas', 'Judo', 'Karaté', 'Jujitsu', 'Boxe', 'Taekwondo', 'Natação', 'Atletismo', 'Basquetebol', 'Futebol', 'Andebol', 'Voleibol'];
 
+// O endpoint de ranking geral não suporta `page`/`search` (apenas `limit`), por isso
+// pede-se o ranking completo e a pesquisa/paginação são feitas no cliente.
+const RANKING_FETCH_LIMIT = 500;
+
 const generos = [
   { value: 'M', label: 'Masculino' },
   { value: 'F', label: 'Feminino' },
@@ -56,9 +60,11 @@ const Rankings: React.FC = () => {
   const [categorias, setCategorias] = useState<string[]>([]);
   const [federacoes, setFederacoes] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 15;
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     federacaoService.getAll({ limit: 100 }).then((res) => {
@@ -67,27 +73,32 @@ const Rankings: React.FC = () => {
   }, []);
 
   const fetchRanking = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     try {
       const res = await apiClient.get<RankingResponse>(API_ENDPOINTS.COMPETICAO.RANKING_GERAL, {
         params: {
-          page,
-          limit,
+          limit: RANKING_FETCH_LIMIT,
           genero,
           federacaoId: selectedFederacao || undefined,
           modalidade: selectedModalidade !== 'Todas' ? selectedModalidade : undefined,
           categoria: selectedCategoria || undefined,
         },
       });
+      if (requestId !== requestIdRef.current) return;
       setRanking(res?.ranking ?? []);
       setTotal(res?.total ?? 0);
       setCategorias(res?.categorias ?? []);
     } catch {
+      if (requestId !== requestIdRef.current) return;
       setRanking([]);
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+        setHasLoaded(true);
+      }
     }
-  }, [selectedModalidade, selectedCategoria, selectedFederacao, genero, page]);
+  }, [selectedModalidade, selectedCategoria, selectedFederacao, genero]);
 
   useEffect(() => {
     fetchRanking();
@@ -118,11 +129,18 @@ const Rankings: React.FC = () => {
     setSelectedCategoria(c);
   };
 
-  const filtered = ranking.filter((r) => {
-    const nome = r.atleta?.usuario?.nome ?? '';
-    if (searchTerm && !nome.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-    return true;
-  });
+  const filtered = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return ranking;
+    return ranking.filter((r) => (r.atleta?.usuario?.nome ?? '').toLowerCase().includes(q));
+  }, [ranking, searchTerm]);
+
+  const pageOffset = (page - 1) * limit;
+  const paginated = useMemo(
+    () => filtered.slice(pageOffset, pageOffset + limit),
+    [filtered, pageOffset],
+  );
+  const showPodium = page === 1 && paginated.length >= 3;
 
   const getAtletaNome = (r: RankingAtleta) => r.atleta?.usuario?.nome ?? 'Desconhecido';
   const getFederacaoNome = (r: RankingAtleta) => r.federacao?.nome ?? '';
@@ -153,7 +171,10 @@ const Rankings: React.FC = () => {
               type="text"
               placeholder="Procurar atleta..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand transition"
             />
           </div>
@@ -207,25 +228,25 @@ const Rankings: React.FC = () => {
           ))}
         </div>
 
-        {loading ? (
+        {loading && !hasLoaded ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="h-16 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="space-y-2">
-            {filtered.length === 0 ? (
+          <div aria-busy={loading} className={`space-y-2 transition-opacity ${loading ? 'opacity-50' : ''}`}>
+            {paginated.length === 0 ? (
               <div className="text-center py-16 text-gray-400">
                 <Trophy className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p className="text-sm">Nenhum atleta encontrado no ranking.</p>
               </div>
             ) : (
               <>
-                {filtered.slice(0, 3).length >= 3 && (
+                {showPodium && (
                   <div className="grid grid-cols-3 gap-3 mb-6">
                     {[1, 0, 2].map((idx) => {
-                      const r = filtered[idx];
+                      const r = paginated[idx];
                       if (!r) return null;
                       const isFirst = idx === 0;
                       return (
@@ -265,7 +286,9 @@ const Rankings: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filtered.map((r, i) => (
+                      {paginated.map((r, idx) => {
+                        const i = pageOffset + idx;
+                        return (
                         <tr key={r.id} className={`border-t border-gray-100 dark:border-gray-700/50 ${i < 3 ? 'bg-amber-50/30 dark:bg-amber-900/10' : ''}`}>
                           <td className="px-4 py-3">
                             <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${
@@ -286,7 +309,8 @@ const Rankings: React.FC = () => {
                           <td className="px-4 py-3 text-center text-red-500 font-medium hidden sm:table-cell">{r.derrotas}</td>
                           <td className="px-4 py-3 text-center text-gray-500 hidden sm:table-cell">{r.partidas}</td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -294,7 +318,7 @@ const Rankings: React.FC = () => {
             )}
           </div>
         )}
-        <Pagination page={page} totalPages={Math.ceil(total / limit)} onPageChange={setPage} />
+        <Pagination page={page} totalPages={Math.ceil(filtered.length / limit)} onPageChange={setPage} />
       </div>
     </div>
   );

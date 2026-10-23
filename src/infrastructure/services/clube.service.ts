@@ -12,6 +12,7 @@ interface GetAllClubeParams {
   page?: number;
   limit?: number;
   federacaoId?: string;
+  search?: string;
 }
 
 interface AssociateAtletaData {

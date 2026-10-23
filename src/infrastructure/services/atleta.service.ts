@@ -14,7 +14,7 @@ interface CreateAtletaData {
 }
 
 class AtletaService {
-  async getAll(params?: { page?: number; limit?: number; clubeId?: string }): Promise<PaginatedResponse<Atleta>> {
+  async getAll(params?: { page?: number; limit?: number; clubeId?: string; search?: string }): Promise<PaginatedResponse<Atleta>> {
     return apiClient.get<PaginatedResponse<Atleta>>(API_ENDPOINTS.ATLETAS.BASE, { params });
   }
 

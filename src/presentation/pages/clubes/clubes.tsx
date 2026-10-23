@@ -6,23 +6,22 @@ import { useClubeStore } from '../../../store/clube.store';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 
 const Clubes: React.FC = () => {
   const { clubes, fetchAll, isLoading, pagination } = useClubeStore();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const limit = 15;
+  const debouncedSearch = useDebouncedValue(search.trim());
 
   useEffect(() => {
-    fetchAll(page, limit);
-  }, [fetchAll, page]);
+    // Pesquisa no servidor: a lista é paginada, filtrar no cliente só cobriria a página atual
+    fetchAll(page, limit, undefined, debouncedSearch || undefined);
+  }, [fetchAll, page, debouncedSearch]);
 
-  const filtered = search
-    ? clubes.filter(c =>
-        c.nome.toLowerCase().includes(search.toLowerCase()) ||
-        (c.cidade && c.cidade.toLowerCase().includes(search.toLowerCase()))
-      )
-    : clubes;
+  // Loader completo apenas no primeiro carregamento; depois mantém a lista visível
+  const isInitialLoading = isLoading && clubes.length === 0 && !pagination;
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0A0A0B] text-gray-900 dark:text-white">
@@ -54,22 +53,31 @@ const Clubes: React.FC = () => {
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             placeholder="Pesquisar clube..."
             className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:border-brand/50 transition text-sm"
           />
         </div>
 
-        {isLoading ? (
+        {isInitialLoading ? (
           <SportLoadingScreen message="A carregar clubes..." fullscreen={false} size="md" />
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-400 dark:text-white/30">
+        ) : clubes.length === 0 ? (
+          <div
+            aria-busy={isLoading}
+            className={`text-center py-20 text-gray-400 dark:text-white/30 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
             <Shield className="w-16 h-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg font-medium">Nenhum clube encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtered.map((clube, index) => (
+          <div
+            aria-busy={isLoading}
+            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
+            {clubes.map((clube, index) => (
               <Link to={`/clubes/${clube.id}`} key={clube.id}>
               <motion.div
                 initial={{ opacity: 0, y: 16 }}

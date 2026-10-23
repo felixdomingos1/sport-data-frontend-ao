@@ -6,6 +6,7 @@ import { CATEGORIA_ARBITRO_LABELS, FAIXA_ARBITRO_LABELS } from '@core/types/arbi
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 
 const FAIXA_STYLES: Record<string, string> = {
   BRANCA: 'bg-white text-gray-900 border border-gray-300',
@@ -32,13 +33,19 @@ const Arbitros: React.FC = () => {
   const [categoriaFilter, setCategoriaFilter] = useState('TODAS');
   const [page, setPage] = useState(1);
   const limit = 12;
+  const debouncedSearch = useDebouncedValue(search.trim());
 
   useEffect(() => {
     fetchAll(page, limit, {
-      search: search || undefined,
+      search: debouncedSearch || undefined,
       categoria: categoriaFilter !== 'TODAS' ? categoriaFilter : undefined,
+    }).catch(() => {
+      // erro já registado no store
     });
-  }, [fetchAll, page, search, categoriaFilter]);
+  }, [fetchAll, page, debouncedSearch, categoriaFilter]);
+
+  // Loader completo apenas no primeiro carregamento; depois mantém a lista visível
+  const isInitialLoading = isLoading && arbitros.length === 0 && !pagination;
 
   const featured = arbitros.filter((a) => a.categoria === 'MESTRE').slice(0, 3);
 
@@ -125,7 +132,10 @@ const Arbitros: React.FC = () => {
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             placeholder="Pesquisar árbitro por nome..."
             className="w-full max-w-sm px-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-brand/50 transition text-sm"
           />
@@ -133,7 +143,10 @@ const Arbitros: React.FC = () => {
             {['TODAS', 'MESTRE', 'INTERNACIONAL', 'NACIONAL', 'REGIONAL', 'ESTADUAL'].map((c) => (
               <button
                 key={c}
-                onClick={() => setCategoriaFilter(c)}
+                onClick={() => {
+                  setCategoriaFilter(c);
+                  setPage(1);
+                }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide transition ${
                   categoriaFilter === c
                     ? 'bg-brand text-white'
@@ -146,15 +159,21 @@ const Arbitros: React.FC = () => {
           </div>
         </div>
 
-        {isLoading ? (
+        {isInitialLoading ? (
           <SportLoadingScreen message="A carregar árbitros..." fullscreen={false} size="md" />
         ) : arbitros.length === 0 ? (
-          <div className="text-center py-20 text-gray-400 dark:text-white/30">
+          <div
+            aria-busy={isLoading}
+            className={`text-center py-20 text-gray-400 dark:text-white/30 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
             <UserCheck className="w-16 h-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg font-medium">Nenhum árbitro encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div
+            aria-busy={isLoading}
+            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 transition-opacity ${isLoading ? 'opacity-50' : ''}`}
+          >
             {arbitros.map((arbitro) => (
               <Link
                 key={arbitro.id}

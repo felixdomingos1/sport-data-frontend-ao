@@ -21,13 +21,16 @@ interface AtletaState {
   pagination: PaginatedResponse<Atleta>['pagination'] | null;
   error: string | null;
 
-  fetchAll: (page?: number, limit?: number, clubeId?: string) => Promise<PaginatedResponse<Atleta>>;
+  fetchAll: (page?: number, limit?: number, clubeId?: string, search?: string) => Promise<PaginatedResponse<Atleta>>;
   fetchById: (id: string) => Promise<void>;
   create: (data: CreateAtletaData) => Promise<Atleta>;
   createInscricao: (data: InscricaoData) => Promise<void>;
   setSelected: (atleta: Atleta | null) => void;
   clearError: () => void;
 }
+
+// Identifica o pedido de listagem mais recente; respostas de pedidos anteriores são ignoradas
+let latestFetchAllId = 0;
 
 export const useAtletaStore = create<AtletaState>((set) => ({
   atletas: [],
@@ -36,11 +39,13 @@ export const useAtletaStore = create<AtletaState>((set) => ({
   pagination: null,
   error: null,
 
-  fetchAll: async (page = 1, limit = 10, clubeId?: string) => {
+  fetchAll: async (page = 1, limit = 10, clubeId?: string, search?: string) => {
+    const requestId = ++latestFetchAllId;
     set({ isLoading: true, error: null });
 
     try {
-      const response = await atletaService.getAll({ page, limit, clubeId });
+      const response = await atletaService.getAll({ page, limit, clubeId, search: search || undefined });
+      if (requestId !== latestFetchAllId) return response;
 
       set({
         atletas: response.data,
@@ -50,6 +55,7 @@ export const useAtletaStore = create<AtletaState>((set) => ({
 
       return response;
     } catch (error) {
+      if (requestId !== latestFetchAllId) throw error;
       const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar atletas';
       set({
         isLoading: false,

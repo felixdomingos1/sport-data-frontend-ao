@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Trophy,
@@ -18,6 +18,7 @@ import type { Campeonato } from '../../../core/types/api.types';
 import SportLoadingScreen from '../../components/ui/sport-loading-screen';
 import Pagination from '../../components/ui/pagination';
 import { SEO } from '../../components/seo/seo';
+import { useDebouncedValue } from '../../hooks/use-debounced-value';
 
 const STATUS_MAP: Record<string, { label: string; color: string; dot: boolean }> = {
   INSCRICOES_ABERTAS: { label: 'Inscrições Abertas', color: 'bg-emerald-500', dot: false },
@@ -165,43 +166,48 @@ const MODALIDADE_FILTERS = [
 const Campeonatos: React.FC = () => {
   const [campeonatos, setCampeonatos] = useState<Campeonato[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedModalidade, setSelectedModalidade] = useState('all');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const limit = 15;
+  const debouncedSearch = useDebouncedValue(search.trim());
 
+  // Filtros e pesquisa no servidor: a lista é paginada, filtrar no cliente só cobriria a página atual
   useEffect(() => {
+    let cancelled = false;
     async function fetchCampeonatos() {
+      setLoading(true);
       try {
-        const result = await competicaoService.getCampeonatosPublicos({ page, limit });
+        const result = await competicaoService.getCampeonatosPublicos({
+          page,
+          limit,
+          status: selectedStatus !== 'all' ? selectedStatus : undefined,
+          modalidade: selectedModalidade !== 'all' ? selectedModalidade : undefined,
+          search: debouncedSearch || undefined,
+        });
+        if (cancelled) return;
         setCampeonatos(result.data);
         setTotalPages(result.pagination.totalPages);
+        setTotal(result.pagination.total);
       } catch {
+        if (cancelled) return;
         setCampeonatos([]);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setHasLoaded(true);
+        }
       }
     }
     fetchCampeonatos();
-  }, [page]);
-
-  const filtered = useMemo(() => {
-    return campeonatos.filter((c) => {
-      if (selectedStatus !== 'all' && c.status !== selectedStatus) return false;
-      if (selectedModalidade !== 'all' && c.modalidade !== selectedModalidade) return false;
-      if (search.trim()) {
-        const q = search.toLowerCase();
-        return (
-          c.nome.toLowerCase().includes(q) ||
-          c.modalidade.toLowerCase().includes(q) ||
-          (c.federacao?.nome ?? '').toLowerCase().includes(q)
-        );
-      }
-      return true;
-    });
-  }, [campeonatos, selectedStatus, selectedModalidade, search]);
+    return () => {
+      cancelled = true;
+    };
+  }, [page, selectedStatus, selectedModalidade, debouncedSearch]);
 
   const openCount = campeonatos.filter((c) => c.status === 'INSCRICOES_ABERTAS').length;
   const liveCount = campeonatos.filter((c) => c.status === 'EM_ANDAMENTO').length;
@@ -275,7 +281,7 @@ const Campeonatos: React.FC = () => {
       <div className="border-y border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-10 overflow-x-auto scrollbar-none">
           {[
-            { label: 'Total', value: campeonatos.length },
+            { label: 'Total', value: total },
             { label: 'Inscrições Abertas', value: openCount },
             { label: 'Ao Vivo', value: liveCount, accent: true },
             { label: 'Finalizados', value: finishedCount },
@@ -301,7 +307,10 @@ const Campeonatos: React.FC = () => {
               return (
                 <button
                   key={f.id}
-                  onClick={() => setSelectedStatus(f.id)}
+                  onClick={() => {
+                    setSelectedStatus(f.id);
+                    setPage(1);
+                  }}
                   className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
                     isActive
                       ? 'bg-white text-gray-900 shadow-lg shadow-white/10'
@@ -318,7 +327,10 @@ const Campeonatos: React.FC = () => {
               return (
                 <button
                   key={f.id}
-                  onClick={() => setSelectedModalidade(f.id)}
+                  onClick={() => {
+                    setSelectedModalidade(f.id);
+                    setPage(1);
+                  }}
                   className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
                     isActive
                       ? 'bg-brand text-white shadow-lg shadow-brand/20'
@@ -336,8 +348,11 @@ const Campeonatos: React.FC = () => {
             <input
               type="search"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Pesquisar campeonato, modalidade, federação..."
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Pesquisar campeonato..."
               className="w-full pl-9 pr-4 py-2 bg-gray-100 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/30 focus:outline-none focus:border-brand/50 transition"
             />
           </div>
@@ -345,18 +360,24 @@ const Campeonatos: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {loading ? (
+        {loading && !hasLoaded ? (
           <SportLoadingScreen message="A carregar campeonatos..." fullscreen={false} size="md" />
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-24 text-gray-400 dark:text-white/30">
+        ) : campeonatos.length === 0 ? (
+          <div
+            aria-busy={loading}
+            className={`text-center py-24 text-gray-400 dark:text-white/30 transition-opacity ${loading ? 'opacity-50' : ''}`}
+          >
             <p className="text-5xl mb-4">🏆</p>
             <p className="text-lg font-medium">Nenhum campeonato encontrado</p>
             <p className="text-sm mt-1">Tente ajustar os filtros ou a pesquisa</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div
+            aria-busy={loading}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 transition-opacity ${loading ? 'opacity-50' : ''}`}
+          >
             <AnimatePresence>
-              {filtered.map((campeonato, index) => (
+              {campeonatos.map((campeonato, index) => (
                 <CampeonatoCard key={campeonato.id} campeonato={campeonato} index={index} />
               ))}
             </AnimatePresence>

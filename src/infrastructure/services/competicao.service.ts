@@ -21,6 +21,8 @@ class CompeticaoService {
     page?: number;
     limit?: number;
     status?: string;
+    modalidade?: string;
+    search?: string;
   }): Promise<{ data: Campeonato[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> {
     const statusFilter = params?.status ?? 'INSCRICOES_ABERTAS,EM_ANDAMENTO,FINALIZADO';
     return apiClient.get(API_ENDPOINTS.CAMPEONATOS.BASE, {

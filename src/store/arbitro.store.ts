@@ -16,6 +16,9 @@ interface ArbitroState {
   clearError: () => void;
 }
 
+// Identifica o pedido de listagem mais recente; respostas de pedidos anteriores são ignoradas
+let latestFetchAllId = 0;
+
 export const useArbitroStore = create<ArbitroState>((set) => ({
   arbitros: [],
   selectedArbitro: null,
@@ -24,10 +27,12 @@ export const useArbitroStore = create<ArbitroState>((set) => ({
   error: null,
 
   fetchAll: async (page = 1, limit = 12, params?: Record<string, unknown>) => {
+    const requestId = ++latestFetchAllId;
     set({ isLoading: true, error: null });
 
     try {
       const response = await arbitroService.getAll({ page, limit, ...params });
+      if (requestId !== latestFetchAllId) return response;
 
       set({
         arbitros: response.data,
@@ -37,6 +42,7 @@ export const useArbitroStore = create<ArbitroState>((set) => ({
 
       return response;
     } catch (error) {
+      if (requestId !== latestFetchAllId) throw error;
       const errorMessage = error instanceof Error ? error.message : 'Erro ao buscar árbitros';
       set({
         arbitros: [],
